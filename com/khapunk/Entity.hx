@@ -63,7 +63,7 @@ class Entity
 	private inline function get_x():Float
 	{
 		if (followCamera)
-			return x + KXP.camera.x;
+			return x + KP.camera.x;
 		else
 			return x;
 	}	
@@ -79,7 +79,7 @@ class Entity
 	private inline function get_y():Float
 	{
 		if (followCamera)
-			return y + KXP.camera.y;
+			return y + KP.camera.y;
 		else
 			return y;
 	}
@@ -144,8 +144,8 @@ class Entity
 		_name = "";
 
 		HITBOX = new Mask();
-		point = KXP.point;
-		camera = KXP.point2;
+		point = KP.point;
+		camera = KP.point2;
 
 		layer = 0;
 
@@ -185,8 +185,8 @@ class Entity
 				point.y = y;
 			}
 			else point.x = point.y = 0;
-			camera.x = _scene == null ? KXP.camera.x : _scene.camera.x;
-			camera.y = _scene == null ? KXP.camera.y : _scene.camera.y;
+			camera.x = _scene == null ? KP.camera.x : _scene.camera.x;
+			camera.y = _scene == null ? KP.camera.y : _scene.camera.y;
 
 			graphic.render(painter, point, camera);
 		}
@@ -342,11 +342,11 @@ class Entity
 			if (_mask == null) return true;
 			_x = this.x; _y = this.y;
 			this.x = x; this.y = y;
-			KXP.entity.x = rX;
-			KXP.entity.y = rY;
-			KXP.entity.width = Std.int(rWidth);
-			KXP.entity.height = Std.int(rHeight);
-			if (_mask.collide(KXP.entity.HITBOX))
+			KP.entity.x = rX;
+			KP.entity.y = rY;
+			KP.entity.width = Std.int(rWidth);
+			KP.entity.height = Std.int(rHeight);
+			if (_mask.collide(KP.entity.HITBOX))
 			{
 				this.x = _x; this.y = _y;
 				return true;
@@ -375,11 +375,11 @@ class Entity
 			if (_mask == null) return true;
 			_x = this.x; _y = this.y;
 			this.x = x; this.y = y;
-			KXP.entity.x = pX;
-			KXP.entity.y = pY;
-			KXP.entity.width = 1;
-			KXP.entity.height = 1;
-			if (_mask.collide(KXP.entity.HITBOX))
+			KP.entity.x = pX;
+			KP.entity.y = pY;
+			KP.entity.width = 1;
+			KP.entity.height = 1;
+			if (_mask.collide(KP.entity.HITBOX))
 			{
 				this.x = _x; this.y = _y;
 				return true;
@@ -470,7 +470,7 @@ class Entity
 		}
 		else
 		{
-			return collideRect(x, y, _scene.camera.x, scene.camera.y, KXP.width, KXP.height);
+			return collideRect(x, y, _scene.camera.x, scene.camera.y, KP.width, KP.height);
 		}
 	}
 
@@ -712,7 +712,7 @@ class Entity
 	public inline function distanceFrom(e:Entity, useHitboxes:Bool = false):Float
 	{
 		if (!useHitboxes) return Math.sqrt((x - e.x) * (x - e.x) + (y - e.y) * (y - e.y));
-		else return KXP.distanceRects(x - originX, y - originY, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
+		else return KP.distanceRects(x - originX, y - originY, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
 	}
 
 	/**
@@ -725,7 +725,7 @@ class Entity
 	public inline function distanceToPoint(px:Float, py:Float, useHitbox:Bool = false):Float
 	{
 		if (!useHitbox) return Math.sqrt((x - px) * (x - px) + (y - py) * (y - py));
-		else return KXP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
+		else return KP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
 	}
 
 	/**
@@ -738,7 +738,7 @@ class Entity
 	 */
 	public inline function distanceToRect(rx:Float, ry:Float, rwidth:Float, rheight:Float):Float
 	{
-		return KXP.distanceRects(rx, ry, rwidth, rheight, x - originX, y - originY, width, height);
+		return KP.distanceRects(rx, ry, rwidth, rheight, x - originX, y - originY, width, height);
 	}
 
 	/**
@@ -859,7 +859,7 @@ class Entity
 	 */
 	public inline function moveAtAngle(angle:Float, amount:Float, solidType:Dynamic = null, sweep:Bool = false):Void
 	{
-		angle *= KXP.RAD;
+		angle *= KP.RAD;
 		moveBy(Math.cos(angle) * amount, Math.sin(angle) * amount, solidType, sweep);
 	}
 

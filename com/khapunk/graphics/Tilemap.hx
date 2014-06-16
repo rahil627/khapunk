@@ -64,7 +64,7 @@ class Tilemap extends Graphic
 	{
 	
 		super();
-		_rect = KXP.rect;
+		_rect = KP.rect;
 	
 		// set some tilemap information
 		_width = width - (width % tileWidth);
@@ -442,7 +442,7 @@ class Tilemap extends Graphic
 
 
 		/*
-		var scalex:Float = KXP.screen.fullScaleX, scaley:Float = KXP.screen.fullScaleY,
+		var scalex:Float = KP.screen.fullScaleX, scaley:Float = KP.screen.fullScaleY,
 			tw:Int = Math.ceil(tileWidth), th:Int = Math.ceil(tileHeight);
 */
 
@@ -452,8 +452,8 @@ class Tilemap extends Graphic
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor( - this.point.x / tw),
 			starty = Math.floor( - this.point.y / th),
-			destx = startx + 1 + Math.ceil(KXP.width / tw),
-			desty = starty + 1 + Math.ceil(KXP.height / th);
+			destx = startx + 1 + Math.ceil(KP.width / tw),
+			desty = starty + 1 + Math.ceil(KP.height / th);
 
 		// nothing will render if we're completely off screen
 		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)

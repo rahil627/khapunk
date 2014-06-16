@@ -1,6 +1,6 @@
 package com.khapunk.masks;
 import com.khapunk.Entity;
-import com.khapunk.KXP;
+import com.khapunk.KP;
 import com.khapunk.masks.Hitbox;
 
 /**
@@ -82,8 +82,8 @@ class Masklist extends Hitbox
 	 */
 	public function remove(mask:Mask):Mask
 	{
-		if (KXP.indexOf(_masks, mask) < 0) return mask;
-		KXP.clear(_temp);
+		if (KP.indexOf(_masks, mask) < 0) return mask;
+		KP.clear(_temp);
 		for (m in _masks)
 		{
 			if (m == mask)
@@ -107,7 +107,7 @@ class Masklist extends Hitbox
 	 */
 	public function removeAt(index:Int = 0)
 	{
-		KXP.clear(_temp);
+		KP.clear(_temp);
 		var i:Int = _masks.length;
 		index %= i;
 		while (i-- > 0)
@@ -132,8 +132,8 @@ class Masklist extends Hitbox
 	{
 		for (m in _masks) m.list = null;
 		_count = 0;
-		KXP.clear(_masks);
-		KXP.clear(_temp);
+		KP.clear(_masks);
+		KP.clear(_temp);
 		update();
 	}
 

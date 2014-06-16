@@ -8,7 +8,7 @@ import kha.Scheduler;
  * ...
  * @author ...
  */
-class KXP
+class KP
 {
 		// Scene information.
 	private static var _scene:Scene = new Scene();
@@ -399,8 +399,8 @@ class KXP
 	 */
 	public static inline function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true)
 	{
-		if (relative) angle += KXP.angle(anchor.x, anchor.y, object.x, object.y);
-		KXP.angleXY(object, angle, KXP.distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
+		if (relative) angle += KP.angle(anchor.x, anchor.y, object.x, object.y);
+		KP.angleXY(object, angle, KP.distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
 	}
 
 	/**
@@ -895,7 +895,7 @@ class KXP
 			while (--i > 0)
 			{
 				t = a[i];
-				a[i] = a[j = KXP.rand(i + 1)];
+				a[i] = a[j = KP.rand(i + 1)];
 				a[j] = t;
 			}
 		}

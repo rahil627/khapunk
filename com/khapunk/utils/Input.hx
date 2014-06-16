@@ -86,7 +86,7 @@ class Input
 	public static var mouseX(get, never):Int;
 	private static function get_mouseX():Int
 	{
-		return _mouseX + Std.int(KXP.camera.x);//KXP.screen.mouseX;
+		return _mouseX + Std.int(KP.camera.x);//KP.screen.mouseX;
 	}
 
 	/**
@@ -95,7 +95,7 @@ class Input
 	public static var mouseY(get, never):Int;
 	private static function get_mouseY():Int
 	{
-		return _mouseY + Std.int(KXP.camera.y);
+		return _mouseY + Std.int(KP.camera.y);
 	}
 	
 	
@@ -105,7 +105,7 @@ class Input
 	public static var screenMouseX(get, never):Int;
 	private static function get_screenMouseX():Int
 	{
-		return _mouseX;//Std.int(KXP.stage.mouseX);
+		return _mouseX;//Std.int(KP.stage.mouseX);
 	}
 
 	/**
@@ -114,7 +114,7 @@ class Input
 	public static var screenMouseY(get, never):Int;
 	private static function get_screenMouseY():Int
 	{
-		return  _mouseY;// Std.int(KXP.stage.mouseY);
+		return  _mouseY;// Std.int(KP.stage.mouseY);
 	}
 	
 		/**
@@ -139,7 +139,7 @@ class Input
 #if debug
 			if (!_control.exists(input))
 			{
-				//KXP.log("Input '" + input + "' not defined");
+				//KP.log("Input '" + input + "' not defined");
 				return false;
 			}
 #end
@@ -176,11 +176,11 @@ class Input
 				i:Int = v.length;
 			while (i-- > 0)
 			{
-				if ((v[i] < 0) ? _pressNum != 0 : KXP.indexOf(_press, v[i]) >= 0) return true;
+				if ((v[i] < 0) ? _pressNum != 0 : KP.indexOf(_press, v[i]) >= 0) return true;
 			}
 			return false;
 		}
-		return (input < 0) ? _pressNum != 0 : KXP.indexOf(_press, input) >= 0;
+		return (input < 0) ? _pressNum != 0 : KP.indexOf(_press, input) >= 0;
 	}
 	
 	/**
@@ -196,11 +196,11 @@ class Input
 				i:Int = v.length;
 			while (i-- > 0)
 			{
-				if ((v[i] < 0) ? _releaseNum != 0 : KXP.indexOf(_release, v[i]) >= 0) return true;
+				if ((v[i] < 0) ? _releaseNum != 0 : KP.indexOf(_release, v[i]) >= 0) return true;
 			}
 			return false;
 		}
-		return (input < 0) ? _releaseNum != 0 : KXP.indexOf(_release, input) >= 0;
+		return (input < 0) ? _releaseNum != 0 : KP.indexOf(_release, input) >= 0;
 	}
 	
 	public static function enable()

@@ -152,7 +152,7 @@ class PunkImage extends Graphic
 		_flipped = false;
 		_color = 0x00FFFFFF;
 		_red = _green = _blue = 1;
-		//_matrix = KXP.matrix;
+		//_matrix = KP.matrix;
 	}
 	
 	/** Renders the image. */
@@ -211,9 +211,9 @@ class PunkImage extends Graphic
 		if (_color == value) return value;
 		_color = value;
 		// save individual color channel values
-		_red = KXP.getRed(_color) / 255;
-		_green = KXP.getGreen(_color) / 255;
-		_blue = KXP.getBlue(_color) / 255;
+		_red = KP.getRed(_color) / 255;
+		_green = KP.getGreen(_color) / 255;
+		_blue = KP.getBlue(_color) / 255;
 		
 		return _color;
 	}

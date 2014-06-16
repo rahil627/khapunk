@@ -64,18 +64,18 @@ class Engine
 	{
 		
 		
-		//KXP.assignedFrameRate = frameRate;
-		//KXP.fixed = fixed;
+		//KP.assignedFrameRate = frameRate;
+		//KP.fixed = fixed;
 
 		// global game objects
-		KXP.engine = this;
-		//KXP.width = width;
-		//KXP.height = height;
+		KP.engine = this;
+		//KP.width = width;
+		//KP.height = height;
 
 		// miscellaneous startup stuff
-		if (KXP.randomSeed == 0) KXP.randomizeSeed();
+		if (KP.randomSeed == 0) KP.randomizeSeed();
 
-		KXP.entity = new Entity();
+		KP.entity = new Entity();
 
 		paused = false;
 		maxElapsed = 0.0333;
@@ -93,18 +93,18 @@ class Engine
 		
 		// global game properties
 		
-		KXP.width = Game.the.width;
-		KXP.height = Game.the.height;
-		KXP.bounds = new Rectangle(0, 0, KXP.width, KXP.height);
+		KP.width = Game.the.width;
+		KP.height = Game.the.height;
+		KP.bounds = new Rectangle(0, 0, KP.width, KP.height);
 		
-		KXP.init();
+		KP.init();
 		
 		// enable input
 		/** enable input */
 		Input.enable();
 
 		// switch scenes
-		if (!KXP.gotoIsNull()) checkScene();
+		if (!KP.gotoIsNull()) checkScene();
 
 		// game start
 		
@@ -139,24 +139,24 @@ class Engine
 		
 		if (paused) return;
 		
-		KXP.elapsed = Scheduler.deltaTime;
+		KP.elapsed = Scheduler.deltaTime;
 		
 		// update input
 		Input.update();
 		
 		// update console
-		//if (KXP.consoleEnabled()) KXP.console.update();
+		//if (KP.consoleEnabled()) KP.console.update();
 		
-		KXP.scene.updateLists();
-		if (!KXP.gotoIsNull()) checkScene();
-		//if (KXP.tweener.active && KXP.tweener.hasTween) KXP.tweener.updateTweens();
-		if (KXP.scene.active)
+		KP.scene.updateLists();
+		if (!KP.gotoIsNull()) checkScene();
+		//if (KP.tweener.active && KP.tweener.hasTween) KP.tweener.updateTweens();
+		if (KP.scene.active)
 		{
-			//if (KXP.scene.hasTween) KXP.scene.updateTweens();
-			KXP.scene.update();
+			//if (KP.scene.hasTween) KP.scene.updateTweens();
+			KP.scene.update();
 			
 		}
-		KXP.scene.updateLists(false);
+		KP.scene.updateLists(false);
 	}
 	
 	/**
@@ -165,28 +165,28 @@ class Engine
 	public function render(painter:Painter): Void
 	{
 		
-		//if (KXP.screen.needsResize) KXP.resize(KXP.windowWidth, KXP.windowHeight);
+		//if (KP.screen.needsResize) KP.resize(KP.windowWidth, KP.windowHeight);
 
 		// timing stuff
 		//var t:Float = Lib.getTimer();
 		//if (_frameLast == 0) _frameLast = Std.int(t);
 
 		// render loop
-		/*if (KXP.renderMode == RenderMode.BUFFER)
+		/*if (KP.renderMode == RenderMode.BUFFER)
 		{
-			KXP.screen.swap();
-			KXP.screen.refresh();
+			KP.screen.swap();
+			KP.screen.refresh();
 		}*/
 		//Draw.resetTarget();
 
-		if (KXP.scene.visible) KXP.scene.render(painter);
+		if (KP.scene.visible) KP.scene.render(painter);
 
 		// more timing stuff ?
 		/** TODO Oi, btf is this mate? */
 		/*t = Lib.getTimer();
 		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
 		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
-		KXP.frameRate = 1000 / (_frameListSum / _frameList.length);
+		KP.frameRate = 1000 / (_frameListSum / _frameList.length);
 		_frameLast = t;*/
 	}
 	
@@ -196,33 +196,33 @@ class Engine
 	{
 		/** TODO fix resize */
 		
-		/**if (KXP.width == 0) KXP.width = KXP.stage.stageWidth;
-		if (KXP.height == 0) KXP.height = KXP.stage.stageHeight;
+		/**if (KP.width == 0) KP.width = KP.stage.stageWidth;
+		if (KP.height == 0) KP.height = KP.stage.stageHeight;
 		// calculate scale from width/height values
-		KXP.windowWidth = KXP.stage.stageWidth;
-		KXP.windowHeight = KXP.stage.stageHeight;
-		KXP.screen.scaleX = KXP.stage.stageWidth / KXP.width;
-		KXP.screen.scaleY = KXP.stage.stageHeight / KXP.height;
-		KXP.resize(KXP.stage.stageWidth, KXP.stage.stageHeight);**/
+		KP.windowWidth = KP.stage.stageWidth;
+		KP.windowHeight = KP.stage.stageHeight;
+		KP.screen.scaleX = KP.stage.stageWidth / KP.width;
+		KP.screen.scaleY = KP.stage.stageHeight / KP.height;
+		KP.resize(KP.stage.stageWidth, KP.stage.stageHeight);**/
 	}
 	
 	/** @private Switch scenes if they've changed. */
 	private function checkScene()
 	{
-		if (KXP.gotoIsNull()) return;
+		if (KP.gotoIsNull()) return;
 
-		if (KXP.scene != null)
+		if (KP.scene != null)
 		{
-			KXP.scene.end();
-			KXP.scene.updateLists();
-			//if (KXP.scene.autoClear && KXP.scene.hasTween) KXP.scene.clearTweens();
-			//if (contains(KXP.scene.sprite)) removeChild(KXP.scene.sprite);
-			KXP.swapScene();
-			//addChild(KXP.scene.sprite);
-			KXP.camera = KXP.scene.camera;
-			KXP.scene.updateLists();
-			KXP.scene.begin();
-			KXP.scene.updateLists();
+			KP.scene.end();
+			KP.scene.updateLists();
+			//if (KP.scene.autoClear && KP.scene.hasTween) KP.scene.clearTweens();
+			//if (contains(KP.scene.sprite)) removeChild(KP.scene.sprite);
+			KP.swapScene();
+			//addChild(KP.scene.sprite);
+			KP.camera = KP.scene.camera;
+			KP.scene.updateLists();
+			KP.scene.begin();
+			KP.scene.updateLists();
 		}
 	}
 	
