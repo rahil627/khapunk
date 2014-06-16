@@ -1,6 +1,7 @@
 package com.khapunk.graphics;
 import com.khapunk.Graphic;
 import com.khapunk.graphics.atlas.AtlasRegion;
+import com.khapunk.graphics.atlas.TextureAtlas;
 import com.khapunk.graphics.atlas.TileAtlas;
 import kha.Image;
 import kha.math.Vector2;
@@ -59,9 +60,9 @@ class Tilemap extends Graphic
 	 * @param	tileSpacingWidth	Tile horizontal spacing.
 	 * @param	tileSpacingHeight	Tile vertical spacing.
 	 */
-	public function new(tileset:TileAtlas, width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?tileSpacingWidth:Int=0, ?tileSpacingHeight:Int=0)
+	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?tileSpacingWidth:Int=0, ?tileSpacingHeight:Int=0)
 	{
-		trace("Creating map");
+	
 		super();
 		_rect = KXP.rect;
 	
@@ -100,18 +101,29 @@ class Tilemap extends Graphic
 			}
 		}
 
-		_atlas = cast(tileset, TileAtlas);
+		if (Std.is(tileset,TileAtlas))
+		{
+			_atlas =  cast(tileset, TileAtlas);
+		}
+		else if(Std.is(tileset,Image)) {
+			_atlas = new TileAtlas(cast(tileset, Image));
+			_atlas.prepareTiles(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
+		}
+		else if (Std.is(tileset, TextureAtlas)) {
+			_atlas = new TileAtlas(cast(tileset, TextureAtlas));
+			_atlas.prepareTiles(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
+		}
+		
 
 		if (_atlas == null)
 			throw "Invalid tileset graphic provided.";
-
-		 
 		else
 		{
 			_setColumns = Std.int(_atlas.imgWidth / tileWidth);
 			_setRows = Std.int(_atlas.imgHeight / tileHeight);
 		}
 		_setCount = _setColumns * _setRows;
+		
 	}
 	
 	/**
@@ -122,6 +134,7 @@ class Tilemap extends Graphic
 	 */
 	public function setTile(column:Int, row:Int, index:Int = 0)
 	{
+		
 		if (usePositions)
 		{
 			column = Std.int(column / _tile.width);
@@ -131,7 +144,7 @@ class Tilemap extends Graphic
 		column %= _columns;
 		row %= _rows;
 		_map[row][column] = index;
-
+		
 	}
 	
 	/**
@@ -465,9 +478,7 @@ class Tilemap extends Graphic
 		var	stepx:Float = tw;
 		var	stepy:Float = th;
 		var	tile:Int = 0;
-		
-		trace(wy);
-		
+	
 		// adjust scale to fill gaps
 		//scx = Math.ceil(stepx) / tileWidth;
 		//scy = Math.ceil(stepy) / tileHeight;
@@ -482,11 +493,11 @@ class Tilemap extends Graphic
 			for (x in startx...destx)
 			{
 				tile = _map[y % _rows][x % _columns];
+				
 				tr = _atlas.getTile(tile);
 			
 				if (tile >= 0)
 				{
-					
 					painter.drawImage2(_atlas.img, tr.x, tr.y, tr.w, tr.h,wx, wy, _tile.width, _tile.height);
 					//_atlas.prepareTile(tile, Std.int(wx), Std.int(wy), layer, scx, scy, 0, _red, _green, _blue, alpha);
 				}

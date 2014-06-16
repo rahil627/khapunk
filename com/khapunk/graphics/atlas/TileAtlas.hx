@@ -21,13 +21,15 @@ class TileAtlas
 		_regions = new Array<AtlasRegion>();
 		
 		if (Std.is(source, Image)) {
-			_image = source;
-			_width = source.width;
-			_height = source.height;
+			
+			_image = cast(source,Image);
+			_width = cast(source,Image).width;
+			_height = cast(source,Image).height;
+			
 		}
 		else if (Std.is(source, TextureAtlas))
 		{
-			_image = source.getImage();
+			_image =  cast(source,TextureAtlas).getImage();
 			_width = _image.width;
 			_height = _image.height;
 		}
@@ -62,10 +64,11 @@ class TileAtlas
 		return _regions[index];
 	}
 	
-	public function prepareTiles(width:Int, height:Int, tileWidth:Int, tileHeight:Int, tileMarginWidth:Int,tileMarginHeight:Int)
+	public function prepareTiles(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int,tileMarginHeight:Int)
 	{
-		var cols:Int = Math.floor(width / tileWidth);
-		var rows:Int = Math.floor(height / tileHeight);
+		
+		var cols:Int = Math.floor(_image.width / tileWidth);
+		var rows:Int = Math.floor(_image.height / tileHeight);
 
 		var r:AtlasRegion;
 		
@@ -76,7 +79,8 @@ class TileAtlas
 				r = new AtlasRegion();
 				
 				r.x = x * (tileWidth + tileMarginWidth);
-				r.y = y * (tileHeight+tileMarginHeight);
+				r.y = y * (tileHeight + tileMarginHeight);
+				
 
 				r.w = tileWidth;
 				r.h = tileHeight;

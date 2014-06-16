@@ -60,10 +60,6 @@ class Graphic
 	 */
 	public var relative:Bool;
 	
-	/**
-	 * If we can blit the graphic or not (flash/html5)
-	 */
-	public var blit(default, null):Bool;
 	
 	/**
 	 * Constructor.

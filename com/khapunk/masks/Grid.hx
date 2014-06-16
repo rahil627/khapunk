@@ -138,11 +138,14 @@ class Grid extends Hitbox
 	 */
 	public function getTile(column:Int = 0, row:Int = 0):Bool
 	{
+		
 		if (usePositions)
 		{
+			trace(column /_tile.width);
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
+		
 		return getTileXY(column, row);
 	}
 	
