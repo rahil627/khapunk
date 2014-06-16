@@ -406,9 +406,9 @@ class Polygon extends Hitbox
 	 * If you need to set a point yourself instead of passing in a new Array<Point> you need to call update()
 	 * to make sure the axes update as well.
 	 */
-	public var points(get, set):Array<Point>;
-	private inline function get_points():Array<Point> { return _points; }
-	private function set_points(value:Array<Point>):Array<Point>
+	public var points(get, set):Array<Vector2>;
+	private inline function get_points():Array<Vector2> { return _points; }
+	private function set_points(value:Array<Vector2>):Array<Vector2>
 	{
 		if (_points != value)
 		{

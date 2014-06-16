@@ -1,4 +1,5 @@
 package com.khapunk;
+import com.khapunk.utils.Input;
 import kha.Game;
 import kha.Painter;
 import kha.Rectangle;
@@ -63,18 +64,18 @@ class Engine
 	{
 		
 		
-		//HXP.assignedFrameRate = frameRate;
-		//HXP.fixed = fixed;
+		//KXP.assignedFrameRate = frameRate;
+		//KXP.fixed = fixed;
 
 		// global game objects
-		HXP.engine = this;
-		//HXP.width = width;
-		//HXP.height = height;
+		KXP.engine = this;
+		//KXP.width = width;
+		//KXP.height = height;
 
 		// miscellaneous startup stuff
-		if (HXP.randomSeed == 0) HXP.randomizeSeed();
+		if (KXP.randomSeed == 0) KXP.randomizeSeed();
 
-		HXP.entity = new Entity();
+		KXP.entity = new Entity();
 
 		paused = false;
 		maxElapsed = 0.0333;
@@ -92,16 +93,18 @@ class Engine
 		
 		// global game properties
 		
-		HXP.width = Game.the.width;
-		HXP.height = Game.the.height;
-		HXP.bounds = new Rectangle(0, 0, HXP.width, HXP.height);
+		KXP.width = Game.the.width;
+		KXP.height = Game.the.height;
+		KXP.bounds = new Rectangle(0, 0, KXP.width, KXP.height);
+		
+		KXP.init();
 		
 		// enable input
 		/** enable input */
-		//Input.enable();
+		Input.enable();
 
 		// switch scenes
-		if (!HXP.gotoIsNull()) checkScene();
+		if (!KXP.gotoIsNull()) checkScene();
 
 		// game start
 		
@@ -136,24 +139,24 @@ class Engine
 		
 		if (paused) return;
 		
-		HXP.elapsed = Scheduler.deltaTime;
+		KXP.elapsed = Scheduler.deltaTime;
 		
 		// update input
-		//Input.update();
+		Input.update();
 		
 		// update console
-		//if (HXP.consoleEnabled()) HXP.console.update();
+		//if (KXP.consoleEnabled()) KXP.console.update();
 		
-		HXP.scene.updateLists();
-		if (!HXP.gotoIsNull()) checkScene();
-		//if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens();
-		if (HXP.scene.active)
+		KXP.scene.updateLists();
+		if (!KXP.gotoIsNull()) checkScene();
+		//if (KXP.tweener.active && KXP.tweener.hasTween) KXP.tweener.updateTweens();
+		if (KXP.scene.active)
 		{
-			//if (HXP.scene.hasTween) HXP.scene.updateTweens();
-			HXP.scene.update();
+			//if (KXP.scene.hasTween) KXP.scene.updateTweens();
+			KXP.scene.update();
 			
 		}
-		HXP.scene.updateLists(false);
+		KXP.scene.updateLists(false);
 	}
 	
 	/**
@@ -162,28 +165,28 @@ class Engine
 	public function render(painter:Painter): Void
 	{
 		
-		//if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		//if (KXP.screen.needsResize) KXP.resize(KXP.windowWidth, KXP.windowHeight);
 
 		// timing stuff
 		//var t:Float = Lib.getTimer();
 		//if (_frameLast == 0) _frameLast = Std.int(t);
 
 		// render loop
-		/*if (HXP.renderMode == RenderMode.BUFFER)
+		/*if (KXP.renderMode == RenderMode.BUFFER)
 		{
-			HXP.screen.swap();
-			HXP.screen.refresh();
+			KXP.screen.swap();
+			KXP.screen.refresh();
 		}*/
 		//Draw.resetTarget();
 
-		if (HXP.scene.visible) HXP.scene.render(painter);
+		if (KXP.scene.visible) KXP.scene.render(painter);
 
 		// more timing stuff ?
 		/** TODO Oi, btf is this mate? */
 		/*t = Lib.getTimer();
 		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
 		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
-		HXP.frameRate = 1000 / (_frameListSum / _frameList.length);
+		KXP.frameRate = 1000 / (_frameListSum / _frameList.length);
 		_frameLast = t;*/
 	}
 	
@@ -193,33 +196,33 @@ class Engine
 	{
 		/** TODO fix resize */
 		
-		/**if (HXP.width == 0) HXP.width = HXP.stage.stageWidth;
-		if (HXP.height == 0) HXP.height = HXP.stage.stageHeight;
+		/**if (KXP.width == 0) KXP.width = KXP.stage.stageWidth;
+		if (KXP.height == 0) KXP.height = KXP.stage.stageHeight;
 		// calculate scale from width/height values
-		HXP.windowWidth = HXP.stage.stageWidth;
-		HXP.windowHeight = HXP.stage.stageHeight;
-		HXP.screen.scaleX = HXP.stage.stageWidth / HXP.width;
-		HXP.screen.scaleY = HXP.stage.stageHeight / HXP.height;
-		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);**/
+		KXP.windowWidth = KXP.stage.stageWidth;
+		KXP.windowHeight = KXP.stage.stageHeight;
+		KXP.screen.scaleX = KXP.stage.stageWidth / KXP.width;
+		KXP.screen.scaleY = KXP.stage.stageHeight / KXP.height;
+		KXP.resize(KXP.stage.stageWidth, KXP.stage.stageHeight);**/
 	}
 	
 	/** @private Switch scenes if they've changed. */
 	private function checkScene()
 	{
-		if (HXP.gotoIsNull()) return;
+		if (KXP.gotoIsNull()) return;
 
-		if (HXP.scene != null)
+		if (KXP.scene != null)
 		{
-			HXP.scene.end();
-			HXP.scene.updateLists();
-			//if (HXP.scene.autoClear && HXP.scene.hasTween) HXP.scene.clearTweens();
-			//if (contains(HXP.scene.sprite)) removeChild(HXP.scene.sprite);
-			HXP.swapScene();
-			//addChild(HXP.scene.sprite);
-			HXP.camera = HXP.scene.camera;
-			HXP.scene.updateLists();
-			HXP.scene.begin();
-			HXP.scene.updateLists();
+			KXP.scene.end();
+			KXP.scene.updateLists();
+			//if (KXP.scene.autoClear && KXP.scene.hasTween) KXP.scene.clearTweens();
+			//if (contains(KXP.scene.sprite)) removeChild(KXP.scene.sprite);
+			KXP.swapScene();
+			//addChild(KXP.scene.sprite);
+			KXP.camera = KXP.scene.camera;
+			KXP.scene.updateLists();
+			KXP.scene.begin();
+			KXP.scene.updateLists();
 		}
 	}
 	

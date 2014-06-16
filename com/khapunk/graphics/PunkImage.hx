@@ -25,7 +25,6 @@ class PunkImage extends Graphic
 	// Color and alpha information.
 	private var _alpha:Float;
 	private var _color:Int;
-	private var _tint:Color;
 	//private var _colorTransform:ColorTransform;
 	//private var _matrix:Matrix;
 	private var _red:Float;
@@ -131,6 +130,7 @@ class PunkImage extends Graphic
 	private inline function setAtlasRegion(region:AtlasRegion)
 	{
 		_region = region;
+		_source = region.image;
 		_sourceRect = new Rectangle(0, 0, _region.w, _region.h);
 	}
 	
@@ -152,7 +152,7 @@ class PunkImage extends Graphic
 		_flipped = false;
 		_color = 0x00FFFFFF;
 		_red = _green = _blue = 1;
-		//_matrix = HXP.matrix;
+		//_matrix = KXP.matrix;
 	}
 	
 	/** Renders the image. */
@@ -180,8 +180,8 @@ class PunkImage extends Graphic
 			_sourceRect.height,
 			this.point.x,
 			this.point.y,
-			_sourceRect.width * scaleX,
-			_sourceRect.height * scaleY);
+			_sourceRect.width * sx,
+			_sourceRect.height * sy);
 		}
 	
 	}
@@ -211,9 +211,9 @@ class PunkImage extends Graphic
 		if (_color == value) return value;
 		_color = value;
 		// save individual color channel values
-		_red = HXP.getRed(_color) / 255;
-		_green = HXP.getGreen(_color) / 255;
-		_blue = HXP.getBlue(_color) / 255;
+		_red = KXP.getRed(_color) / 255;
+		_green = KXP.getGreen(_color) / 255;
+		_blue = KXP.getBlue(_color) / 255;
 		
 		return _color;
 	}

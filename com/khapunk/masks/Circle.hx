@@ -1,4 +1,6 @@
 package com.khapunk.masks;
+import com.khapunk.math.Projection;
+import kha.math.Vector2;
 import kha.Painter;
 
 /**
@@ -25,11 +27,11 @@ class Circle extends Hitbox
 		_x = x + radius;
 		_y = y + radius;
 
-		_check.set(Type.getClassName(Mask), collideMask);
-		_check.set(Type.getClassName(Circle), collideCircle);
-		_check.set(Type.getClassName(Hitbox), collideHitbox);
-		_check.set(Type.getClassName(Grid), collideGrid);
-		_check.set(Type.getClassName(SlopedGrid), collideSlopedGrid);
+		check.set(Type.getClassName(Mask), collideMask);
+		check.set(Type.getClassName(Circle), collideCircle);
+		check.set(Type.getClassName(Hitbox), collideHitbox);
+		check.set(Type.getClassName(Grid), collideGrid);
+		check.set(Type.getClassName(SlopedGrid), collideSlopedGrid);
 	}
 	
 	/** @private Collides against an Entity. */
@@ -263,7 +265,7 @@ class Circle extends Hitbox
 		return distanceToCorner <= _squaredRadius;
 	}
 
-	override public function project(axis:Vector, projection:Projection):Void
+	override public function project(axis:Vector2, projection:Projection):Void
 	{
 		projection.min = -_radius;
 		projection.max = _radius;

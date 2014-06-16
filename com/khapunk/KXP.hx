@@ -8,7 +8,7 @@ import kha.Scheduler;
  * ...
  * @author ...
  */
-class HXP
+class KXP
 {
 		// Scene information.
 	private static var _scene:Scene = new Scene();
@@ -104,7 +104,7 @@ class HXP
 	 * Half the screen width.
 	 */
 	public static var halfWidth(default, null):Float;
-
+	
 	/**
 	 * Half the screen height.
 	 */
@@ -118,6 +118,12 @@ class HXP
 	public function new() 
 	{
 		
+	}
+	
+	public static function init() : Void
+	{
+		halfHeight = height / 2;
+		halfWidth = width / 2;
 	}
 	
 	/**
@@ -393,8 +399,8 @@ class HXP
 	 */
 	public static inline function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true)
 	{
-		if (relative) angle += HXP.angle(anchor.x, anchor.y, object.x, object.y);
-		HXP.angleXY(object, angle, HXP.distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
+		if (relative) angle += KXP.angle(anchor.x, anchor.y, object.x, object.y);
+		KXP.angleXY(object, angle, KXP.distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
 	}
 
 	/**
@@ -889,7 +895,7 @@ class HXP
 			while (--i > 0)
 			{
 				t = a[i];
-				a[i] = a[j = HXP.rand(i + 1)];
+				a[i] = a[j = KXP.rand(i + 1)];
 				a[j] = t;
 			}
 		}

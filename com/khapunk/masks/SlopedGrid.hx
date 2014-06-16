@@ -138,7 +138,7 @@ class SlopedGrid extends Hitbox
 	 * @param tile  tile data for this position of SlopedGrid, saves an extra lookup
 	 * @return If the point collides with a slope
 	 */
-	@:allow(com.haxepunk.masks.Circle)
+	@:allow(com.khapunk.masks.Circle)
 	private inline function collidePointInSlope(x1:Float, y1:Float, px:Float, py:Float, tile:Tile):Bool
 	{
 		y1 += tile.yOffset;

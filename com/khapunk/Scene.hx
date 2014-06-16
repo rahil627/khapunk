@@ -156,7 +156,7 @@ class Scene
 			_layerSort = false;
 		}
 
-		//if (HXP.renderMode == RenderMode.HARDWARE)
+		//if (KXP.renderMode == RenderMode.HARDWARE)
 			//AtlasData.startScene(this);
 
 		// render the entities in order of depth
@@ -173,7 +173,7 @@ class Scene
 			}
 		}
 
-		//if (HXP.renderMode == RenderMode.HARDWARE)
+		//if (KXP.renderMode == RenderMode.HARDWARE)
 		//	AtlasData.endScene();
 		
 	}
@@ -185,7 +185,7 @@ class Scene
 	public var mouseX(get, null):Int;
 	private inline function get_mouseX():Int
 	{
-		//return Std.int(HXP.screen.mouseX + camera.x);
+		//return Std.int(KXP.screen.mouseX + camera.x);
 		return 0;
 	}
 
@@ -195,7 +195,7 @@ class Scene
 	public var mouseY(get, null):Int;
 	private inline function get_mouseY():Int
 	{
-		//return Std.int(HXP.screen.mouseY + camera.y);
+		//return Std.int(KXP.screen.mouseY + camera.y);
 		return 0;
 	}
 	
@@ -523,7 +523,7 @@ class Scene
 	{
 		// If the distance is less than precision, do the short sweep.
 		if (precision < 1) precision = 1;
-		if (HXP.distance(fromX, fromY, toX, toY) < precision)
+		if (KXP.distance(fromX, fromY, toX, toY) < precision)
 		{
 			if (p != null)
 			{
@@ -676,7 +676,7 @@ class Scene
 		radius *= radius;//Square it to avoid the square root
 		while (e != null)
 		{
-			if (HXP.distanceSquared(circleX, circleY, e.x, e.y) < radius) into[n ++] = cast e;
+			if (KXP.distanceSquared(circleX, circleY, e.x, e.y) < radius) into[n ++] = cast e;
 			e = e.typeNext;
 		}
 	}
@@ -712,7 +712,7 @@ class Scene
 	public function nearestToRect(type:String, x:Float, y:Float, width:Float, height:Float):Entity
 	{
 		var e:Entity = _typeFirst.get(type),
-			nearDist:Float = HXP.NUMBER_MAX_VALUE,
+			nearDist:Float = KXP.NUMBER_MAX_VALUE,
 			near:Entity = null, dist:Float;
 		while (e != null)
 		{
@@ -738,7 +738,7 @@ class Scene
 	{
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
 		var n:Entity = _typeFirst.get(type),
-			nearDist:Float = HXP.NUMBER_MAX_VALUE,
+			nearDist:Float = KXP.NUMBER_MAX_VALUE,
 			near:Entity = null,
 			dist:Float,
 			x:Float = e.x - e.originX,
@@ -769,7 +769,7 @@ class Scene
 	{
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
 		var n:Entity = _typeFirst.get(type),
-			nearDist:Float = HXP.NUMBER_MAX_VALUE,
+			nearDist:Float = KXP.NUMBER_MAX_VALUE,
 			near:Entity = null,
 			dist:Float,
 			x:Float = e.x - e.originX,
@@ -798,7 +798,7 @@ class Scene
 	public function nearestToPoint(type:String, x:Float, y:Float, useHitboxes:Bool = false):Entity
 	{
 		var n:Entity = _typeFirst.get(type),
-			nearDist:Float = HXP.NUMBER_MAX_VALUE,
+			nearDist:Float = KXP.NUMBER_MAX_VALUE,
 			near:Entity = null,
 			dist:Float;
 		if (useHitboxes)
@@ -1073,7 +1073,7 @@ class Scene
 			{
 				if (e._scene == null)
 				{
-					var idx = HXP.indexOf(_add, e);
+					var idx = KXP.indexOf(_add, e);
 					if (idx >= 0) _add.splice(idx, 1);
 					continue;
 				}
@@ -1087,7 +1087,7 @@ class Scene
 				if (e._name != "") unregisterName(e);
 				//if (e.autoClear && e.hasTween) e.clearTweens();
 			}
-			HXP.clear(_remove);
+			KXP.clear(_remove);
 		}
 
 		// add entities
@@ -1103,7 +1103,7 @@ class Scene
 				if (e._name != "") registerName(e);
 				e.added();
 			}
-			HXP.clear(_add);
+			KXP.clear(_add);
 		}
 
 		// recycle entities
@@ -1117,7 +1117,7 @@ class Scene
 				e.recycleNext = recycled.get(e._class);
 				recycled.set(e._class, e);
 			}
-			HXP.clear(_recycle);
+			KXP.clear(_recycle);
 		}
 	}
 	
@@ -1192,7 +1192,7 @@ class Scene
 				// Remove the layer from the layer list if this was the last entity.
 				if (layerList.length > 1)
 				{
-					layerList[HXP.indexOf(layerList, e._layer)] = layerList[layerList.length - 1];
+					layerList[KXP.indexOf(layerList, e._layer)] = layerList[layerList.length - 1];
 					_layerSort = true;
 				}
 				layerList.pop();

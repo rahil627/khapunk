@@ -113,8 +113,8 @@ class Graphiclist extends Graphic
 	 */
 	public function remove(graphic:Graphic):Graphic
 	{
-		if (HXP.indexOf(_graphics, graphic) < 0) return graphic;
-		HXP.clear(_temp);
+		if (KXP.indexOf(_graphics, graphic) < 0) return graphic;
+		KXP.clear(_temp);
 
 		for (g in _graphics)
 		{
@@ -145,8 +145,8 @@ class Graphiclist extends Graphic
 	 */
 	public function removeAll()
 	{
-		HXP.clear(_graphics);
-		HXP.clear(_temp);
+		KXP.clear(_graphics);
+		KXP.clear(_temp);
 		_count = 0;
 		active = false;
 	}
