@@ -1,5 +1,7 @@
 package com.khapunk.graphics;
 import com.khapunk.Graphic;
+import com.khapunk.graphics.atlas.AtlasRegion;
+import com.khapunk.graphics.atlas.TileAtlas;
 import kha.Image;
 import kha.math.Vector2;
 import kha.Painter;
@@ -14,9 +16,17 @@ class Tilemap extends Graphic
 {
 
 
+		 
+	// Tilemap information.
+	private var _rect:Rectangle;
+	private var _width:Int;
+	private var _height:Int;
+	private var _maxWidth:Int;
+	private var _maxHeight:Int;
+	
 	 
 	// Tilemap information.
-	private var _set:Image;
+	
 	private var _map:Array2D;
 	private var _columns:Int;
 	private var _rows:Int;
@@ -28,6 +38,11 @@ class Tilemap extends Graphic
 	private var _setRows:Int;
 	private var _setCount:Int;
 	private var _tile:Rectangle;
+	
+	/**
+	* Scale of the canvas, effects both x and y scale.
+	*/
+	public var scale:Float = 0;
 	
 	     /**
 	 * If x/y positions should be used instead of columns/rows.
@@ -44,10 +59,12 @@ class Tilemap extends Graphic
 	 * @param	tileSpacingWidth	Tile horizontal spacing.
 	 * @param	tileSpacingHeight	Tile vertical spacing.
 	 */
-	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?tileSpacingWidth:Int=0, ?tileSpacingHeight:Int=0)
+	public function new(tileset:TileAtlas, width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?tileSpacingWidth:Int=0, ?tileSpacingHeight:Int=0)
 	{
+		trace("Creating map");
+		super();
 		_rect = KXP.rect;
-
+	
 		// set some tilemap information
 		_width = width - (width % tileWidth);
 		_height = height - (height % tileHeight);
@@ -69,7 +86,7 @@ class Tilemap extends Graphic
 		_maxHeight -= _maxHeight % tileHeight;
 #end
 
-		super(_width, _height);
+		
 
 		// initialize map
 		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
@@ -83,25 +100,16 @@ class Tilemap extends Graphic
 			}
 		}
 
-		// load the tileset graphic
-		if (Std.is(tileset, TileAtlas))
-		{
-			_atlas = cast(tileset, TileAtlas);
-		}
-		else
-		{
-			_set = cast(tileset,Image);
-		}
-		 
+		_atlas = cast(tileset, TileAtlas);
 
-		if (_set == null && _atlas == null)
+		if (_atlas == null)
 			throw "Invalid tileset graphic provided.";
 
 		 
 		else
 		{
-			_setColumns = Std.int(_atlas.width / tileWidth);
-			_setRows = Std.int(_atlas.height / tileHeight);
+			_setColumns = Std.int(_atlas.imgWidth / tileWidth);
+			_setRows = Std.int(_atlas.imgHeight / tileHeight);
 		}
 		_setCount = _setColumns * _setRows;
 	}
@@ -123,12 +131,7 @@ class Tilemap extends Graphic
 		column %= _columns;
 		row %= _rows;
 		_map[row][column] = index;
-		if (blit)
-		{
-			_tile.x = (index % _setColumns) * (_tile.width + tileSpacingWidth);
-			_tile.y = Std.int(index / _setColumns) * (_tile.height + tileSpacingHeight);
-			draw(Std.int(column * _tile.width), Std.int(row * _tile.height), _set, _tile);
-		}
+
 	}
 	
 	/**
@@ -347,14 +350,14 @@ class Tilemap extends Graphic
 			}
 			_columns = _map[Std.int(y)].length;
 
-#if flash
+/*#if flash
 			shift(Std.int(columns * _tile.width), 0);
 			_rect.x = columns > 0 ? 0 : _columns + columns;
 			_rect.y = 0;
 			_rect.width = Math.abs(columns);
 			_rect.height = _rows;
 			updateRect(_rect, !wrap);
-#end
+#end*/
 		}
 
 		if (rows != 0)
@@ -377,14 +380,14 @@ class Tilemap extends Graphic
 			}
 			_rows = _map.length;
 
-#if flash
+/*#if flash
 			shift(0, Std.int(rows * _tile.height));
 			_rect.x = 0;
 			_rect.y = rows > 0 ? 0 : _rows + rows;
 			_rect.width = _columns;
 			_rect.height = Math.abs(rows);
 			updateRect(_rect, !wrap);
-#end
+#end*/
 		}
 	}
 	
@@ -424,17 +427,20 @@ class Tilemap extends Graphic
 		this.point.x = point.x + x - camera.x * scrollX;
 		this.point.y = point.y + y - camera.y * scrollY;
 
+
+		/*
 		var scalex:Float = KXP.screen.fullScaleX, scaley:Float = KXP.screen.fullScaleY,
 			tw:Int = Math.ceil(tileWidth), th:Int = Math.ceil(tileHeight);
+*/
 
-		var scx = scale * scaleX,
-			scy = scale * scaleY;
+		var tw:Int = Math.ceil(tileWidth); 
+		var th:Int = Math.ceil(tileHeight);
 
 		// determine start and end tiles to draw (optimization)
-		var startx = Math.floor( -_point.x / (tw * scx)),
-			starty = Math.floor( -_point.y / (th * scy)),
-			destx = startx + 1 + Math.ceil(KXP.width / (tw * scx)),
-			desty = starty + 1 + Math.ceil(KXP.height / (th * scy));
+		var startx = Math.floor( - this.point.x / tw),
+			starty = Math.floor( - this.point.y / th),
+			destx = startx + 1 + Math.ceil(KXP.width / tw),
+			desty = starty + 1 + Math.ceil(KXP.height / th);
 
 		// nothing will render if we're completely off screen
 		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
@@ -446,26 +452,43 @@ class Tilemap extends Graphic
 		if (starty < 0) starty = 0;
 		if (desty > _rows) desty = _rows;
 
-		var wx:Float, sx:Float = (_point.x + startx * tw * scx) * scalex,
+		/*	var wx:Float, sx:Float = (_point.x + startx * tw * scx) * scalex,
 			wy:Float = (_point.y + starty * th * scy) * scaley,
 			stepx:Float = tw * scx * scalex,
 			stepy:Float = th * scy * scaley,
 			tile:Int = 0;
-
+		*/
+			
+		var wx:Float;
+		var sx:Float = (this.point.x + startx * tw );
+		var	wy:Float = (this.point.y + starty * th );
+		var	stepx:Float = tw;
+		var	stepy:Float = th;
+		var	tile:Int = 0;
+		
+		trace(wy);
+		
 		// adjust scale to fill gaps
-		scx = Math.ceil(stepx) / tileWidth;
-		scy = Math.ceil(stepy) / tileHeight;
-
+		//scx = Math.ceil(stepx) / tileWidth;
+		//scy = Math.ceil(stepy) / tileHeight;
+		
+		
+		
+		var tr:AtlasRegion;
 		for (y in starty...desty)
 		{
 			wx = sx;
+			
 			for (x in startx...destx)
 			{
 				tile = _map[y % _rows][x % _columns];
+				tr = _atlas.getTile(tile);
+			
 				if (tile >= 0)
 				{
 					
-					_atlas.prepareTile(tile, Std.int(wx), Std.int(wy), layer, scx, scy, 0, _red, _green, _blue, alpha);
+					painter.drawImage2(_atlas.img, tr.x, tr.y, tr.w, tr.h,wx, wy, _tile.width, _tile.height);
+					//_atlas.prepareTile(tile, Std.int(wx), Std.int(wy), layer, scx, scy, 0, _red, _green, _blue, alpha);
 				}
 				wx += stepx;
 			}

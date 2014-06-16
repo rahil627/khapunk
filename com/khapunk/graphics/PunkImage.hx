@@ -1,6 +1,6 @@
 package com.khapunk.graphics;
+import com.khapunk.graphics.atlas.AtlasRegion;
 import com.khapunk.graphics.atlas.TextureAtlas;
-import com.khapunk.graphics.atlas.TextureAtlas.AtlasRegion;
 import kha.Color;
 import kha.Image;
 import kha.Loader;

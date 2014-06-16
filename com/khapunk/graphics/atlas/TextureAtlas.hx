@@ -1,5 +1,6 @@
 package com.khapunk.graphics.atlas;
  
+import com.khapunk.graphics.atlas.AtlasRegion;
 import haxe.Json;
 import kha.Blob;
 import kha.Image;
@@ -115,24 +116,6 @@ class TextureAtlas {
 		if (s1 > s2) return 1;
 		return 0;
 	}
-}
-
-
-class AtlasRegion {
-	public function new(){}
-	public var image:Image;
-	public var name:String;
-	public var x:Int;
-	public var y:Int;
-	public var w:Int;
-	public var h:Int;
-	public var sx:Int;
-	public var sy:Int;
-	public var sh:Int;
-	public var sw:Int;
-	public var rotated:Bool;
-	public var trimmed:Bool;
-	public var atlas:TextureAtlas;
 }
 
 typedef TPSize = {
