@@ -169,17 +169,23 @@ class Input
 	 */
 	public static function pressed(input:Dynamic):Bool
 	{
+		
 		if (Std.is(input, String) && _control.exists(input))
 		{
 			
 			var v:Array<Int> = _control.get(input),
 				i:Int = v.length;
+				
 			while (i-- > 0)
 			{
+				
 				if ((v[i] < 0) ? _pressNum != 0 : KP.indexOf(_press, v[i]) >= 0) return true;
+				
 			}
+			
 			return false;
 		}
+		
 		return (input < 0) ? _pressNum != 0 : KP.indexOf(_press, input) >= 0;
 	}
 	
@@ -232,18 +238,19 @@ class Input
 			return;
 
 		lastKey = code;
-
+		
 		if (key == Key.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
 		else if ((code > 47 && code < 58) || (code > 64 && code < 91) || code == 32)
 		{
 			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
-			var char:String = String.fromCharCode(code);
-
+			
+		
 			if (key == Key.SHIFT)
 				char = char.toUpperCase();
 			else char = char.toLowerCase();
 
 			keyString += char;
+			 
 		}
 
 		if (!_key[code])

@@ -1,4 +1,5 @@
 package com.khapunk;
+import com.khapunk.utils.Input;
 import kha.math.Vector2;
 import kha.Mouse;
 import kha.Painter;
@@ -186,7 +187,7 @@ class Scene
 	private inline function get_mouseX():Int
 	{
 		//return Std.int(KP.screen.mouseX + camera.x);
-		return 0;
+		return Std.int(Input.screenMouseX + camera.x);
 	}
 
 	/**
@@ -196,7 +197,7 @@ class Scene
 	private inline function get_mouseY():Int
 	{
 		//return Std.int(KP.screen.mouseY + camera.y);
-		return 0;
+		return Std.int(Input.screenMouseX + camera.y);
 	}
 	
 	/**

@@ -19,7 +19,6 @@ class PunkImage extends Graphic
 	// Source and buffer information.
 	private var _source:Image;
 	private var _sourceRect:Rectangle;
-	private var _bufferRect:Rectangle;
 	private var _region:AtlasRegion;
 
 	// Color and alpha information.
@@ -118,6 +117,16 @@ class PunkImage extends Graphic
 			if (_source == null && _region == null)
 				throw "Invalid source image.";
 		}
+		
+		if (_region == null && _sourceRect != null)
+		{
+			_region = new AtlasRegion();
+			_region.image = _source;
+			_region.w = _source.width;
+			_region.h = _source.height;
+			_region.x = 0;
+			_region.y = 0;
+		}
 
 		if (clipRect != null)
 		{
@@ -139,6 +148,7 @@ class PunkImage extends Graphic
 		_sourceRect.width = image.width;
 		_sourceRect.height = image.height;
 		_source = image;
+		
 	}
 	
 	/** @private Initialize variables */
@@ -172,6 +182,8 @@ class PunkImage extends Graphic
 		}
 		else
 		{
+			painter.setColor(Color.fromValue(_color));
+			painter.set_opacity(_alpha);
 			painter.drawImage2(
 			_source,
 			_sourceRect.x,
@@ -182,6 +194,8 @@ class PunkImage extends Graphic
 			this.point.y,
 			_sourceRect.width * sx,
 			_sourceRect.height * sy);
+			painter.set_opacity(1);
+			painter.setColor(Color.White);
 		}
 	
 	}
