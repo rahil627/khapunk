@@ -166,30 +166,7 @@ class Engine
 	 */
 	public function render(painter:Painter): Void
 	{
-		
-		//if (KP.screen.needsResize) KP.resize(KP.windowWidth, KP.windowHeight);
-
-		// timing stuff
-		//var t:Float = Lib.getTimer();
-		//if (_frameLast == 0) _frameLast = Std.int(t);
-
-		// render loop
-		/*if (KP.renderMode == RenderMode.BUFFER)
-		{
-			KP.screen.swap();
-			KP.screen.refresh();
-		}*/
-		//Draw.resetTarget();
-
 		if (KP.scene.visible) KP.scene.render(painter);
-
-		// more timing stuff ?
-		/** TODO Oi, btf is this mate? */
-		/*t = Lib.getTimer();
-		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
-		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
-		KP.frameRate = 1000 / (_frameListSum / _frameList.length);
-		_frameLast = t;*/
 	}
 	
 	

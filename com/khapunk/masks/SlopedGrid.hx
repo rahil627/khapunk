@@ -61,9 +61,9 @@ class SlopedGrid extends Hitbox
 			throw "Illegal Grid, sizes cannot be 0.";
 		}
 
-		_rect = HXP.rect;
-		_point = HXP.point;
-		_point2 = HXP.point2;
+		_rect = KP.rect;
+		_point = KP.point;
+		_point2 = KP.point2;
 
 		// set grid properties
 		columns = Std.int(width / tileWidth);
@@ -345,8 +345,8 @@ class SlopedGrid extends Hitbox
 						var x = opx, y = opy + oph;
 						if (tile.slope < 0) x += opw;
 
-						x = HXP.clamp(x, xx, xx + tileWidth);
-						y = HXP.clamp(y, yy, yy + tileHeight);
+						x = KP.clamp(x, xx, xx + tileWidth);
+						y = KP.clamp(y, yy, yy + tileHeight);
 
 						if (collidePointInSlope(xx, yy, x, y, tile))
 						{
@@ -356,8 +356,8 @@ class SlopedGrid extends Hitbox
 						var x = opx, y = opy;
 						if (tile.slope > 0) x += opw;
 
-						x = HXP.clamp(x, xx, xx + tileWidth);
-						y = HXP.clamp(y, yy, yy + tileHeight);
+						x = KP.clamp(x, xx, xx + tileWidth);
+						y = KP.clamp(y, yy, yy + tileHeight);
 
 						if (collidePointInSlope(xx, yy, x, y, tile))
 						{
@@ -421,14 +421,14 @@ class SlopedGrid extends Hitbox
 			stepY = tileHeight * scaleY;
 
 		// determine drawing location
-		var px = _x + parent.x - HXP.camera.x;
-		var py = _y + parent.y - HXP.camera.y;
+		var px = _x + parent.x - KP.camera.x;
+		var py = _y + parent.y - KP.camera.y;
 
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor( -px / tileWidth),
 			starty = Math.floor( -py / tileHeight),
-			destx = startx + 1 + Math.ceil(HXP.width / tileWidth),
-			desty = starty + 1 + Math.ceil(HXP.height / tileHeight);
+			destx = startx + 1 + Math.ceil(KP.width / tileWidth),
+			desty = starty + 1 + Math.ceil(KP.height / tileHeight);
 
 		// nothing will render if we're completely off screen
 		if (startx > columns || starty > rows || destx < 0 || desty < 0)
