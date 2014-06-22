@@ -1,6 +1,7 @@
 package com.khapunk.graphics;
 import com.khapunk.graphics.atlas.AtlasRegion;
 import com.khapunk.graphics.atlas.TextureAtlas;
+import com.khapunk.graphics.atlas.TileAtlas;
 import kha.Color;
 import kha.Image;
 import kha.Loader;
@@ -93,18 +94,19 @@ class PunkImage extends Graphic
 		if (_source == null && _region == null)
 		{
 			_class = name;
-			if (Std.is(source, TextureAtlas))
+			/*if (Std.is(source, TextureAtlas))
 			{
-				setAtlasRegion(cast(source, TextureAtlas).getRegion(name));
-			}
-			else if (Std.is(source, AtlasRegion))
+				var t:TextureAtlas = cast(source, TextureAtlas);
+				setAtlasRegion(t.getRegion(name));
+			}*/
+			if (Std.is(source, AtlasRegion))
 			{
 				setAtlasRegion(source);
 			}
-			/*else if (Std.is(source, TileAtlas))
+			else if (Std.is(source, TileAtlas))
 			{
 				setAtlasRegion(cast(source, TileAtlas).getRegion(0));
-			}*/
+			}
 			else if (Std.is(source, Image))
 			{
 				setBitmapSource(source);

@@ -72,13 +72,14 @@ class Animator<FrameType,ParentType> extends PunkImage
 			_anim = _anims.get(name);
 			_timer = _index = 0;
 			complete = false;
+			updateFrame();
 		}
 		else
 		{
 			_anim = null;
 			complete = true;
 		}
-		updateFrame();
+		
 		return _anim;
 	}
   	

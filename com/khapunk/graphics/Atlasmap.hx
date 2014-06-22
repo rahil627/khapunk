@@ -2,6 +2,7 @@ package com.khapunk.graphics;
 import com.khapunk.graphics.Animator;
 import com.khapunk.graphics.atlas.AtlasRegion;
 import com.khapunk.graphics.atlas.TextureAtlas;
+import kha.Game;
 
 
 /**
@@ -13,23 +14,19 @@ class Atlasmap extends Animator<AtlasRegion, Atlasmap>
 
 	var _atlas:TextureAtlas;
 	
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null, name:String = ""){
+	public function new(source:Dynamic, cbFunc:CallbackFunction = null, name:String = ""){
 	
-		super(source, cbFunc, name,_rect);
-			
-		complete = true;
-		rate = 1;
-		_anims = new Map<String,IAnimation<Int,Spritemap>>();
-		_timer = _frame = 0;
+		
 		
 		if (Std.is(source, TextureAtlas))
 		{
 			_atlas = cast(source, TextureAtlas);
 		}
-		else (Std.is(source, String))
+		else if (Std.is(source, String))
 		{
 			_atlas = new TextureAtlas(source);
 		}
+		super(_atlas.getImage(), cbFunc, name);
 	}
 	
 	override function updateFrame():Void 
@@ -46,7 +43,7 @@ class Atlasmap extends Animator<AtlasRegion, Atlasmap>
 	 * @param	loop		If the animation should loop
 	 * @return	A new Anim object for the animation.
 	 */
-	override public function add(name:String, frames:Array<AtlasRegion> == null, frameRate:Float = 0, loop:Bool = true):IAnimation<Int,Spritemap>
+	override public function add(name:String, frames:Array<AtlasRegion> = null, frameRate:Float = 0, loop:Bool = true):IAnimation<AtlasRegion,Atlasmap>
 	{
 		
 		if (_anims.get(name) != null)
@@ -56,12 +53,16 @@ class Atlasmap extends Animator<AtlasRegion, Atlasmap>
 		if(frameRate == 0)
 			frameRate = Game.FPS;
 
+		var anim:AtlasAnimation;
 		if(frames == null){
-			var anim = new Animation(name, _atlas.getRegions(name), frameRate, loop);	
+			anim = new AtlasAnimation(name, _atlas.getRegions(name), frameRate, loop);	
 		}
 		else {
-			var anim = new Animation(name, frames, frameRate, loop);	
+			anim = new AtlasAnimation(name, frames, frameRate, loop);	
 		}
+		for (i in 0..._atlas.getRegions(name).length)
+		trace(_atlas.getRegions(name)[i].name);
+		
 		_anims.set(name, anim);
 		anim.parent = this;
 		return anim;

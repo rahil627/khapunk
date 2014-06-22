@@ -1,11 +1,12 @@
 package com.khapunk.graphics;
 import com.khapunk.graphics.atlas.AtlasRegion;
+import com.khapunk.graphics.Atlasmap;
 
 /**
  * ...
  * @author Sidar Talei
  */
-class AtlasAnimation implements IAnimation<AtlasRegion,AtlasAnimator>
+class AtlasAnimation implements IAnimation<AtlasRegion,Atlasmap>
 {
 
 	/**
@@ -33,8 +34,8 @@ class AtlasAnimation implements IAnimation<AtlasRegion,AtlasAnimator>
 		_parent.play(name, reset);
 	}
 
-	public var parent(null, set):Spritemap;
-	private function set_parent(value:Spritemap):Spritemap {
+	public var parent(null, set):Atlasmap;
+	private function set_parent(value:Atlasmap):Atlasmap {
 		_parent = value;
 		return _parent;
 	}
@@ -64,5 +65,5 @@ class AtlasAnimation implements IAnimation<AtlasRegion,AtlasAnimator>
 	 */
 	public var loop(default, null):Bool;
 
-	private var _parent:AtlasAnimator;
+	private var _parent:Atlasmap;
 }
