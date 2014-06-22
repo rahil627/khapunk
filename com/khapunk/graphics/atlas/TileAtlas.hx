@@ -59,7 +59,7 @@ class TileAtlas
 	}
 	
 	
-	public function getTile(index:Int) : AtlasRegion
+	public function getRegion(index:Int) : AtlasRegion
 	{
 		return _regions[index];
 	}
@@ -86,8 +86,10 @@ class TileAtlas
 				r.h = tileHeight;
 				
 				_regions.push(r);
+				
 			}
 		}
+		
 	}
 	
 }

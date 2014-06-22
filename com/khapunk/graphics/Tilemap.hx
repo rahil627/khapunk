@@ -494,7 +494,7 @@ class Tilemap extends Graphic
 			{
 				tile = _map[y % _rows][x % _columns];
 				
-				tr = _atlas.getTile(tile);
+				tr = _atlas.getRegion(tile);
 			
 				if (tile >= 0)
 				{

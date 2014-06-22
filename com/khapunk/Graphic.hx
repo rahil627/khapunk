@@ -66,7 +66,7 @@ class Graphic
 	 */
 	public function new()
 	{
-		active = false;
+		active = true;
 		visible = true;
 		x = y = 0;
 		scrollX = scrollY = 1;
@@ -80,7 +80,7 @@ class Graphic
 	 */
 	public function update()
 	{
-
+	
 	}
 
 	/**

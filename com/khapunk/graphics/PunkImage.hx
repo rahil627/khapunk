@@ -134,6 +134,7 @@ class PunkImage extends Graphic
 			if (clipRect.height == 0) clipRect.height = _sourceRect.height;
 			_sourceRect = clipRect;
 		}
+		
 	}
 	
 	private inline function setAtlasRegion(region:AtlasRegion)
@@ -176,28 +177,24 @@ class PunkImage extends Graphic
 		this.point.x = point.x + x - originX - camera.x * scrollX;
 		this.point.y = point.y + y - originY - camera.y * scrollY;
 
-		if (angle == 0 && sx == 1 && sy == 1)
-		{
-			painter.drawImage(_source, this.point.x, this.point.y);
-		}
-		else
-		{
-			painter.setColor(Color.fromValue(_color));
-			painter.set_opacity(_alpha);
-			painter.drawImage2(
-			_source,
-			_region.x,
-			_region.y,
-			_region.w,
-			_region.h,
-			this.point.x,
-			this.point.y,
-			_region.w * sx,
-			_region.h * sy);
-			painter.set_opacity(1);
-			painter.setColor(Color.White);
-		}
-	
+		if (_flipped) this.point.x += _sourceRect.width * sx;
+		
+		painter.setColor(Color.fromValue(_color));
+		painter.set_opacity(_alpha);
+
+		painter.drawImage2(
+		_source,
+		_region.x,
+		_region.y,
+		_region.w,
+		_region.h,
+		this.point.x,
+		this.point.y,
+		_region.w * (sx * (_flipped ? -1 : 1)),
+		_region.h * sy);
+
+		painter.set_opacity(1);
+		painter.setColor(Color.White);
 	}
 	
 	/**
@@ -290,4 +287,18 @@ class PunkImage extends Graphic
 	 */
 	public var clipRect(get, null):Rectangle;
 	private function get_clipRect():Rectangle { return _sourceRect; }
+	
+	
+	/**
+	 * If you want to draw the Image horizontally flipped. This is
+	 * faster than setting scaleX to -1 if your image isn't transformed.
+	 */
+	public var flipped(get, set):Bool;
+	private function get_flipped():Bool { return _flipped; }
+	private function set_flipped(value:Bool):Bool
+	{
+		if (_flipped == value) return value;
+		_flipped = value;
+		return _flipped;
+	}
 }
