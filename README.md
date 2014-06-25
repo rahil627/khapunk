@@ -10,13 +10,35 @@ Haxepunk credits go to :  [Matt Tuttle]
 
 TODO
 -----
-* Input
+* Input  
+    - [x] Mouse and keyboard  
+    - [0] Joystick/Gamepad
+    - [0] Touchsupport ( although Khas mouse input works for single touch )  
+
+
 * Masks are done except for Pixel based masks...I have to figure that one out
-* All Graphic object ( sans Graphic, Graphiclist, Image( aka PunkImage )
+* All Graphic object 
+    - [x] Graphic
+    - [x] Tilemap
+    - [x] Spritemap & Atlasmap*
+    - [x] Graphicslist
+    - [x] PunkImage ( aka Image )
+    - [0] Canvas ( not sure if needed )
+    - [0] Backdrop
+    - [0] Emitter
+    - [0] Particle/Particletype
+    - [0] TiledImage
+    - [0] TiledSpritemap
+    - [0] Text
+
+
 * Debug console
 * Create example pack
 * Add Tiled support ( based on : [Haxepunk/tiled] )
+---
+*Atlasmap wasn't originally in Haxepunk. It allows you to quickly create animations with a texturepacker. For example add("walk") would add the atlas regions named "walk_1" "walk_2" "walk_3". This way you don't have to define the regions or keep your atlas in uniform shape.
 
+---
 [Haxepunk/tiled]:https://github.com/HaxePunk/tiled
 [Matt Tuttle]:https://github.com/MattTuttle
 [Haxepunk]:https://github.com/HaxePunk/HaxePunk
