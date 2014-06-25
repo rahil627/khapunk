@@ -187,7 +187,7 @@ class Scene
 	private inline function get_mouseX():Int
 	{
 		//return Std.int(KP.screen.mouseX + camera.x);
-		return Std.int(Input.screenMouseX + camera.x);
+		return Std.int(Input.mouseX + camera.x);
 	}
 
 	/**
@@ -197,7 +197,7 @@ class Scene
 	private inline function get_mouseY():Int
 	{
 		//return Std.int(KP.screen.mouseY + camera.y);
-		return Std.int(Input.screenMouseX + camera.y);
+		return Std.int(Input.mouseY + camera.y);
 	}
 	
 	/**

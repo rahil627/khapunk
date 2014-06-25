@@ -1,7 +1,9 @@
 package com.khapunk.utils;
+import kha.Game;
 import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.Key;
+import kha.Sys;
 
 /**
  * ...
@@ -86,7 +88,7 @@ class Input
 	public static var mouseX(get, never):Int;
 	private static function get_mouseX():Int
 	{
-		return _mouseX + Std.int(KP.camera.x);//KP.screen.mouseX;
+		return Std.int(_mouseX / (Sys.pixelWidth/Game.the.width));//KP.screen.mouseX;
 	}
 
 	/**
@@ -95,7 +97,7 @@ class Input
 	public static var mouseY(get, never):Int;
 	private static function get_mouseY():Int
 	{
-		return _mouseY + Std.int(KP.camera.y);
+		return Std.int(_mouseY / (Sys.pixelHeight/Game.the.height));//KP.screen.mouseX;
 	}
 	
 	
