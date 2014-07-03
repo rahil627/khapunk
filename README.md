@@ -29,7 +29,7 @@ TODO
     - [0] Particle/Particletype
     - [0] TiledImage
     - [0] TiledSpritemap
-    - [0] Text
+    - [x] Text
 
 
 * Debug console
