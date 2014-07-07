@@ -35,9 +35,13 @@ TODO
 * Create example pack
 * Add Tiled support ( based on : [Haxepunk/tiled] )
 ---
+
 *Atlasmap wasn't originally in Haxepunk. It allows you to quickly create animations with a texturepacker. For example add("walk") would add the atlas regions named "walk_1" "walk_2" "walk_3". This way you don't have to define the regions or keep your atlas in uniform shape.
+
 ---
+
 Check out the [Demo]! 
+
 ---
 [Demo]:https://47cbfe828dfc48a5eb5b8e3b381243284edffd44.googledrive.com/host/0B97j9rSYGvSsTzctM2F2YW1VN0E/
 [Haxepunk/tiled]:https://github.com/HaxePunk/tiled
