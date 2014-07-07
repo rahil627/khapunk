@@ -193,7 +193,10 @@ class PunkImage extends Graphic
 		this.point.x,
 		this.point.y,
 		_region.w * (sx * (_flipped ? -1 : 1)),
-		_region.h * sy);
+		_region.h * sy,
+		angle, 
+		originX,
+		originY);
 
 		painter.set_opacity(1);
 		painter.setColor(Color.White);

@@ -61,6 +61,7 @@ class TileAtlas
 	
 	public function getRegion(index:Int) : AtlasRegion
 	{
+		if (index > _regions.length-1) return _regions[0];
 		return _regions[index];
 	}
 	
