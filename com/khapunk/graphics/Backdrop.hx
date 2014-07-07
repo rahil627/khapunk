@@ -5,6 +5,7 @@ import com.khapunk.KP;
 import kha.Image;
 import kha.math.Vector2;
 import kha.Painter;
+import kha.Sys;
 
 /**
  * ...
@@ -44,6 +45,11 @@ class Backdrop extends Graphic
 	 */
 	public var scaleY:Float;
 	
+	/**
+	 * Determines if scrolling should be affected by the camera position.
+	 */
+	public var scrollByCam:Bool;
+	
 	public function new(source:Dynamic, repeatX:Bool = true, repeatY:Bool = true)
 	{
 		if (Std.is(source, AtlasRegion)){
@@ -56,10 +62,11 @@ class Backdrop extends Graphic
 		_repeatX = repeatX;
 		_repeatY = repeatY;
 
-		_width = KP.width * (repeatX ? 1 : 0) + _textWidth;
-		_height = KP.height * (repeatY ? 1 : 0) + _textHeight;
+		_width = KP.width * (repeatX ? 1 : 0) + _textWidth + 1;
+		_height = KP.height * (repeatY ? 1 : 0) + _textHeight + 1;
 		scale = scaleX = scaleY = 1;
 		angle = 0;
+		scrollByCam = false;
 		super();
 	}
 	
@@ -79,8 +86,9 @@ class Backdrop extends Graphic
 	
 	override public function render(painter:Painter, point:Vector2, camera:Vector2)
 	{
-		this.point.x = point.x + x - camera.x * scrollX;
-		this.point.y = point.y + y - camera.y * scrollY;
+		
+		this.point.x = point.x + x - (scrollByCam ? (camera.x * scrollX):0);
+		this.point.y = point.y + y - (scrollByCam ? (camera.y * scrollY):0);
 
 		if (_repeatX)
 		{
@@ -102,29 +110,30 @@ class Backdrop extends Graphic
 
 		var y:Int = 0;
 		//while (y < _height * sy * fsy)
-		while (y < _height * sy )
+		while (y < _height)
 		{
 			var x:Int = 0;
 			//while (x < _width * sx * fsx)
-			while (x < _width * sx)
+			while (x < _width)
 			{
 				//_region.draw(px + x, py + y, layer, sx * fsx, sy * fsy, 0, _red, _green, _blue, _alpha);
 				//x += Std.int(_textWidth * fsx);
 				painter.drawImage2(_source, 0, 0,
 				_textWidth,
 				_textHeight,
-				this.point.x + x,
-				this.point.y + y,
+				Std.int(this.point.x *sx) + x,
+				Std.int(this.point.y *sy) + y,
 				_textWidth * sx,
 				_textHeight * sy,
 				angle,
-				_textWidth * 0.5,
-				_textHeight* 0.5);
+				_textWidth * sx * 0.5,
+				_textHeight* sy * 0.5);
 				
-				x += Std.int(_textWidth);
+				x += Std.int(_textWidth * sx );
+			
 			}
 			//y += Std.int(_textHeight * fsy);
-			y += Std.int(_textHeight);
+			y += Std.int(_textHeight * sy);
 		}
 	}
 

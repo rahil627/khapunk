@@ -60,8 +60,6 @@ class Atlasmap extends Animator<AtlasRegion, Atlasmap>
 		else {
 			anim = new AtlasAnimation(name, frames, frameRate, loop);	
 		}
-		for (i in 0..._atlas.getRegions(name).length)
-		trace(_atlas.getRegions(name)[i].name);
 		
 		_anims.set(name, anim);
 		anim.parent = this;

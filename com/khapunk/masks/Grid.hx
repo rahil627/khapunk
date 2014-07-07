@@ -141,7 +141,6 @@ class Grid extends Hitbox
 		
 		if (usePositions)
 		{
-			trace(column /_tile.width);
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
