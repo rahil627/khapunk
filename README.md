@@ -24,8 +24,8 @@ TODO
     - [x] Graphicslist
     - [x] PunkImage ( Originally known as Image )
     - [x] Backdrop
-    - [0] Emitter
-    - [0] Particle/Particletype
+    - [x] Emitter
+    - [x] Particle/Particletype
     - [0] TiledImage
     - [0] TiledSpritemap
     - [x] Text

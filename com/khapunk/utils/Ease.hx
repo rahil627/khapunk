@@ -1,4 +1,4 @@
-package com.haxepunk.utils;
+package com.khapunk.utils;
 
 typedef EaseFunction = Float -> Float;
 
