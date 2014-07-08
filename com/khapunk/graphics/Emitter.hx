@@ -25,7 +25,8 @@ class Emitter extends Graphic
 	private var _types:Map<String,ParticleType>;
 	private var _particle:Particle;
 	private var _cache:Particle;
-
+	private var _color:Color;
+	
 	// Source information.
 	private var _source:Image;
 	private var _width:Int;
@@ -55,6 +56,7 @@ class Emitter extends Graphic
 		_types = new Map<String,ParticleType>();
 		active = true;
 		particleCount = 0;
+		_color = Color.White;
 	}
 	
 	/**
@@ -243,10 +245,10 @@ class Emitter extends Graphic
 				type:ParticleType;
 
 			var frameIndex:Int;
-			var c:Color;
 			var ar:AtlasRegion;
-			var frameIndex:Int;
-			
+			var scale:Float;
+			var hw:Float;
+			var hh:Float;
 			// loop through the particles
 			while (p != null)
 			{
@@ -265,16 +267,20 @@ class Emitter extends Graphic
 				frameIndex = type._frames[Std.int(td * type._frames.length)];
 				ar =  _frames[frameIndex];
 				
-				c = Color.fromFloats(
-				(type._red + type._redRange * td), // Red
-				(type._green + type._greenRange * td), // Green
-				(type._blue + type._blueRange * td), //Blue
-				type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t)) // Alpha
-				);
+			
+				_color.R = (type._red + type._redRange * td); // Red
+				_color.G = (type._green + type._greenRange * td); // Green
+				_color.B = (type._blue + type._blueRange * td); //Blue
+				_color.A = type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t)); // Alpha;
 				
-				painter.setColor(c);
-				painter.set_opacity(c.A);
-				painter.drawImage2(ar.image, ar.x, ar.y, ar.w, ar.h, _p.x, _p.y, ar.w, ar.h, type._angle, ar.w / 2, ar.h / 2);
+				scale = type._scale + type._scaleRange * ((type._scaleEase == null) ? t : type._scaleEase(t));  
+				
+				hw = (ar.w * scale) / 2;
+				hh = (ar.h * scale) / 2;
+				
+				painter.setColor(_color);
+				painter.set_opacity(_color.A);
+				painter.drawImage2(ar.image, ar.x, ar.y, ar.w, ar.h, _p.x - hw, _p.y - hh, ar.w * scale, ar.h * scale, type._angle, hw, hh);
 				painter.setColor(Color.White);
 				painter.set_opacity(1);
 
@@ -349,6 +355,21 @@ class Emitter extends Graphic
 		var pt:ParticleType = _types.get(name);
 		if (pt == null) return null;
 		return pt.setAlpha(start, finish, ease);
+	}
+	
+	/**
+	 * Sets the scale range of the particle type.
+	 * @param	name		The particle type.
+	 * @param	start		The starting scale.
+	 * @param	finish		The finish scale.
+	 * @param	ease		Optional easer function.
+	 * @return	This ParticleType object.
+	 */
+	public function setScale(name:String, ?start:Float = 1, ?finish:Float = 0, ?ease:EaseFunction = null):ParticleType
+	{
+		var pt:ParticleType = _types.get(name);
+		if (pt == null) return null;
+		return pt.setScale(start, finish, ease);
 	}
 	
 	

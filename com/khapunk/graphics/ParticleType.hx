@@ -33,6 +33,8 @@ class ParticleType
         _gravity  = _gravityRange  = 0;
         _duration = _durationRange = 0;
         _distance = _distanceRange = 0;
+		_scale = 1;
+		_scaleRange = 0;
 	}
 
 	/**
@@ -110,6 +112,25 @@ class ParticleType
 		return this;
 	}
 
+	
+	/**
+	 * Sets the alpha range of this particle type.
+	 * @param	start		The starting alpha.
+	 * @param	finish		The finish alpha.
+	 * @param	ease		Optional easer function.
+	 * @return	This ParticleType object.
+	 */
+	public function setScale(start:Float = 1, finish:Float = 0, ease:EaseFunction = null):ParticleType
+	{
+		//start = start < 0 ? 0 : (start > 1 ? 1 : start);
+		//finish = finish < 0 ? 0 : (finish > 1 ? 1 : finish);
+		_scale = start;
+		_scaleRange = finish - start;
+		_scaleEase = ease;
+		//createBuffer();
+		return this;
+	}
+	
 	/**
 	 * Sets the color range of this particle type.
 	 * @param	start		The starting color.
@@ -154,7 +175,12 @@ class ParticleType
 	private var _durationRange:Float;
 	private var _ease:EaseFunction;
 	private var _backwards:Bool;
-
+	
+	// Scale information
+	private var _scale:Float;
+	private var _scaleRange:Float;
+	private var _scaleEase:EaseFunction;
+	
 	// Gravity information.
 	private var _gravity:Float;
 	private var _gravityRange:Float;
