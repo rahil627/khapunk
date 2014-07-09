@@ -35,6 +35,8 @@ class Emitter extends Graphic
 	private var _frameHeight:Int;
 	private var _frameCount:Int;
 	private var _frames:Array<AtlasRegion>;
+	
+	private var _indices:Map < String, Array<Int> > ;
 
 	// Drawing information.
 	private var _p:Vector2;
@@ -66,7 +68,7 @@ class Emitter extends Graphic
 	 * @param	frameHeight		Frame height.
 	 * @param 	return			The indices for the added frames.
 	 */
-	public function addSource(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0) : Array<Int>
+	public function addSource(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, name:String = "") : Array<Int>
 	{
 		var indices:Array<Int> = new Array<Int>();
 		if(_frames == null)_frames = new Array<AtlasRegion>();
@@ -85,10 +87,19 @@ class Emitter extends Graphic
 
 		var ar:AtlasRegion;
 		
-		if (region != null)
+		if (Std.is(source, Array))
+		{
+			var arr:Array<AtlasRegion> = cast source;
+			for (i in 0...arr.length)
+			{
+				_frames.push(arr[i]);
+				indices.push(currentIndex++);
+			}
+		}
+		else  
 		{
 			var rect = new Rectangle(0, 0, _frameWidth, _frameHeight);
-			var center = new Vector2(_frameWidth / 2, _frameHeight / 2);
+			//var center = new Vector2(_frameWidth / 2, _frameHeight / 2);
 			
 			for (i in 0..._frameCount)
 			{
@@ -97,7 +108,7 @@ class Emitter extends Graphic
 				ar.y = Std.int(rect.y);
 				ar.w = _frameWidth;
 				ar.h = _frameHeight;
-				ar.image = region.image;
+				ar.image = _source;
 				_frames.push(ar);
 				rect.x += _frameWidth;
 				
@@ -110,26 +121,17 @@ class Emitter extends Graphic
 				}
 			}
 		}
-		else if (_source != null) {
-			ar = new AtlasRegion();
-			ar.x = 0;
-			ar.y = 0;
-			ar.w = _source.width;
-			ar.h = _source.height;
-			ar.image = _source;
-			_frames.push(ar);
-			indices.push(currentIndex);
-		}
-		else if (Std.is(source, Array))
-		{
-			var arr:Array<AtlasRegion> = cast source;
-			for (i in 0...arr.length)
-			{
-				_frames.push(arr[i]);
-				indices.push(currentIndex++);
-			}
+		if (name != "") {
+			if (_indices == null) _indices = new Map < String, Array<Int> > ();
+			_indices.set(name,indices);
 		}
 		return indices;
+	}
+	
+	public function getFrameIndices(name:String) : Array<Int>
+	{
+		if (_indices == null && !_indices.exists(name)) return null;
+		return _indices.get(name);
 	}
 	
 	/**
@@ -138,6 +140,7 @@ class Emitter extends Graphic
 	public function clearFrames() : Void
 	{
 		_frames = null;
+		_indices = null;
 	}
 	
 	private inline function setBitmapSource(bitmap:Image)
@@ -247,6 +250,7 @@ class Emitter extends Graphic
 			var frameIndex:Int;
 			var ar:AtlasRegion;
 			var scale:Float;
+			var rotation:Float;
 			var hw:Float;
 			var hh:Float;
 			// loop through the particles
@@ -266,21 +270,21 @@ class Emitter extends Graphic
 
 				frameIndex = type._frames[Std.int(td * type._frames.length)];
 				ar =  _frames[frameIndex];
-				
-			
+
 				_color.R = (type._red + type._redRange * td); // Red
 				_color.G = (type._green + type._greenRange * td); // Green
 				_color.B = (type._blue + type._blueRange * td); //Blue
 				_color.A = type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t)); // Alpha;
 				
 				scale = type._scale + type._scaleRange * ((type._scaleEase == null) ? t : type._scaleEase(t));  
+				rotation = type._rotation + type._rotationRange * ((type._rotationEase == null) ? t : type._rotationEase(t));
 				
 				hw = (ar.w * scale) / 2;
 				hh = (ar.h * scale) / 2;
 				
 				painter.setColor(_color);
 				painter.set_opacity(_color.A);
-				painter.drawImage2(ar.image, ar.x, ar.y, ar.w, ar.h, _p.x - hw, _p.y - hh, ar.w * scale, ar.h * scale, type._angle, hw, hh);
+				painter.drawImage2(ar.image, ar.x, ar.y, ar.w, ar.h, _p.x - hw, _p.y - hh, ar.w * scale, ar.h * scale, rotation, hw, hh);
 				painter.setColor(Color.White);
 				painter.set_opacity(1);
 
@@ -370,6 +374,22 @@ class Emitter extends Graphic
 		var pt:ParticleType = _types.get(name);
 		if (pt == null) return null;
 		return pt.setScale(start, finish, ease);
+	}
+	
+		
+	/**
+	 * Sets the scale range of the particle type.
+	 * @param	name		The particle type.
+	 * @param	start		The starting rotation.
+	 * @param	finish		The finish rotation.
+	 * @param	ease		Optional easer function.
+	 * @return	This ParticleType object.
+	 */
+	public function setRotation(name:String, ?start:Float = 0, ?finish:Float = 360, ?ease:EaseFunction = null):ParticleType
+	{
+		var pt:ParticleType = _types.get(name);
+		if (pt == null) return null;
+		return pt.setRotation(start, finish, ease);
 	}
 	
 	

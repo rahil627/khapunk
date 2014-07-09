@@ -35,6 +35,8 @@ class ParticleType
         _distance = _distanceRange = 0;
 		_scale = 1;
 		_scaleRange = 0;
+		_rotation = 0;
+		_rotationRange = 0;
 	}
 
 	/**
@@ -131,6 +133,25 @@ class ParticleType
 		return this;
 	}
 	
+		
+	/**
+	 * Sets the alpha range of this particle type.
+	 * @param	start		The starting alpha.
+	 * @param	finish		The finish alpha.
+	 * @param	ease		Optional easer function.
+	 * @return	This ParticleType object.
+	 */
+	public function setRotation(start:Float = 0, finish:Float = 360, ease:EaseFunction = null):ParticleType
+	{
+		//start = start < 0 ? 0 : (start > 1 ? 1 : start);
+		//finish = finish < 0 ? 0 : (finish > 1 ? 1 : finish);
+		_rotation = start;
+		_rotationRange = finish - start;
+		_rotationEase = ease;
+		//createBuffer();
+		return this;
+	}
+	
 	/**
 	 * Sets the color range of this particle type.
 	 * @param	start		The starting color.
@@ -180,6 +201,11 @@ class ParticleType
 	private var _scale:Float;
 	private var _scaleRange:Float;
 	private var _scaleEase:EaseFunction;
+	
+	// Rotation information
+	private var _rotation:Float;
+	private var _rotationRange:Float;
+	private var _rotationEase:EaseFunction;
 	
 	// Gravity information.
 	private var _gravity:Float;
