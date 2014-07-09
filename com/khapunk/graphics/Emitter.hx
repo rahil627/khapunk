@@ -72,7 +72,7 @@ class Emitter extends Graphic
 	{
 		var indices:Array<Int> = new Array<Int>();
 		if(_frames == null)_frames = new Array<AtlasRegion>();
-		var currentIndex:Int = _frames.length > 0 ? _frames.length - 1 : 0;
+		var currentIndex:Int = _frames.length > 0 ? _frames.length : 0;
 		
 		var region:AtlasRegion = null;
 		if (Std.is(source, Image)) setBitmapSource(cast(source,Image));
@@ -84,7 +84,10 @@ class Emitter extends Graphic
 		_frameWidth = (frameWidth != 0) ? frameWidth : _width;
 		_frameHeight = (frameHeight != 0) ? frameHeight : _height;
 		_frameCount = Std.int(_width / _frameWidth) * Std.int(_height / _frameHeight);
-
+		
+		if (_frameWidth == 0 || _frameHeight == 0) 
+		throw "Width or Height can not be 0";
+		
 		var ar:AtlasRegion;
 		
 		if (Std.is(source, Array))
@@ -219,11 +222,6 @@ class Emitter extends Graphic
 		}
 
 		_particle = null;
-	}
-	
-	private inline function renderParticle(renderFunc:ParticleType->Float->Float->Void, point:Vector2, camera:Vector2)
-	{
-		
 	}
 	
 	override public function render(painter:Painter , point:Vector2, camera:Vector2)
