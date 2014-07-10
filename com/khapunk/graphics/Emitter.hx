@@ -21,6 +21,9 @@ class Emitter extends Graphic
 	 */
 	public var particleCount(default, null):Int;
 
+	public var forceSingleImage:Bool;
+	private var imgSource:Image;
+	
 	// Particle information.
 	private var _types:Map<String,ParticleType>;
 	private var _particle:Particle;
@@ -28,12 +31,6 @@ class Emitter extends Graphic
 	private var _color:Color;
 	
 	// Source information.
-	private var _source:Image;
-	private var _width:Int;
-	private var _height:Int;
-	private var _frameWidth:Int;
-	private var _frameHeight:Int;
-	private var _frameCount:Int;
 	private var _frames:Array<AtlasRegion>;
 	
 	private var _indices:Map < String, Array<Int> > ;
@@ -62,33 +59,55 @@ class Emitter extends Graphic
 	}
 	
 	/**
-	 * Changes the source image to use for newly added particle types.
-	 * @param	source			Source image.
+	 * Adds frames to be used by different particle types. Returns the indices of the newly added frames.
+	 * Source can be an Kha.Image, Atlasregion or an array of Atlasregions retrieved by TextureAtlas.
+	 * 
+	 * @param	source			Source atlas.
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
+	 * @param 	name			cache the indices with this name.
 	 * @param 	return			The indices for the added frames.
 	 */
-	public function addSource(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, name:String = "") : Array<Int>
+	public function addFrames(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, name:String = "") : Array<Int>
 	{
+		var image:Image = null;
+		var srcWidth:Int = 0;
+		var srcHeight:Int = 0;
+		var region:AtlasRegion = null;
+		var ar:AtlasRegion;
+		var fw:Int = 0;
+		var fh:Int = 0;
+		var frameCount:Int = 0;
+		
 		var indices:Array<Int> = new Array<Int>();
 		if(_frames == null)_frames = new Array<AtlasRegion>();
 		var currentIndex:Int = _frames.length > 0 ? _frames.length : 0;
 		
 		var region:AtlasRegion = null;
-		if (Std.is(source, Image)) setBitmapSource(cast(source,Image));
-		else if(Std.is(source, AtlasRegion)) region = setAtlasRegion(cast(source,AtlasRegion));
+		if (Std.is(source, Image)) {
+			image = cast(source, Image);
+			srcWidth = image.width;
+			srcHeight = image.height;
+		}
+		else if (Std.is(source, AtlasRegion)) {
+			region =  cast(source, AtlasRegion);
+			image = region.image;
+			srcWidth = region.w;
+			srcHeight = region.h;
+		}
 
-		if (_source == null && region == null && Std.is(source,Array))
+		if (image == null && !Std.is(source,Array))
 			throw "Invalid source image.";
-
-		_frameWidth = (frameWidth != 0) ? frameWidth : _width;
-		_frameHeight = (frameHeight != 0) ? frameHeight : _height;
-		_frameCount = Std.int(_width / _frameWidth) * Std.int(_height / _frameHeight);
+		if (forceSingleImage && imgSource != null && imgSource != image)
+			throw "'force single image' enabled, use same image source"
+		else if(forceSingleImage)imgSource = image;
+			
+		fw = (frameWidth != 0) ? frameWidth : srcWidth;
+		fh = (frameHeight != 0) ? frameHeight : srcHeight;
+		frameCount = Std.int(srcWidth / fw) * Std.int(srcHeight / fh);
 		
-		if (_frameWidth == 0 || _frameHeight == 0) 
+		if (fw == 0 || fh == 0) 
 		throw "Width or Height can not be 0";
-		
-		var ar:AtlasRegion;
 		
 		if (Std.is(source, Array))
 		{
@@ -101,25 +120,25 @@ class Emitter extends Graphic
 		}
 		else  
 		{
-			var rect = new Rectangle(0, 0, _frameWidth, _frameHeight);
+			var rect = new Rectangle(0, 0, fw, fh);
 			//var center = new Vector2(_frameWidth / 2, _frameHeight / 2);
 			
-			for (i in 0..._frameCount)
+			for (i in 0...frameCount)
 			{
 				ar = new AtlasRegion();
 				ar.x = Std.int(rect.x);
 				ar.y = Std.int(rect.y);
-				ar.w = _frameWidth;
-				ar.h = _frameHeight;
-				ar.image = _source;
+				ar.w = fw;
+				ar.h = fh;
+				ar.image = image;
 				_frames.push(ar);
-				rect.x += _frameWidth;
+				rect.x += fw;
 				
 				indices.push(currentIndex++);
 				
-				if (rect.x >= _width)
+				if (rect.x >= srcWidth)
 				{
-					rect.y += _frameHeight;
+					rect.y += fh;
 					rect.x = 0;
 				}
 			}
@@ -131,6 +150,11 @@ class Emitter extends Graphic
 		return indices;
 	}
 	
+	/**
+	 * Retrieves the cached indices ( if any was set by name )
+	 * @param	name the name of the cached indices
+	 * @return  Array of indices.
+	 */
 	public function getFrameIndices(name:String) : Array<Int>
 	{
 		if (_indices == null && !_indices.exists(name)) return null;
@@ -144,21 +168,6 @@ class Emitter extends Graphic
 	{
 		_frames = null;
 		_indices = null;
-	}
-	
-	private inline function setBitmapSource(bitmap:Image)
-	{
-		_source = bitmap;
-		_width = Std.int(bitmap.width);
-		_height = Std.int(bitmap.height);
-	}
-	
-	private inline function setAtlasRegion(region:AtlasRegion):AtlasRegion
-	{
-		_source = region.image;
-		_width = Std.int(region.w);
-		_height = Std.int(region.h);
-		return region;
 	}
 	
 	override public function update()
@@ -282,7 +291,18 @@ class Emitter extends Graphic
 				
 				painter.setColor(_color);
 				painter.set_opacity(_color.A);
-				painter.drawImage2(ar.image, ar.x, ar.y, ar.w, ar.h, _p.x - hw, _p.y - hh, ar.w * scale, ar.h * scale, rotation, hw, hh);
+				painter.drawImage2(forceSingleImage?imgSource:ar.image, 
+				ar.x, 
+				ar.y, 
+				ar.w, 
+				ar.h, 
+				_p.x - hw, 
+				_p.y - hh, 
+				ar.w * scale,
+				ar.h * scale, 
+				rotation, 
+				hw, 
+				hh);
 				painter.setColor(Color.White);
 				painter.set_opacity(1);
 
@@ -290,7 +310,6 @@ class Emitter extends Graphic
 				p = p._next;
 			}
 		} 
-
 	}
 	
 	/**
@@ -306,7 +325,7 @@ class Emitter extends Graphic
 		if (pt != null)
 			throw "Cannot add multiple particle types of the same name";
 
-		pt = new ParticleType(name, frames, _width, _frameWidth, _frameHeight);
+		pt = new ParticleType(name, frames);
 		_types.set(name, pt);
 
 		return pt;

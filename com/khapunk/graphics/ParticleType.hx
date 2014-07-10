@@ -19,13 +19,12 @@ class ParticleType
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function new(name:String, frames:Array<Int>, width:Int, frameWidth:Int, frameHeight:Int)
+	public function new(name:String, frames:Array<Int>)
 	{
 		_red = _green = _blue = _alpha = 1;
 		_redRange = _greenRange = _blueRange = _alphaRange = 0;
 
 		_name = name;
-		_frame = new Rectangle(0, 0, frameWidth, frameHeight);
 		if (frames == null) frames = new Array<Int>();
 		_frames = frames;
 
@@ -184,7 +183,6 @@ class ParticleType
 
 	// Particle information.
 	private var _name:String;
-	private var _frame:Rectangle;
 	private var _frames:Array<Int>;
 
 	// Motion information.
