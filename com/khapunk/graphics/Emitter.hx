@@ -99,7 +99,7 @@ class Emitter extends Graphic
 		if (image == null && !Std.is(source,Array))
 			throw "Invalid source image.";
 		if (forceSingleImage && imgSource != null && imgSource != image)
-			throw "'force single image' enabled, use same image source"
+			throw "'force single image' enabled, use same image source.";
 		else if(forceSingleImage)imgSource = image;
 			
 		fw = (frameWidth != 0) ? frameWidth : srcWidth;
@@ -121,7 +121,6 @@ class Emitter extends Graphic
 		else  
 		{
 			var rect = new Rectangle(0, 0, fw, fh);
-			//var center = new Vector2(_frameWidth / 2, _frameHeight / 2);
 			
 			for (i in 0...frameCount)
 			{
@@ -147,6 +146,9 @@ class Emitter extends Graphic
 			if (_indices == null) _indices = new Map < String, Array<Int> > ();
 			_indices.set(name,indices);
 		}
+		
+	
+		
 		return indices;
 	}
 	
@@ -284,7 +286,7 @@ class Emitter extends Graphic
 				_color.A = type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t)); // Alpha;
 				
 				scale = type._scale + type._scaleRange * ((type._scaleEase == null) ? t : type._scaleEase(t));  
-				rotation = type._rotation + type._rotationRange * ((type._rotationEase == null) ? t : type._rotationEase(t));
+				rotation = type._angle + type._rotation + type._rotationRange * ((type._rotationEase == null) ? t : type._rotationEase(t));
 				
 				hw = (ar.w * scale) / 2;
 				hh = (ar.h * scale) / 2;

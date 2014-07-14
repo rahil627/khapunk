@@ -112,19 +112,19 @@ class Engine
 	}
 	
 	/**
-	 * Override this, called after Engine has been added to the stage.
+	 * Override this, It's called after setup();
 	 */
 	public function init() { }
 
 	/**
 	 * Override this, called when game gains focus
 	 */
-	//public function focusGained() { }
+	public function focusGained() { }
 
 	/**
 	 * Override this, called when game loses focus
 	 */
-	//public function focusLost() { }
+	public function focusLost() { }
 	
 	/**
 	 * Updates the game, updating the Scene and Entities.

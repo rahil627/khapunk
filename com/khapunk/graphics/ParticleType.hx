@@ -142,12 +142,9 @@ class ParticleType
 	 */
 	public function setRotation(start:Float = 0, finish:Float = 360, ease:EaseFunction = null):ParticleType
 	{
-		//start = start < 0 ? 0 : (start > 1 ? 1 : start);
-		//finish = finish < 0 ? 0 : (finish > 1 ? 1 : finish);
-		_rotation = start;
-		_rotationRange = finish - start;
+		_rotation = start * KP.RAD;
+		_rotationRange = finish * KP.RAD - start;
 		_rotationEase = ease;
-		//createBuffer();
 		return this;
 	}
 	

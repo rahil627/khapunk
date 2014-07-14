@@ -13,7 +13,7 @@ TODO
 * Input  
     - [x] Mouse and keyboard  
     - [0] Joystick/Gamepad
-    - [0] Touchsupport ( although Khas mouse input works for single touch )  
+    - [x] Touchsupport 
 
 
 * Masks are done except for Pixel based masks...I have to figure that one out

@@ -2,6 +2,7 @@ package com.khapunk.utils;
 import kha.Game;
 import kha.input.Keyboard;
 import kha.input.Mouse;
+import kha.input.Surface;
 import kha.Key;
 import kha.Sys;
 
@@ -13,8 +14,9 @@ class Input
 {
 	private static inline var kKeyStringMax = 100;
 
+	public static var  touchNum(default,null):Int;
+	
 	private static var _enabled:Bool = false;
-	private static var _touchNum:Int = 0;
 	private static var _key:Map<Int, Bool> = new Map<Int, Bool>();
 	private static var _keyNum:Int = 0;
 	private static var _press:Array<Int> = new Array<Int>();
@@ -22,10 +24,17 @@ class Input
 	private static var _release:Array<Int> = new Array<Int>();
 	private static var _releaseNum:Int = 0;
 	private static var _mouseWheelDelta:Int = 0;
-	//private static var _touches:Map<Int,Touch> = new Map<Int,Touch>();
+	private static var _touches:Map<Int,Touch> = new Map<Int,Touch>();
 	//private static var _joysticks:Map<Int,Joystick> = new Map<Int,Joystick>();
 	private static var _control:Map<String,Array<Int>> = new Map<String,Array<Int>>();
 	//private static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
+	
+	
+	/**
+	 * Returns true if the device supports multi touch
+	 */
+	public static var multiTouchSupported(default, null):Bool = false;
+
 	
 	private static var _mouseX:Int = 0;
 	private static var _mouseY:Int = 0;
@@ -78,8 +87,6 @@ class Input
 			return _mouseWheelDelta;
 		}
 		return 0;
-		
-		
 	}
 
 	/**
@@ -215,6 +222,12 @@ class Input
 	{
 		Keyboard.get().notify(onKeyDown, onKeyUp);
 		Mouse.get().notify(onMouseDown, onMouseUp, onMouseMove, onMouseWheel);
+		if (Surface.get() != null) {
+			Surface.get().notify(onTouch, onTouchEnd, onTouchMove);
+			multiTouchSupported = true;
+		}
+		touchNum = 20; 
+	
 	}
 	
 	/**
@@ -228,8 +241,68 @@ class Input
 		_releaseNum = 0;
 		if (mousePressed) mousePressed = false;
 		if (mouseReleased) mouseReleased = false;
+		
+		if (multiTouchSupported)
+		{
+			for (touch in _touches) {
+				if (touch.active)
+				touch.update();
+			}
+		}
 	}
 	
+	//------------------------------------------------
+	//Touch input
+	//public static var touches(get, never):Map<Int,Touch>;
+	//private static inline function get_touches():Map < Int, Touch > { return _touches; }
+	
+	private static var cTouch:Touch;
+	private static function onTouch(id:Int, x:Int, y:Int) : Void {
+		
+		if (!_touches.exists(id)) {
+			_touches.set(id, new Touch(x, y, id));
+			cTouch = _touches.get(id);
+		}
+		else {
+			cTouch = _touches.get(id);
+			cTouch.x = x;
+			cTouch.y = y;
+		}
+		cTouch.init();
+		cTouch.active = true;
+		++touchNum;
+		
+	}
+	
+	private static function onTouchEnd(id:Int, x:Int, y:Int) : Void
+	{
+		cTouch = _touches.get(id);
+		cTouch.active = false;
+		cTouch.init();
+		--touchNum;
+	}
+	
+	private static function onTouchMove(id:Int, x:Int, y:Int) : Void
+	{
+		cTouch = _touches.get(id);
+		cTouch.x = x;
+		cTouch.y = y;
+	}
+	
+	/**
+	 * Iterate over the currently active touch points
+	 * @param	touchCallback
+	 */
+	public static function touchPoints(touchCallback:Touch->Bool) : Void
+	{
+		for (touch in _touches)
+		{
+			if(touch.active)
+				if (!touchCallback(touch))
+					break;
+		}
+	}
+	//------------------------------------------------
 	private static function onKeyDown(key:Key, char:String) : Void
 	{
 	
