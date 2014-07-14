@@ -226,7 +226,7 @@ class Input
 			Surface.get().notify(onTouch, onTouchEnd, onTouchMove);
 			multiTouchSupported = true;
 		}
-		touchNum = 20; 
+		touchNum = 0; 
 	
 	}
 	
