@@ -1,6 +1,7 @@
 package com.khapunk.graphics.atlas;
 import com.khapunk.graphics.atlas.AtlasRegion;
 import kha.Image;
+import kha.Loader;
 import kha.Rectangle;
 
 /**
@@ -30,6 +31,11 @@ class TileAtlas
 		else if (Std.is(source, TextureAtlas))
 		{
 			_image =  cast(source,TextureAtlas).getImage();
+			_width = _image.width;
+			_height = _image.height;
+		}
+		else if (Std.is(source, String)) {
+			_image = Loader.the.getImage(cast(source, String));
 			_width = _image.width;
 			_height = _image.height;
 		}

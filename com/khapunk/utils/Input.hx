@@ -39,7 +39,7 @@ class Input
 	private static var _mouseX:Int = 0;
 	private static var _mouseY:Int = 0;
 	
-/**
+	/**
 	 * Contains the string of the last keys pressed
 	 */
 	public static var keyString:String = "";
@@ -50,26 +50,36 @@ class Input
 	public static var lastKey:Int;
 
 	/**
-	 * If the left button mouse is held down
+	 * If any mouse button is held down
 	 */
 	public static var mouseDown:Bool;
 	/**
-	 * If the left button mouse is up
+	 * If all mouse button are up
 	 */
-	public static var mouseUp:Bool;
+	public static var mouseAllUp:Bool;
 	/**
-	 * If the left button mouse was recently pressed
+	 * If any mouse button was recently pressed
 	 */
 	public static var mousePressed:Bool;
 	/**
-	 * If the left button mouse was recently released
+	 * If any mouse button was recently released
 	 */
 	public static var mouseReleased:Bool;
 
-	public static var leftMousePressed:Bool = false;
-	public static var rightMousePressed:Bool = false;
-	public static var midMousePressed:Bool = false;
-
+	public static var leftMouseDown:Bool = false;
+	public static var rightMouseDown:Bool = false;
+	public static var midMouseDown:Bool = false;
+	
+	public static var leftMouseClicked:Bool = false;
+	public static var rightMouseClicked:Bool = false;
+	public static var midMouseClicked:Bool = false;
+	
+	public static var leftMouseReleased:Bool = false;
+	public static var rightMouseReleased:Bool = false;
+	public static var midMouseReleased:Bool = false;
+	
+	public static var mouseMoved:Bool = false;
+	
 	/**
 	 * If the mouse wheel has moved
 	 */
@@ -239,8 +249,19 @@ class Input
 		_pressNum = 0;
 		while (_releaseNum-- > -1) _release[_releaseNum] = -1;
 		_releaseNum = 0;
-		if (mousePressed) mousePressed = false;
-		if (mouseReleased) mouseReleased = false;
+		
+		if (mousePressed) 		mousePressed = false;
+		if (mouseReleased)		mouseReleased = false;
+		
+		if (leftMouseClicked) 	leftMouseClicked = false;
+		if (rightMouseClicked) 	rightMouseClicked = false;
+		if (midMouseClicked) 	midMouseClicked = false;
+		
+		if (leftMouseReleased) 	leftMouseReleased = false;
+		if (rightMouseReleased) rightMouseReleased = false;
+		if (midMouseReleased) 	midMouseReleased = false;
+		
+		if (mouseMoved) 		mouseMoved = false;
 		
 		if (multiTouchSupported)
 		{
@@ -367,29 +388,36 @@ class Input
 
 	private static function onMouseMove(x: Int, y: Int)
 	{
+		mouseMoved = true;
 		_mouseX = x;
 		_mouseY = y;
 	}
 	
+	public static var downCount:Int = 0;
+	
 	private static function onMouseDown(button: Int, x: Int, y: Int) : Void
 	{
 		
+		downCount++;
 		switch(button)
 		{
 			case 0:
-				leftMousePressed = true;
+				leftMouseDown = true;
+				leftMouseClicked = true;
 			case 1:
-				rightMousePressed = true;
+				rightMouseDown = true;
+				rightMouseClicked = true;
 			case 2:
-				midMousePressed = true;
+				midMouseDown = true;
+				midMouseClicked = true;
 		}
 		
 		if (!mouseDown)
 		{
 			mouseDown = true;
-			mouseUp = false;
-			mousePressed = true;
+			mouseAllUp = false;
 		}
+		mousePressed = true;
 	}
 
 	private static function onMouseUp(button: Int, x: Int, y: Int)
@@ -397,20 +425,22 @@ class Input
 		switch(button)
 		{
 			case 0:
-				leftMousePressed = false;
+				leftMouseDown = false;
+				leftMouseReleased = true;
 			case 1:
-				rightMousePressed = false;
+				rightMouseDown = false;
+				rightMouseReleased = true;
 			case 2:
-				midMousePressed = false;
+				midMouseDown = false;
+				midMouseReleased = true;
 		}
 		
-		
-		if (!leftMousePressed && !rightMousePressed && !midMousePressed)
+		if (!leftMouseDown && !rightMouseDown && !midMouseDown)
 		{ 
 		 mouseDown = false;
-		 mouseUp = false;
-		 mouseReleased = true;
+		 mouseAllUp = true;
 		}
+		 mouseReleased = true;
 	}
 
 	private static function onMouseWheel(delta: Int)

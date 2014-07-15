@@ -155,8 +155,6 @@ class Engine
 			KP.scene.update();
 			
 		}
-		// update input
-		Input.update();
 		
 		KP.scene.updateLists(false);
 	}
@@ -166,6 +164,10 @@ class Engine
 	 */
 	public function render(painter:Painter): Void
 	{
+		
+		// update input
+		Input.update();
+		
 		if (KP.scene.visible) KP.scene.render(painter);
 	}
 	

@@ -105,13 +105,11 @@ class Tilemap extends Graphic
 		{
 			_atlas =  cast(tileset, TileAtlas);
 		}
-		else if(Std.is(tileset,Image)) {
-			_atlas = new TileAtlas(cast(tileset, Image));
+		else {
+		
+			_atlas = new TileAtlas(tileset);
 			_atlas.prepareTiles(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
-		}
-		else if (Std.is(tileset, TextureAtlas)) {
-			_atlas = new TileAtlas(cast(tileset, TextureAtlas));
-			_atlas.prepareTiles(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
+		
 		}
 		
 
