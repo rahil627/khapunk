@@ -33,7 +33,8 @@ class PunkImage extends Graphic
 
 	// Flipped image information.
 	private var _class:String;
-	private var _flipped:Bool;
+	private var _flippedX:Bool;
+	private var _flippedY:Bool;
 	//private var _flip:BitmapData;
 	//private static var _flips:Map<String,BitmapData> = new Map<String,BitmapData>();
 
@@ -162,7 +163,7 @@ class PunkImage extends Graphic
 		originX = originY = 0;
 
 		_alpha = 1;
-		_flipped = false;
+		_flippedX = false;
 		_color = 0x00FFFFFF;
 		_red = _green = _blue = 1;
 		//_matrix = KP.matrix;
@@ -179,7 +180,8 @@ class PunkImage extends Graphic
 		this.point.x = point.x + x - originX - camera.x * scrollX;
 		this.point.y = point.y + y - originY - camera.y * scrollY;
 
-		if (_flipped) this.point.x += _sourceRect.width * sx;
+		if (_flippedX) this.point.x += _sourceRect.width * sx;
+		if (_flippedY) this.point.y += _sourceRect.height * sy;
 		
 		painter.setColor(Color.fromValue(_color));
 		painter.set_opacity(_alpha);
@@ -192,8 +194,8 @@ class PunkImage extends Graphic
 		_region.h,
 		this.point.x,
 		this.point.y,
-		_region.w * (sx * (_flipped ? -1 : 1)),
-		_region.h * sy,
+		_region.w * (sx * (_flippedX ? -1 : 1)),
+		_region.h * (sy * (_flippedY ? -1 : 1)),
 		angle, 
 		originX,
 		originY);
@@ -298,12 +300,26 @@ class PunkImage extends Graphic
 	 * If you want to draw the Image horizontally flipped. This is
 	 * faster than setting scaleX to -1 if your image isn't transformed.
 	 */
-	public var flipped(get, set):Bool;
-	private function get_flipped():Bool { return _flipped; }
-	private function set_flipped(value:Bool):Bool
+	public var flippedX(get, set):Bool;
+	private function get_flippedX():Bool { return _flippedX; }
+	private function set_flippedX(value:Bool):Bool
 	{
-		if (_flipped == value) return value;
-		_flipped = value;
-		return _flipped;
+		if (_flippedX == value) return value;
+		_flippedX = value;
+		return _flippedX;
 	}
+	
+	/**
+	 * If you want to draw the Image vertically flipped. This is
+	 * faster than setting scaleY to -1 if your image isn't transformed.
+	 */
+	public var flippedY(get, set):Bool;
+	private function get_flippedY():Bool { return _flippedY; }
+	private function set_flippedY(value:Bool):Bool
+	{
+		if (_flippedY == value) return value;
+		_flippedY = value;
+		return _flippedY;
+	}
+	
 }
