@@ -46,7 +46,12 @@ TODO
 Tiled 
 ---
 tmx loader can be found here
-https://bitbucket.org/stalei/khapunktiled
+https://bitbucket.org/stalei/khapunktiled  
+	
+Nape physics
+---
+Nape scene and entity can be found here
+https://bitbucket.org/stalei/khapunk-nape/
 
 ---
 

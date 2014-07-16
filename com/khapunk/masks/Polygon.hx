@@ -22,18 +22,18 @@ class Polygon extends Hitbox
 	private static var firstProj = new Projection();
 	private static var secondProj = new Projection();
 
-	public static var vertical = new Vector(0, 1);
-	public static var horizontal = new Vector(1, 0);
+	public static var vertical = new Vector2(0, 1);
+	public static var horizontal = new Vector2(1, 0);
 	
 	/**
-	* The polygon rotates around this point when the angle is set.
+	* The polygon rotates around this Vector2 when the angle is set.
 	*/
 	public var origin:Vector2;
 
 	/**
 	 * Constructor.
 	 * @param	points		An array of coordinates that define the polygon (must have at least 3).
-	 * @param	origin	 	Pivot point for rotations.
+	 * @param	origin	 	Pivot Vector2 for rotations.
 	 */
 	public function new(points:Array<Vector2>, ?origin:Vector2)
 	{
@@ -367,8 +367,8 @@ class Polygon extends Hitbox
 		/** TODO Debug draw*/
 		/*if (parent != null)
 		{
-			var	offsetX:Float = parent.x + _x - HXP.camera.x,
-				offsetY:Float = parent.y + _y - HXP.camera.y;
+			var	offsetX:Float = parent.x + _x - KP.camera.x,
+				offsetY:Float = parent.y + _y - KP.camera.y;
 
 			graphics.beginFill(0x0000FF, .3);
 
@@ -386,7 +386,7 @@ class Polygon extends Hitbox
 	}
 	
 	/**
-	 * Rotation angle (in degrees) of the polygon (rotates around origin point).
+	 * Rotation angle (in degrees) of the polygon (rotates around origin Vector2).
 	 */
 	public var angle(get, set):Float;
 	private inline function get_angle():Float { return _angle; }
@@ -403,7 +403,7 @@ class Polygon extends Hitbox
 	/**
 	 * The points representing the polygon.
 	 *
-	 * If you need to set a point yourself instead of passing in a new Array<Point> you need to call update()
+	 * If you need to set a Vector2 yourself instead of passing in a new Array<Vector2> you need to call update()
 	 * to make sure the axes update as well.
 	 */
 	public var points(get, set):Array<Vector2>;
@@ -457,8 +457,8 @@ class Polygon extends Hitbox
 		// figure out the angle required for each step
 		var rotationAngle:Float = (Math.PI * 2) / sides;
 
-		// loop through and generate each point
-		var points:Array<Point> = new Array<Point>();
+		// loop through and generate each Vector2
+		var points:Array<Vector2> = new Array<Vector2>();
 
 		for (i in 0...sides)
 		{
@@ -485,12 +485,12 @@ class Polygon extends Hitbox
 	 */
 	public static function createFromArray(points:Array<Float>):Polygon
 	{
-		var p:Array<Point> = new Array<Point>();
+		var p:Array<Vector2> = new Array<Vector2>();
 
 		var i:Int = 0;
 		while (i < points.length)
 		{
-			p.push(new Point(points[i++], points[i++]));
+			p.push(new Vector2(points[i++], points[i++]));
 		}
 		return new Polygon(p);
 	}
@@ -499,7 +499,7 @@ class Polygon extends Hitbox
 	{
 		_angle += angleDelta;
 
-		angleDelta *= HXP.RAD;
+		angleDelta *= KP.RAD;
 
 		var p:Vector2;
 
@@ -527,19 +527,19 @@ class Polygon extends Hitbox
 	
 	private function generateAxes():Void
 	{
-		_axes = new Array<Vector>();
+		_axes = new Array<Vector2>();
 		_indicesToRemove = new Array<Int>();
 
 		var temp:Float;
 		var nPoints:Int = _points.length;
-		var edge:Vector;
+		var edge:Vector2;
 		var i:Int, j:Int;
 
 		i = 0;
 		j = nPoints - 1;
 		while (i < nPoints)
 		{
-			edge = new Vector();
+			edge = new Vector2();
 			edge.x = _points[i].x - _points[j].x;
 			edge.y = _points[i].y - _points[j].y;
 
@@ -547,7 +547,7 @@ class Polygon extends Hitbox
 			temp = edge.y;
 			edge.y = -edge.x;
 			edge.x = temp;
-			edge.normalize(1);
+			edge.normalize();
 
 			_axes.push(edge);
 
@@ -559,7 +559,7 @@ class Polygon extends Hitbox
 	private function removeDuplicateAxes():Void
 	{
 		var nAxes:Int = _axes.length;
-		HXP.clear(_indicesToRemove);
+		KP.clear(_indicesToRemove);
 
 		for (i in 0...nAxes)
 		{
@@ -567,7 +567,7 @@ class Polygon extends Hitbox
 			{
 				if (i == j || Math.max(i, j) >= nAxes) continue;
 
-				// if the first vector is equal or similar to the second vector,
+				// if the first Vector2 is equal or similar to the second Vector2,
 				// add it to the remove list. (for example, [1, 1] and [-1, -1]
 				// represent the same axis)
 				if ((_axes[i].x == _axes[j].x && _axes[i].y == _axes[j].y)
