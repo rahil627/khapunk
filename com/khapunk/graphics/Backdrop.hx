@@ -62,8 +62,9 @@ class Backdrop extends Graphic
 		_repeatX = repeatX;
 		_repeatY = repeatY;
 
-		_width = KP.width * (repeatX ? 1 : 0) + _textWidth + 1;
-		_height = KP.height * (repeatY ? 1 : 0) + _textHeight + 1;
+		_width = KP.width * (repeatX ? 1 : 0) + _textWidth;
+		_height = KP.height * (repeatY ? 1 : 0) + _textHeight ;
+		
 		scale = scaleX = scaleY = 1;
 		angle = 0;
 		scrollByCam = false;
@@ -90,10 +91,13 @@ class Backdrop extends Graphic
 		this.point.x = point.x + x - (scrollByCam ? (camera.x * scrollX):0);
 		this.point.y = point.y + y - (scrollByCam ? (camera.y * scrollY):0);
 
+		var sx = scale * scaleX;
+		var	sy = scale * scaleY;
+		
 		if (_repeatX)
 		{
 			this.point.x %= _textWidth;
-			if (this.point.x > 0) this.point.x -= _textWidth;
+			if (this.point.x > 0) this.point.x -= _textWidth ;
 		}
 
 		if (_repeatY)
@@ -101,20 +105,28 @@ class Backdrop extends Graphic
 			this.point.y %= _textHeight;
 			if (this.point.y > 0) this.point.y -= _textHeight;
 		}
-
-		var sx = scale * scaleX;
-		var	sy = scale * scaleY;
+		
 			//fsx = HXP.screen.fullScaleX,
 			//fsy = HXP.screen.fullScaleY,
 			//px:Int = Std.int(this.point.x * fsx), py:Int = Std.int(this.point.y * fsy);
 
 		var y:Int = 0;
 		//while (y < _height * sy * fsy)
-		while (y < _height)
+		
+		var stepX  = _textWidth * sx;
+		var stepY  = _textHeight * sy;
+		
+		var ratioX  = _width / stepX;
+		var ratioY  = _height / stepY;
+		
+		stepX = (ratioX) == Math.floor(ratioX) ? 0:stepX;
+		stepY = (ratioY) == Math.floor(ratioY) ? 0:stepY;
+		
+		while (y < _height + stepY)
 		{
 			var x:Int = 0;
 			//while (x < _width * sx * fsx)
-			while (x < _width)
+			while (x < _width + stepX)
 			{
 				//_region.draw(px + x, py + y, layer, sx * fsx, sy * fsy, 0, _red, _green, _blue, _alpha);
 				//x += Std.int(_textWidth * fsx);

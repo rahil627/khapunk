@@ -1,4 +1,5 @@
 package com.khapunk.utils;
+import haxe.ds.Vector;
 import kha.Game;
 import kha.input.Keyboard;
 import kha.input.Mouse;
@@ -24,7 +25,7 @@ class Input
 	private static var _release:Array<Int> = new Array<Int>();
 	private static var _releaseNum:Int = 0;
 	private static var _mouseWheelDelta:Int = 0;
-	private static var _touches:Map<Int,Touch> = new Map<Int,Touch>();
+	private static var _touches:Vector<Touch> = new Vector<Touch>(10);
 	//private static var _joysticks:Map<Int,Joystick> = new Map<Int,Joystick>();
 	private static var _control:Map<String,Array<Int>> = new Map<String,Array<Int>>();
 	//private static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
@@ -54,7 +55,7 @@ class Input
 	 */
 	public static var mouseDown:Bool;
 	/**
-	 * If all mouse button are up
+	 * If all mouse buttons are up
 	 */
 	public static var mouseAllUp:Bool;
 	/**
@@ -66,18 +67,52 @@ class Input
 	 */
 	public static var mouseReleased:Bool;
 
+	/**
+	 * If left mouse button is down
+	 */
 	public static var leftMouseDown:Bool = false;
+	/**
+	 * If right mouse button is down
+	 */
 	public static var rightMouseDown:Bool = false;
+	/**
+	 * If middle mouse button is down
+	 */
 	public static var midMouseDown:Bool = false;
 	
+	/**
+	 * If left mouse button was recently clicked
+	 */
 	public static var leftMouseClicked:Bool = false;
+	
+	/**
+	 * If right mouse button was recently clicked
+	 */
 	public static var rightMouseClicked:Bool = false;
+	
+	/**
+	 * If middle mouse button was recently clicked
+	 */
 	public static var midMouseClicked:Bool = false;
 	
+	/**
+	 * If left mouse button was recently released
+	 */
 	public static var leftMouseReleased:Bool = false;
+	
+	/**
+	 * If right mouse button was recently released
+	 */
 	public static var rightMouseReleased:Bool = false;
+	
+	/**
+	 * If middle mouse button was recently released
+	 */
 	public static var midMouseReleased:Bool = false;
 	
+	/**
+	 * Whether the mouse is moving 
+	 */
 	public static var mouseMoved:Bool = false;
 	
 	/**
@@ -277,37 +312,31 @@ class Input
 	//public static var touches(get, never):Map<Int,Touch>;
 	//private static inline function get_touches():Map < Int, Touch > { return _touches; }
 	
-	private static var cTouch:Touch;
 	private static function onTouch(id:Int, x:Int, y:Int) : Void {
 		
-		if (!_touches.exists(id)) {
-			_touches.set(id, new Touch(x, y, id));
-			cTouch = _touches.get(id);
+		if (_touches.get(id) == null) {
+			_touches[id] = new Touch(x, y, id);
 		}
 		else {
-			cTouch = _touches.get(id);
-			cTouch.x = x;
-			cTouch.y = y;
+			_touches[id].x = x;
+			_touches[id].y = y;
 		}
-		cTouch.init();
-		cTouch.active = true;
+		_touches[id].init();
+		_touches[id].active = true;
 		++touchNum;
 		
 	}
 	
 	private static function onTouchEnd(id:Int, x:Int, y:Int) : Void
 	{
-		cTouch = _touches.get(id);
-		cTouch.active = false;
-		cTouch.init();
+		_touches[id].active = false;
 		--touchNum;
 	}
 	
 	private static function onTouchMove(id:Int, x:Int, y:Int) : Void
 	{
-		cTouch = _touches.get(id);
-		cTouch.x = x;
-		cTouch.y = y;
+		_touches[id].x = x;
+		_touches[id].y = y;
 	}
 	
 	/**
@@ -393,12 +422,8 @@ class Input
 		_mouseY = y;
 	}
 	
-	public static var downCount:Int = 0;
-	
 	private static function onMouseDown(button: Int, x: Int, y: Int) : Void
 	{
-		
-		downCount++;
 		switch(button)
 		{
 			case 0:
