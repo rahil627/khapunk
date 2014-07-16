@@ -6,7 +6,14 @@ Haxepunk credits go to :  [Matt Tuttle]
 
 ~~~~
 > Khapunk is currently under development!
-~~~~
+~~~~  
+  
+Should work on every kha backend as long they are up to date.  
+
+* Tested so far on  
+    - Flash  
+    - HTML5 
+    - Android
 
 TODO
 -----
@@ -33,10 +40,13 @@ TODO
 
 * Debug console
 * Create example pack
-* Add Tiled support ( based on : [Haxepunk/tiled] )
+
 ---
 
-*Atlasmap wasn't originally in Haxepunk. It allows you to quickly create animations with a texturepacker. For example add("walk") would add the atlas regions named "walk_1" "walk_2" "walk_3". This way you don't have to define the regions or keep your atlas in uniform shape.
+Tiled 
+---
+tmx loader can be found here
+https://bitbucket.org/stalei/khapunktiled
 
 ---
 
@@ -48,7 +58,7 @@ Check out the [Demo]!
 [Matt Tuttle]:https://github.com/MattTuttle
 [Haxepunk]:https://github.com/HaxePunk/HaxePunk
 
-----
+
 MIT License
 ----
 
