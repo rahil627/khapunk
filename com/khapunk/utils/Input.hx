@@ -140,7 +140,8 @@ class Input
 	public static var mouseX(get, never):Int;
 	private static function get_mouseX():Int
 	{
-		return Std.int(_mouseX / (Sys.pixelWidth/Game.the.width));//KP.screen.mouseX;
+		//return Std.int(_mouseX / (Sys.pixelWidth / Game.the.width));//KP.screen.mouseX;
+		return Game.the.painterTransformMouseX(_mouseX, _mouseY);
 	}
 
 	/**
@@ -149,7 +150,8 @@ class Input
 	public static var mouseY(get, never):Int;
 	private static function get_mouseY():Int
 	{
-		return Std.int(_mouseY / (Sys.pixelHeight/Game.the.height));//KP.screen.mouseX;
+		//return Std.int(_mouseY / (Sys.pixelHeight/Game.the.height));//KP.screen.mouseX;
+		return Game.the.painterTransformMouseY(_mouseX, _mouseY);
 	}
 	
 	
