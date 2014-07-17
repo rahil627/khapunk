@@ -2,6 +2,7 @@ package com.khapunk.graphics;
 import com.khapunk.Graphic;
 import com.khapunk.graphics.atlas.AtlasRegion;
 import com.khapunk.KP;
+import kha.Color;
 import kha.Image;
 import kha.math.Vector2;
 import kha.Painter;
@@ -46,6 +47,11 @@ class Backdrop extends Graphic
 	public var scaleY:Float;
 	
 	/**
+	 * Color to be multiplied
+	 */
+	public var color:Color;
+	
+	/**
 	 * Determines if scrolling should be affected by the camera position.
 	 */
 	public var scrollByCam:Bool;
@@ -68,6 +74,7 @@ class Backdrop extends Graphic
 		scale = scaleX = scaleY = 1;
 		angle = 0;
 		scrollByCam = false;
+		color = Color.White;
 		super();
 	}
 	
@@ -122,6 +129,8 @@ class Backdrop extends Graphic
 		stepX = ratioX == Math.floor(ratioX) ? 0:stepX;
 		stepY = ratioY == Math.floor(ratioY) ? 0:stepY;
 		
+		painter.setColor(color);
+		
 		while (y < _height + stepY)
 		{
 			var x:Int = 0;
@@ -147,6 +156,8 @@ class Backdrop extends Graphic
 			//y += Std.int(_textHeight * fsy);
 			y += Std.int(_textHeight * sy);
 		}
+		
+		painter.setColor(Color.White);
 	}
 
 	
