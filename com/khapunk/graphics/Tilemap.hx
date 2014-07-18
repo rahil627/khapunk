@@ -40,6 +40,8 @@ class Tilemap extends Graphic
 	private var _setCount:Int;
 	private var _tile:Rectangle;
 	
+	var _animations:Map<Int, AnimatedTile>;
+	
 	/**
 	* Scale of the canvas, effects both x and y scale.
 	*/
@@ -121,6 +123,8 @@ class Tilemap extends Graphic
 			_setRows = Std.int(_atlas.imgHeight / tileHeight);
 		}
 		_setCount = _setColumns * _setRows;
+	
+		_animations = new Map<Int, AnimatedTile>();
 		
 	}
 	
@@ -491,9 +495,9 @@ class Tilemap extends Graphic
 			for (x in startx...destx)
 			{
 				tile = _map[y % _rows][x % _columns];
-				
+				tile += _animations.exists(tile) ? _animations.get(tile).frame:0;
 				tr = _atlas.getRegion(tile);
-			
+				
 				if (tile >= 0)
 				{
 					painter.drawImage2(_atlas.img, tr.x, tr.y, tr.w, tr.h,wx, wy, _tile.width, _tile.height);
@@ -503,6 +507,55 @@ class Tilemap extends Graphic
 			}
 			wy += stepy;
 		}
+	}
+	
+	
+	/**
+	 * Adds animation information for a tile
+	 * @param	index The tile index
+	 * @param	length The amount of frames 
+	 * @param	speed The rate at which the tile should animate
+	 * @param	reverse Wether the animation should be played backwards
+	 * @return  returns The object that holds the animation information.
+	 */
+	public function addAnimatedTile(index:Int, length:Int, speed:Int, reverse:Bool = false) : AnimatedTile
+	{
+		var anim:AnimatedTile;
+		if (_animations.exists(index)) {
+			anim = _animations.get(index);
+			
+		}
+		else {
+			anim = new AnimatedTile();
+			anim.index = index;
+			_animations.set(index, anim);
+		}
+		
+		anim.length = length;
+		anim.speed = speed;
+		anim.reverse = reverse;
+		
+		
+		
+		return anim;
+	}
+	
+	public function getAnimFrame(index:Int) : Int {
+		if (_animations.exists(index))
+			return _animations.get(index).frame;	
+		return 0;
+	}
+	
+	public function processAnimatedTiles() : Void
+	{
+		for (anim in _animations) {
+			anim.update();
+		}
+	}
+	
+	override public function update() 
+	{
+		processAnimatedTiles();
 	}
 	
 	/** @private Used by shiftTiles to update a tile from the tilemap. */
@@ -552,4 +605,46 @@ class Tilemap extends Graphic
 	private inline function get_rows():Int { return _rows; }
 
 	
+}
+
+class AnimatedTile {
+	public function new() {
+		speed = 0;
+		currentTime = 0;
+		length = 0;
+		index = 0;
+		reverse = false;
+		frame = 0;
+	}
+	public var speed:Float;
+	public var currentTime:Float;
+	public var length:Int;
+	public var index:Int;
+	public var frame:Int;
+	public var paused:Bool;
+	public var reverse:Bool;
+	
+	var perc:Float = 0;
+	
+	public function update() : Void
+	{
+		currentTime += KP.elapsed;
+		if (currentTime > 1 / speed) {
+			currentTime = 0;
+			if (reverse) {
+				frame--;
+				if (frame <= 0)
+				{
+					frame = length-1;
+				}
+			}
+			else {
+				frame++;
+				if (frame >= length)
+				{
+					frame = 0;
+				}
+			}
+		}
+	}
 }
