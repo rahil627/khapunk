@@ -524,11 +524,13 @@ class Tilemap extends Graphic
 						tile +=  _animations.get(tile).frame;
 					}
 					else if (_parentAnim.exists(tile)) {	
+						
 						parent = _parentAnim.get(tile);
+				
 						if(!_animations.get(parent).vertical)
-						tile =  parent + _animations.get(parent).getChildFrame(tile-parent);
+						tile =  parent + _animations.get(parent).getChildFrame(tile-parent-1);
 						else 
-						tile =  parent + _animations.get(parent).getChildFrame(tile-parent) * _atlas.rows;
+						tile =  parent + _animations.get(parent).getChildFrame(tile-parent - 1) * _atlas.rows;
 					}
 				}
 				tr = _atlas.getRegion(tile);
@@ -546,7 +548,8 @@ class Tilemap extends Graphic
 	 * @param	index The tile index
 	 * @param	length The amount of frames 
 	 * @param	speed The rate at which the tile should animate
-	 * @param	reverse Wether the animation should be played backwards
+	 * @param	reverse Whether the animation should be played backwards
+	 * @param	vertical If our animation is setup vertical on our tileset.
 	 * @return  returns The object that holds the animation information.
 	 */
 	public function addAnimatedTile(index:Int, length:Int, speed:Int, reverse:Bool = false, vertical:Bool = false ) : AnimatedTile
@@ -570,10 +573,15 @@ class Tilemap extends Graphic
 		return anim;
 	}
 	
+	/**
+	 * Groups up an animation frame to a parent frame
+	 * @param	index The child GID
+	 * @param	parent The parent GID.
+	 */
 	public function addChildTile(index:Int, parent:Int) : Void
 	{
-		 _parentAnim.set(index, parent);
-		 _animations.get(parent).children[index - parent] = index - parent;
+		 _parentAnim.set(index,parent);
+		 _animations.get(parent).children[index - parent - 1] = index - parent;
 	}
 	
 	public function processAnimatedTiles() : Void
