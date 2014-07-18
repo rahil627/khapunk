@@ -43,7 +43,7 @@ class Tilemap extends Graphic
 	var _animations:Map<Int, AnimatedTile>;
 	var _parentAnim:Map<Int, Int>;
 	
-	var hasAnimations:Bool = false;
+	public var hasAnimations:Bool = false;
 	
 	/**
 	* Scale of the canvas, effects both x and y scale.
@@ -506,7 +506,7 @@ class Tilemap extends Graphic
 					continue;
 				}
 				
-				if(hasAnimations){
+				if (hasAnimations) {
 					if (_animations.exists(tile)) {
 						tile +=  _animations.get(tile).frame;
 					}
@@ -536,7 +536,6 @@ class Tilemap extends Graphic
 	 */
 	public function addAnimatedTile(index:Int, length:Int, speed:Int, reverse:Bool = false) : AnimatedTile
 	{
-		hasAnimations = true;
 		var anim:AnimatedTile;
 		if (_animations.exists(index)) {
 			anim = _animations.get(index);
