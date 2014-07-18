@@ -41,6 +41,9 @@ class Tilemap extends Graphic
 	private var _tile:Rectangle;
 	
 	var _animations:Map<Int, AnimatedTile>;
+	var _parentAnim:Map<Int, Int>;
+	
+	var hasAnimations:Bool = false;
 	
 	/**
 	* Scale of the canvas, effects both x and y scale.
@@ -125,6 +128,7 @@ class Tilemap extends Graphic
 		_setCount = _setColumns * _setRows;
 	
 		_animations = new Map<Int, AnimatedTile>();
+		_parentAnim = new Map<Int, Int>();
 		
 	}
 	
@@ -488,6 +492,7 @@ class Tilemap extends Graphic
 		
 		
 		var tr:AtlasRegion;
+		var parent:Int;
 		for (y in starty...desty)
 		{
 			wx = sx;
@@ -495,14 +500,25 @@ class Tilemap extends Graphic
 			for (x in startx...destx)
 			{
 				tile = _map[y % _rows][x % _columns];
-				tile += _animations.exists(tile) ? _animations.get(tile).frame:0;
-				tr = _atlas.getRegion(tile);
 				
-				if (tile >= 0)
-				{
-					painter.drawImage2(_atlas.img, tr.x, tr.y, tr.w, tr.h,wx, wy, _tile.width, _tile.height);
-					//_atlas.prepareTile(tile, Std.int(wx), Std.int(wy), layer, scx, scy, 0, _red, _green, _blue, alpha);
+				if (tile < 0) {
+					wx += stepx;
+					continue;
 				}
+				
+				if(hasAnimations){
+					if (_animations.exists(tile)) {
+						tile +=  _animations.get(tile).frame;
+					}
+					else if (_parentAnim.exists(tile)) {
+						
+						parent = tile - _parentAnim.get(tile);
+						tile =  parent + _animations.get(parent).getChildFrame(_parentAnim.get(tile)-1);
+					}
+				}
+				tr = _atlas.getRegion(tile);
+				painter.drawImage2(_atlas.img, tr.x, tr.y, tr.w, tr.h,wx, wy, _tile.width, _tile.height);
+					//_atlas.prepareTile(tile, Std.int(wx), Std.int(wy), layer, scx, scy, 0, _red, _green, _blue, alpha);
 				wx += stepx;
 			}
 			wy += stepy;
@@ -520,6 +536,7 @@ class Tilemap extends Graphic
 	 */
 	public function addAnimatedTile(index:Int, length:Int, speed:Int, reverse:Bool = false) : AnimatedTile
 	{
+		hasAnimations = true;
 		var anim:AnimatedTile;
 		if (_animations.exists(index)) {
 			anim = _animations.get(index);
@@ -533,17 +550,15 @@ class Tilemap extends Graphic
 		
 		anim.length = length;
 		anim.speed = speed;
-		anim.reverse = reverse;
-		
-		
+		anim.reverse = false;
 		
 		return anim;
 	}
 	
-	public function getAnimFrame(index:Int) : Int {
-		if (_animations.exists(index))
-			return _animations.get(index).frame;	
-		return 0;
+	public function addChildTile(index:Int, diff:Int) : Void
+	{
+		_parentAnim.set(index, diff);
+		_animations.get(index - diff).children[diff-1] = diff;
 	}
 	
 	public function processAnimatedTiles() : Void
@@ -615,6 +630,7 @@ class AnimatedTile {
 		index = 0;
 		reverse = false;
 		frame = 0;
+		children = new Array<Int>();
 	}
 	public var speed:Float;
 	public var currentTime:Float;
@@ -623,6 +639,8 @@ class AnimatedTile {
 	public var frame:Int;
 	public var paused:Bool;
 	public var reverse:Bool;
+	
+	public var children:Array<Int>;
 	
 	var perc:Float = 0;
 	
@@ -633,10 +651,19 @@ class AnimatedTile {
 			currentTime = 0;
 			if (reverse) {
 				frame--;
-				if (frame <= 0)
+				if (frame < 0)
 				{
 					frame = length-1;
 				}
+				for (i in 0...children.length)
+				{
+					children[i]--;
+					if (children[i] < 0)
+					{
+						children[i] = length-1;
+					}
+				}
+				
 			}
 			else {
 				frame++;
@@ -644,7 +671,21 @@ class AnimatedTile {
 				{
 					frame = 0;
 				}
+				
+				for (i in 0...children.length)
+				{
+					children[i]++;
+					if (children[i] >= length)
+					{
+						children[i] = 0;
+					}
+				}
 			}
 		}
+	}
+	
+	public function getChildFrame(index:Int) : Int
+	{
+		return children[index];
 	}
 }
