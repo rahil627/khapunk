@@ -17,6 +17,9 @@ class TileAtlas
 	private var _height:Int;
 	private var _rect:Rectangle;
 	
+	public var cols:Int;
+	public var rows:Int;
+	
 	public function new(source:Dynamic) 
 	{
 		_regions = new Array<AtlasRegion>();
@@ -73,8 +76,8 @@ class TileAtlas
 	public function prepareTiles(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int,tileMarginHeight:Int)
 	{
 		
-		var cols:Int = Math.floor(_image.width / tileWidth);
-		var rows:Int = Math.floor(_image.height / tileHeight);
+		cols = Math.floor(_image.width / tileWidth);
+		rows = Math.floor(_image.height / tileHeight);
 
 		var r:AtlasRegion;
 		

@@ -132,6 +132,16 @@ class Tilemap extends Graphic
 		
 	}
 	
+	public function tileColumn() : Int
+	{
+		return _atlas.cols;
+	}
+	
+	public function tileRows() : Int
+	{
+		return _atlas.rows;
+	}
+	
 	/**
 	 * Sets the index of the tile at the position.
 	 * @param	column		Tile column.
@@ -508,12 +518,17 @@ class Tilemap extends Graphic
 				
 				if (hasAnimations) {
 					if (_animations.exists(tile)) {
+						if (_animations.get(tile).vertical)
+						tile +=  _animations.get(tile).frame * _atlas.rows;
+						else
 						tile +=  _animations.get(tile).frame;
 					}
-					else if (_parentAnim.exists(tile)) {
-						
-						parent = tile - _parentAnim.get(tile);
-						tile =  parent + _animations.get(parent).getChildFrame(_parentAnim.get(tile)-1);
+					else if (_parentAnim.exists(tile)) {	
+						parent = _parentAnim.get(tile);
+						if(!_animations.get(parent).vertical)
+						tile =  parent + _animations.get(parent).getChildFrame(tile-parent);
+						else 
+						tile =  parent + _animations.get(parent).getChildFrame(tile-parent) * _atlas.rows;
 					}
 				}
 				tr = _atlas.getRegion(tile);
@@ -534,7 +549,7 @@ class Tilemap extends Graphic
 	 * @param	reverse Wether the animation should be played backwards
 	 * @return  returns The object that holds the animation information.
 	 */
-	public function addAnimatedTile(index:Int, length:Int, speed:Int, reverse:Bool = false) : AnimatedTile
+	public function addAnimatedTile(index:Int, length:Int, speed:Int, reverse:Bool = false, vertical:Bool = false ) : AnimatedTile
 	{
 		var anim:AnimatedTile;
 		if (_animations.exists(index)) {
@@ -550,14 +565,15 @@ class Tilemap extends Graphic
 		anim.length = length;
 		anim.speed = speed;
 		anim.reverse = false;
+		anim.vertical = vertical;
 		
 		return anim;
 	}
 	
-	public function addChildTile(index:Int, diff:Int) : Void
+	public function addChildTile(index:Int, parent:Int) : Void
 	{
-		_parentAnim.set(index, diff);
-		_animations.get(index - diff).children[diff-1] = diff;
+		 _parentAnim.set(index, parent);
+		 _animations.get(parent).children[index - parent] = index - parent;
 	}
 	
 	public function processAnimatedTiles() : Void
@@ -638,6 +654,7 @@ class AnimatedTile {
 	public var frame:Int;
 	public var paused:Bool;
 	public var reverse:Bool;
+	public var vertical:Bool;
 	
 	public var children:Array<Int>;
 	
