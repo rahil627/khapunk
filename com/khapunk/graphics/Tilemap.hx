@@ -3,6 +3,8 @@ import com.khapunk.Graphic;
 import com.khapunk.graphics.atlas.AtlasRegion;
 import com.khapunk.graphics.atlas.TextureAtlas;
 import com.khapunk.graphics.atlas.TileAtlas;
+import com.khapunk.graphics.tilemap.AnimatedTile;
+import com.khapunk.graphics.tilemap.TileAnimationManager;
 import kha.Image;
 import kha.math.Vector2;
 import kha.Painter;
@@ -16,8 +18,6 @@ typedef Array2D = Array<Array<Int>>
 class Tilemap extends Graphic
 {
 
-
-		 
 	// Tilemap information.
 	private var _rect:Rectangle;
 	private var _width:Int;
@@ -43,7 +43,9 @@ class Tilemap extends Graphic
 	var _animations:Map<Int, AnimatedTile>;
 	var _parentAnim:Map<Int, Int>;
 	
+	public var alpha:Float = 1.0;
 	public var hasAnimations:Bool = false;
+	var localAnim:Bool = false;
 	
 	/**
 	* Scale of the canvas, effects both x and y scale.
@@ -126,10 +128,6 @@ class Tilemap extends Graphic
 			_setRows = Std.int(_atlas.imgHeight / tileHeight);
 		}
 		_setCount = _setColumns * _setRows;
-	
-		_animations = new Map<Int, AnimatedTile>();
-		_parentAnim = new Map<Int, Int>();
-		
 	}
 	
 	public function tileColumn() : Int
@@ -500,7 +498,7 @@ class Tilemap extends Graphic
 		//scy = Math.ceil(stepy) / tileHeight;
 		
 		
-		
+		painter.set_opacity(alpha);
 		var tr:AtlasRegion;
 		var parent:Int;
 		for (y in starty...desty)
@@ -517,6 +515,7 @@ class Tilemap extends Graphic
 				}
 				
 				if (hasAnimations) {
+					
 					if (_animations.exists(tile)) {
 						if (_animations.get(tile).vertical)
 						tile +=  _animations.get(tile).frame * _atlas.rows;
@@ -540,8 +539,8 @@ class Tilemap extends Graphic
 			}
 			wy += stepy;
 		}
+		painter.set_opacity(1);
 	}
-	
 	
 	/**
 	 * Adds animation information for a tile
@@ -552,19 +551,18 @@ class Tilemap extends Graphic
 	 * @param	vertical If our animation is setup vertical on our tileset.
 	 * @return  returns The object that holds the animation information.
 	 */
-	public function addAnimatedTile(index:Int, length:Int, speed:Int, reverse:Bool = false, vertical:Bool = false ) : AnimatedTile
-	{
+	public function addAnimatedTile(index:Int, length:Int, speed:Int, reverse:Bool = false, vertical:Bool = false, tileset:String) : AnimatedTile
+	{	
 		var anim:AnimatedTile;
 		if (_animations.exists(index)) {
 			anim = _animations.get(index);
-			
 		}
 		else {
 			anim = new AnimatedTile();
 			anim.index = index;
 			_animations.set(index, anim);
 		}
-		
+	
 		anim.length = length;
 		anim.speed = speed;
 		anim.reverse = false;
@@ -578,22 +576,52 @@ class Tilemap extends Graphic
 	 * @param	index The child GID
 	 * @param	parent The parent GID.
 	 */
-	public function addChildTile(index:Int, parent:Int) : Void
+	public function addChildTile(index:Int, parent:Int, tileset:String) : Void
 	{
 		 _parentAnim.set(index,parent);
 		 _animations.get(parent).children[index - parent - 1] = index - parent;
 	}
+
 	
-	public function processAnimatedTiles() : Void
+	public function initAnims(tileset:String, local:Bool = false): Void
 	{
-		for (anim in _animations) {
-			anim.update();
+		localAnim = local;
+		if (localAnim) {
+			if(_animations == null)
+			_animations = new Map<Int, AnimatedTile>();
+			if (_parentAnim == null)
+			_parentAnim = new Map<Int, Int>();
+		}
+		else{
+			if (!TileAnimationManager.layerExists(tileset))
+			{
+				_animations = new Map<Int, AnimatedTile>();
+				TileAnimationManager.addLayer(tileset, _animations);
+			}
+			else if(_animations == null)
+			{
+				_animations =  TileAnimationManager.getLayer(tileset);
+			}
+			
+			if (!TileAnimationManager.parentLayerExists(tileset))
+			{
+				_parentAnim = new Map<Int, Int>();
+				TileAnimationManager.addParentLayer(tileset, _parentAnim);
+			}
+			else if(_parentAnim == null)
+			{
+				_parentAnim = TileAnimationManager.getParentLayer(tileset);
+			}
 		}
 	}
 	
 	override public function update() 
 	{
-		processAnimatedTiles();
+		if (localAnim)
+		for (anim in _animations)
+		{
+			anim.update();
+		}
 	}
 	
 	/** @private Used by shiftTiles to update a tile from the tilemap. */
@@ -645,71 +673,3 @@ class Tilemap extends Graphic
 	
 }
 
-class AnimatedTile {
-	public function new() {
-		speed = 0;
-		currentTime = 0;
-		length = 0;
-		index = 0;
-		reverse = false;
-		frame = 0;
-		children = new Array<Int>();
-	}
-	public var speed:Float;
-	public var currentTime:Float;
-	public var length:Int;
-	public var index:Int;
-	public var frame:Int;
-	public var paused:Bool;
-	public var reverse:Bool;
-	public var vertical:Bool;
-	
-	public var children:Array<Int>;
-	
-	var perc:Float = 0;
-	
-	public function update() : Void
-	{
-		currentTime += KP.elapsed;
-		if (currentTime > 1 / speed) {
-			currentTime = 0;
-			if (reverse) {
-				frame--;
-				if (frame < 0)
-				{
-					frame = length-1;
-				}
-				for (i in 0...children.length)
-				{
-					children[i]--;
-					if (children[i] < 0)
-					{
-						children[i] = length-1;
-					}
-				}
-				
-			}
-			else {
-				frame++;
-				if (frame >= length)
-				{
-					frame = 0;
-				}
-				
-				for (i in 0...children.length)
-				{
-					children[i]++;
-					if (children[i] >= length)
-					{
-						children[i] = 0;
-					}
-				}
-			}
-		}
-	}
-	
-	public function getChildFrame(index:Int) : Int
-	{
-		return children[index];
-	}
-}

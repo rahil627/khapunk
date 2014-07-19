@@ -1,4 +1,5 @@
 package com.khapunk;
+import com.khapunk.graphics.tilemap.TileAnimationManager;
 import com.khapunk.utils.Input;
 import kha.math.Vector2;
 import kha.Mouse;
@@ -72,6 +73,7 @@ class Scene
 		_typeCount = new Map<String,Int>();
 		recycled = new Map<String,Entity>();
 		entityNames = new Map<String,Entity>();
+		TileAnimationManager.init();
 	}
 	
 	/**
@@ -113,6 +115,7 @@ class Scene
 			if (e.graphic != null && e.graphic.active) e.graphic.update();
 			e = e.updateNext;
 		}
+		TileAnimationManager.update();
 	}
 
 	/**
