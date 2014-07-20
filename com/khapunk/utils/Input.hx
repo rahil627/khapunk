@@ -3,6 +3,8 @@ import haxe.ds.Vector;
 import kha.Game;
 import kha.input.Keyboard;
 import kha.input.Mouse;
+import kha.input.Sensor;
+import kha.input.SensorType;
 import kha.input.Surface;
 import kha.Key;
 import kha.Sys;
@@ -35,6 +37,8 @@ class Input
 	 * Returns true if the device supports multi touch
 	 */
 	public static var multiTouchSupported(default, null):Bool = false;
+	public static var accelerationSupported(default, null):Bool = false;
+	public static var gyroscopeSupported(default, null):Bool = false;
 
 	
 	private static var _mouseX:Int = 0;
@@ -173,6 +177,17 @@ class Input
 		return  _mouseY;// Std.int(KP.stage.mouseY);
 	}
 	
+	public static var accX(default, null):Float = 0;
+	public static var accY(default, null):Float = 0;
+	public static var accZ(default, null):Float = 0;
+	
+	public static var gyroX(default, null):Float;
+	public static var gyroY(default, null):Float;
+	public static var gyroZ(default, null):Float;
+	
+	
+	
+	
 		/**
 	 * Defines a new input.
 	 * @param	name		String to map the input to.
@@ -279,6 +294,32 @@ class Input
 		}
 		touchNum = 0; 
 	
+		if (Sensor.get(SensorType.Accelerometer) != null)
+		{
+			Sensor.get(SensorType.Accelerometer).notify(onAccel);
+			accelerationSupported = true;
+		}
+		if (Sensor.get(SensorType.Gyroscope) != null)
+		{
+			Sensor.get(SensorType.Gyroscope).notify(onGyro);
+			gyroscopeSupported = true;
+		}
+		
+	}
+	
+	static private function onGyro(x: Float, y: Float, z: Float) : Void 
+	{
+		
+		gyroX = x;
+		gyroY = y;
+		gyroZ = z;
+	}
+	
+	static private function onAccel(x: Float, y: Float, z: Float) : Void 
+	{
+		accX = x;
+		accY = y;
+		accZ = z;
 	}
 	
 	/**
