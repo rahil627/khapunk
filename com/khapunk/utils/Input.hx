@@ -273,6 +273,10 @@ class Input
 			Surface.get().notify(onTouch, onTouchEnd, onTouchMove);
 			multiTouchSupported = true;
 		}
+		for (i in 0..._touches.length)
+		{
+			_touches[0] = new Touch(0, 0, i);
+		}
 		touchNum = 0; 
 	
 	}
@@ -303,7 +307,7 @@ class Input
 		if (multiTouchSupported)
 		{
 			for (touch in _touches) {
-				if (touch.active)
+				if(touch != null && touch.active)
 				touch.update();
 			}
 		}
@@ -349,7 +353,7 @@ class Input
 	{
 		for (touch in _touches)
 		{
-			if(touch.active)
+			if(touch != null && touch.active)
 				if (!touchCallback(touch))
 					break;
 		}

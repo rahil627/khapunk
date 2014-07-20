@@ -86,13 +86,13 @@ class Tilemap extends Graphic
 			throw "Cannot create a bitmapdata of width/height = 0";
 
 		// create the canvas
-#if neko
+/*#if neko
 		_maxWidth = 4000 - 4000 % tileWidth;
 		_maxHeight = 4000 - 4000 % tileHeight;
-#else
+#else*/
 		_maxWidth -= _maxWidth % tileWidth;
 		_maxHeight -= _maxHeight % tileHeight;
-#end
+//#end
 
 		
 

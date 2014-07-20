@@ -77,7 +77,7 @@ class KP
 	/**
 	 * Flash equivalent: int.MIN_VALUE
 	 */
-	public static inline var INT_MIN_VALUE = -2147483648;
+	public static inline var INT_MIN_VALUE = -2147483647;
 
 	/**
 	 * Flash equivalent: int.MAX_VALUE
