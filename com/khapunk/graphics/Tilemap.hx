@@ -40,12 +40,12 @@ class Tilemap extends Graphic
 	private var _setCount:Int;
 	private var _tile:Rectangle;
 	
-	var _animations:Map<Int, AnimatedTile>;
-	var _parentAnim:Map<Int, Int>;
+	public var animations:Map<Int, AnimatedTile>;
+	public var parentAnim:Map<Int, Int>;
 	
 	public var alpha:Float = 1.0;
 	public var hasAnimations:Bool = false;
-	var localAnim:Bool = false;
+	public var localAnim(default, null):Bool = false;
 	
 	/**
 	* Scale of the canvas, effects both x and y scale.
@@ -72,7 +72,6 @@ class Tilemap extends Graphic
 	
 		super();
 		_rect = KP.rect;
-	
 		// set some tilemap information
 		_width = width - (width % tileWidth);
 		_height = height - (height % tileHeight);
@@ -130,12 +129,12 @@ class Tilemap extends Graphic
 		_setCount = _setColumns * _setRows;
 	}
 	
-	public function tileColumn() : Int
+	public function numColInTileset() : Int
 	{
 		return _atlas.cols;
 	}
 	
-	public function tileRows() : Int
+	public function numRowInTileset() : Int
 	{
 		return _atlas.rows;
 	}
@@ -501,6 +500,8 @@ class Tilemap extends Graphic
 		painter.set_opacity(alpha);
 		var tr:AtlasRegion;
 		var parent:Int;
+		var animation:AnimatedTile;
+		var offset:Int = 0;
 		for (y in starty...desty)
 		{
 			wx = sx;
@@ -515,21 +516,27 @@ class Tilemap extends Graphic
 				}
 				
 				if (hasAnimations) {
-					
-					if (_animations.exists(tile)) {
-						if (_animations.get(tile).vertical)
-						tile +=  _animations.get(tile).frame * _atlas.rows;
+					if (animations.exists(tile)) {
+						animation = animations.get(tile);
+						offset = ((animation.offset == 0) ? 1:animation.offset);
+						if (animation.vertical)
+						tile +=  animation.frame * _atlas.cols * offset;
 						else
-						tile +=  _animations.get(tile).frame;
+						tile +=  animation.frame * offset;
 					}
-					else if (_parentAnim.exists(tile)) {	
+					else if (parentAnim.exists(tile)) {	
 						
-						parent = _parentAnim.get(tile);
-				
-						if(!_animations.get(parent).vertical)
-						tile =  parent + _animations.get(parent).getChildFrame(tile-parent-1);
+						parent = parentAnim.get(tile);
+						animation = animations.get(parent);
+						offset = ((animation.offset == 0) ? 1:animation.offset);
+						/*if  (animations.get(parent).scattered) {
+							var frame:Int = animations.get(parent).getChildFrame(tile-parent - 1);
+							tile =  parent + (frame == 0 ? 0:tile-parent -1);
+						}*/
+						if (animation.vertical)
+						tile =  parent + animation.getChildFrame(tile-parent - 1) * _atlas.cols * offset;
 						else 
-						tile =  parent + _animations.get(parent).getChildFrame(tile-parent - 1) * _atlas.rows;
+						tile =  parent + animation.getChildFrame(tile-parent - 1) * offset;
 					}
 				}
 				tr = _atlas.getRegion(tile);
@@ -551,23 +558,24 @@ class Tilemap extends Graphic
 	 * @param	vertical If our animation is setup vertical on our tileset.
 	 * @return  returns The object that holds the animation information.
 	 */
-	public function addAnimatedTile(index:Int, length:Int, speed:Int, reverse:Bool = false, vertical:Bool = false, tileset:String) : AnimatedTile
+	public function addAnimatedTile(index:Int, length:Int, speed:Int, reverse:Bool = false, vertical:Bool = false, offset:Int, tileset:String) : AnimatedTile
 	{	
 		var anim:AnimatedTile;
-		if (_animations.exists(index)) {
-			anim = _animations.get(index);
+		if (animations.exists(index)) {
+			anim = animations.get(index);
 		}
 		else {
 			anim = new AnimatedTile();
 			anim.index = index;
-			_animations.set(index, anim);
+			animations.set(index, anim);
 		}
 	
 		anim.length = length;
 		anim.speed = speed;
 		anim.reverse = false;
 		anim.vertical = vertical;
-		
+		anim.offset = offset;
+	
 		return anim;
 	}
 	
@@ -578,8 +586,8 @@ class Tilemap extends Graphic
 	 */
 	public function addChildTile(index:Int, parent:Int, tileset:String) : Void
 	{
-		 _parentAnim.set(index,parent);
-		 _animations.get(parent).children[index - parent - 1] = index - parent;
+		 parentAnim.set(index,parent);
+		 animations.get(parent).children[index - parent - 1] = index - parent;
 	}
 
 	
@@ -587,30 +595,30 @@ class Tilemap extends Graphic
 	{
 		localAnim = local;
 		if (localAnim) {
-			if(_animations == null)
-			_animations = new Map<Int, AnimatedTile>();
-			if (_parentAnim == null)
-			_parentAnim = new Map<Int, Int>();
+			if(animations == null)
+			animations = new Map<Int, AnimatedTile>();
+			if (parentAnim == null)
+			parentAnim = new Map<Int, Int>();
 		}
 		else{
 			if (!TileAnimationManager.layerExists(tileset))
 			{
-				_animations = new Map<Int, AnimatedTile>();
-				TileAnimationManager.addLayer(tileset, _animations);
+				animations = new Map<Int, AnimatedTile>();
+				TileAnimationManager.addLayer(tileset, animations);
 			}
-			else if(_animations == null)
+			else if(animations == null)
 			{
-				_animations =  TileAnimationManager.getLayer(tileset);
+				animations =  TileAnimationManager.getLayer(tileset);
 			}
 			
 			if (!TileAnimationManager.parentLayerExists(tileset))
 			{
-				_parentAnim = new Map<Int, Int>();
-				TileAnimationManager.addParentLayer(tileset, _parentAnim);
+				parentAnim = new Map<Int, Int>();
+				TileAnimationManager.addParentLayer(tileset, parentAnim);
 			}
-			else if(_parentAnim == null)
+			else if(parentAnim == null)
 			{
-				_parentAnim = TileAnimationManager.getParentLayer(tileset);
+				parentAnim = TileAnimationManager.getParentLayer(tileset);
 			}
 		}
 	}
@@ -618,7 +626,7 @@ class Tilemap extends Graphic
 	override public function update() 
 	{
 		if (localAnim)
-		for (anim in _animations)
+		for (anim in animations)
 		{
 			anim.update();
 		}

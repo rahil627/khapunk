@@ -13,6 +13,7 @@ class AnimatedTile {
 		reverse = false;
 		frame = 0;
 		children = new Array<Int>();
+		offset = 0;
 	}
 	public var speed:Float;
 	public var currentTime:Float;
@@ -22,6 +23,7 @@ class AnimatedTile {
 	public var paused:Bool;
 	public var reverse:Bool;
 	public var vertical:Bool;
+	public var offset:Int;
 	
 	public var children:Array<Int>;
 	
