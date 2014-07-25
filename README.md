@@ -67,8 +67,6 @@ class Empty extends Game {
 	public function new() {
 		engine = new Engine();
 		super("KhaPunk");
-		
-		
 	}
 	
 	override public function update():Void 
@@ -86,17 +84,11 @@ class Empty extends Game {
 	override public function init():Void 
 	{
 		Loader.the.loadRoom("MyRoom", onLoaded);
-	}
-	
-	override public function onPause():Void 
-	{
-		engine.paused = true;
-		super.onPause();
+		engine.setup();
 	}
 	
 	function onLoaded() : Void
 	{
-		engine.setup();
 		//Create scene;
 		kpScene = new Scene();
 		//Init a graphic object
