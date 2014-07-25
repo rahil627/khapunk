@@ -41,6 +41,79 @@ TODO
 * Debug console
 * Create example pack
 
+
+###How To:###
+```
+#!haxe
+
+package;
+
+import com.khapunk.Engine;
+import com.khapunk.Entity;
+import com.khapunk.graphics.PunkImage;
+import com.khapunk.KP;
+import com.khapunk.Scene;
+import kha.Game;
+import kha.Loader;
+import kha.Painter;
+
+class Empty extends Game {
+	
+	var engine:Engine;
+	var kpScene:Scene;
+	var ent:Entity;
+
+	
+	public function new() {
+		engine = new Engine();
+		super("KhaPunk");
+		
+		
+	}
+	
+	override public function update():Void 
+	{
+		engine.update();
+	}
+	
+	override public function render(painter:Painter):Void 
+	{
+		painter.begin();
+		engine.render(painter);
+		painter.end();
+	}
+	
+	override public function init():Void 
+	{
+		Loader.the.loadRoom("MyRoom", onLoaded);
+	}
+	
+	override public function onPause():Void 
+	{
+		engine.paused = true;
+		super.onPause();
+	}
+	
+	function onLoaded() : Void
+	{
+		engine.setup();
+		//Create scene;
+		kpScene = new Scene();
+		//Init a graphic object
+		var g:PunkImage = new PunkImage(Loader.the.getImage("myImage"));
+		//create entity and add graphic
+		//Set this entities graphic to g
+		ent = new Entity(100, 100, g);
+		//Add entity to scene
+		kpScene.add(ent);
+		//Set current scene
+		KP.scene = kpScene;
+	}
+	
+	
+}
+```
+
 ---
 
 Tiled 
