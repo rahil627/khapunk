@@ -402,9 +402,11 @@ class Input
 	//------------------------------------------------
 	private static function onKeyDown(key:Key, char:String) : Void
 	{
-	
 		//var code:Int = keyCode(e);
-		var code:Int = char.toUpperCase().charCodeAt(0);
+		var code:Int = getCode(key);
+		
+		if(code == -1)
+		code = char.toUpperCase().charCodeAt(0);
 		
 		if (code == -1) // No key
 			return;
@@ -412,10 +414,10 @@ class Input
 		lastKey = code;
 		
 		if (key == Key.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
-		else if ((code > 47 && code < 58) || (code > 64 && code < 91) || code == 32)
+		else //if ((code > 47 && code < 58) || (code > 64 && code < 91) || code == 32)
 		{
-			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
 			
+			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
 		
 			if (key == Key.SHIFT)
 				char = char.toUpperCase();
@@ -435,8 +437,13 @@ class Input
 	
 	private static function onKeyUp(key:Key, char:String) : Void
 	{
+		trace(key);
 		//var code:Int = keyCode(e);
-		var code:Int = char.toUpperCase().charCodeAt(0);
+		var code:Int = getCode(key);
+		
+		if(code == -1)
+		code = char.toUpperCase().charCodeAt(0);
+		
 		if (code == -1) // No key
 			return;
 
@@ -446,6 +453,40 @@ class Input
 			_keyNum--;
 			_release[_releaseNum++] = code;
 		}
+	}
+	
+	private static function getCode(k:Key) : Int
+	{
+		switch(k) {
+	
+			case Key.BACKSPACE:
+				return PunkKey.BACKSPACE;
+			case Key.DEL:
+				return PunkKey.DELETE;
+			case Key.DOWN:
+				return PunkKey.DOWN;
+			case Key.UP:
+				return PunkKey.UP;
+			case Key.LEFT:
+				return PunkKey.LEFT;
+			case Key.RIGHT:
+				return PunkKey.RIGHT;
+			case Key.SHIFT:
+				return PunkKey.SHIFT;
+			case Key.ESC:
+				return PunkKey.ESCAPE;
+			case Key.ENTER:
+				return PunkKey.ENTER;
+			case Key.TAB:
+				return PunkKey.TAB;
+			case Key.CTRL:
+				return PunkKey.CONTROL;
+			case Key.ALT:
+			case Key.CHAR:
+				return -1;
+		}
+		
+		return -1;
 	}
 	
 	/*public static function keyCode(k:String) : Int

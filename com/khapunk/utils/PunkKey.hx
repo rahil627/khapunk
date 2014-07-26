@@ -1,6 +1,6 @@
 package com.khapunk.utils;
 
-class Key
+class PunkKey
 {
 	public inline static var ANY = -1;
 
