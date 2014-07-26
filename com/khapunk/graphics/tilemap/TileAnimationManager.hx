@@ -52,7 +52,7 @@ class TileAnimationManager
 	 * @param	vertical If our animation is setup vertical on our tileset.
 	 * @return  returns The object that holds the animation information.
 	 */
-	public static function addAnimatedTile(tileset:String,index:Int, length:Int, speed:Int, reverse:Bool = false, vertical:Bool = false, tileset:String ) : AnimatedTile
+	public static function addAnimatedTile(index:Int, frames:Array<Int>, durations:Array<Float>, tileset:String, speed:Int = 1, reverse:Bool = false): AnimatedTile
 	{	
 		var anim:AnimatedTile;
 		
@@ -67,10 +67,13 @@ class TileAnimationManager
 			_animlayers.get(tileset).set(index, anim);
 		}
 	
-		anim.length = length;
+		anim.length = frames.length;
 		anim.speed = speed;
-		anim.reverse = false;
-		anim.vertical = vertical;
+		anim.reverse = reverse;
+		anim.frames = frames;
+		anim.durations = durations;
+		anim.frameTimers[0] = 0;
+		anim.framePos[0] = 0;
 		
 		return anim;
 	}
@@ -83,8 +86,10 @@ class TileAnimationManager
 	 */
 	public function addChildTile(tileset:String, index:Int, parent:Int, tileset:String) : Void
 	{
-		 _parentLayers.get(tileset).set(index,parent);
-		_animlayers.get(tileset).get(parent).children[index - parent - 1] = index - parent;
+		 _parentLayers.get(tileset).set(index, parent);
+		 var l:Int = _animlayers.get(tileset).get(parent).framePos.length;
+		_animlayers.get(tileset).get(parent).framePos[l] = l;
+		_animlayers.get(tileset).get(parent).frameTimers[l] = 0.0;
 	}
 
 	

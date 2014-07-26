@@ -516,27 +516,16 @@ class Tilemap extends Graphic
 				}
 				
 				if (hasAnimations) {
+					
 					if (animations.exists(tile)) {
 						animation = animations.get(tile);
-						offset = ((animation.offset == 0) ? 1:animation.offset);
-						if (animation.vertical)
-						tile +=  animation.frame * _atlas.cols * offset;
-						else
-						tile +=  animation.frame * offset;
+						tile =  animation.getParentFrame();
 					}
 					else if (parentAnim.exists(tile)) {	
 						
 						parent = parentAnim.get(tile);
 						animation = animations.get(parent);
-						offset = ((animation.offset == 0) ? 1:animation.offset);
-						/*if  (animations.get(parent).scattered) {
-							var frame:Int = animations.get(parent).getChildFrame(tile-parent - 1);
-							tile =  parent + (frame == 0 ? 0:tile-parent -1);
-						}*/
-						if (animation.vertical)
-						tile =  parent + animation.getChildFrame(tile-parent - 1) * _atlas.cols * offset;
-						else 
-						tile =  parent + animation.getChildFrame(tile-parent - 1) * offset;
+						tile = animation.getChildFrame(tile);
 					}
 				}
 				tr = _atlas.getRegion(tile);
@@ -558,7 +547,7 @@ class Tilemap extends Graphic
 	 * @param	vertical If our animation is setup vertical on our tileset.
 	 * @return  returns The object that holds the animation information.
 	 */
-	public function addAnimatedTile(index:Int, length:Int, speed:Int, reverse:Bool = false, vertical:Bool = false, offset:Int, tileset:String) : AnimatedTile
+	public function addAnimatedTile(index:Int, frames:Array<Int>, durations:Array<Float>, tileset:String,speed:Int = 1, reverse:Bool = false) : AnimatedTile
 	{	
 		var anim:AnimatedTile;
 		if (animations.exists(index)) {
@@ -570,12 +559,14 @@ class Tilemap extends Graphic
 			animations.set(index, anim);
 		}
 	
-		anim.length = length;
+		//TODO copy values?
+		anim.frames = frames;
+		anim.durations = durations;
+		anim.reverse = reverse;
 		anim.speed = speed;
-		anim.reverse = false;
-		anim.vertical = vertical;
-		anim.offset = offset;
-	
+		anim.length = frames.length;
+		anim.frameTimers[0] = 0;
+		anim.framePos[0] = 0;
 		return anim;
 	}
 	
@@ -586,8 +577,10 @@ class Tilemap extends Graphic
 	 */
 	public function addChildTile(index:Int, parent:Int, tileset:String) : Void
 	{
-		 parentAnim.set(index,parent);
-		 animations.get(parent).children[index - parent - 1] = index - parent;
+		 parentAnim.set(index, parent);
+		 var l:Int = animations.get(parent).framePos.length;
+		 animations.get(parent).framePos[l] = l;
+		 animations.get(parent).frameTimers[l] = 0.0;
 	}
 
 	
