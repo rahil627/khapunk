@@ -437,7 +437,6 @@ class Input
 	
 	private static function onKeyUp(key:Key, char:String) : Void
 	{
-		trace(key);
 		//var code:Int = keyCode(e);
 		var code:Int = getCode(key);
 		
