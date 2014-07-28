@@ -206,17 +206,16 @@ class Entity
 	{
 		if (_scene == null) return null;
 
-		var e:Entity = _scene._typeFirst.get(type);
-		if (!collidable || e == null) return null;
+		var entities = _scene.entitiesForType(type);
+		if (!collidable || entities == null) return null;
 
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
 
 		if (_mask == null)
 		{
-			while (e != null)
+			for (e in entities)
 			{
-			
 				if (e.collidable && e != this
 					&& x - originX + width > e.x - e.originX
 					&& y - originY + height > e.y - e.originY
@@ -224,17 +223,16 @@ class Entity
 					&& y - originY < e.y - e.originY + e.height)
 				{
 					if (e._mask == null || e._mask.collide(HITBOX))
-					{	
+					{
 						this.x = _x; this.y = _y;
 						return e;
 					}
 				}
-				e = e.typeNext;
 			}
 		}
 		else
 		{
-			while (e != null)
+			for (e in entities)
 			{
 				if (e.collidable && e != this
 					&& x - originX + width > e.x - e.originX
@@ -248,7 +246,6 @@ class Entity
 						return e;
 					}
 				}
-				e = e.typeNext;
 			}
 		}
 		this.x = _x; this.y = _y;
@@ -405,8 +402,8 @@ class Entity
 	{
 		if (_scene == null) return;
 
-		var e:Entity = _scene._typeFirst.get(type);
-		if (!collidable || e == null) return;
+		var entities = _scene.entitiesForType(type);
+		if (!collidable || entities == null) return;
 
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
@@ -414,7 +411,7 @@ class Entity
 
 		if (_mask == null)
 		{
-			while (e != null)
+			for (e in entities)
 			{
 				e = cast e;
 				if (e.collidable && e != this
@@ -425,12 +422,11 @@ class Entity
 				{
 					if ((untyped e._mask) == null || (untyped e._mask).collide(HITBOX)) array[n++] = cast e;
 				}
-				e = e.typeNext;
 			}
 		}
 		else
 		{
-			while (e != null)
+			for (e in entities)
 			{
 				e = cast e;
 				if (e.collidable && e != this
@@ -441,7 +437,6 @@ class Entity
 				{
 					if (_mask.collide((untyped e._mask) != null ? (untyped e._mask) : (untyped e.HITBOX))) array[n++] = cast e;
 				}
-				e = e.typeNext;
 			}
 		}
 		this.x = _x; this.y = _y;

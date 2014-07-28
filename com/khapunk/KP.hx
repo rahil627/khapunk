@@ -11,11 +11,16 @@ import kha.Scheduler;
  */
 class KP
 {
-		// Scene information.
-	private static var _scene:Scene = new Scene();
-	private static var _goto:Scene;
 
-		/**
+	/**
+	 * The currently active Scene object. When you set this, the Scene is flagged
+	 * to switch, but won't actually do so until the end of the current frame.
+	 */
+	public static var scene(get, set):Scene;
+	private static inline function get_scene():Scene { return engine.scene; }
+	private static inline function set_scene(value:Scene):Scene { return engine.scene = value;}
+	
+	/**
 	 * Flash equivalent: Number.MAX_VALUE
 	 */
 #if flash
@@ -132,32 +137,6 @@ class KP
 	{
 		halfHeight = height / 2;
 		halfWidth = width / 2;
-	}
-	
-	/**
-	 * The currently active Scene object. When you set this, the Scene is flagged
-	 * to switch, but won't actually do so until the end of the current frame.
-	 */
-	public static var scene(get, set):Scene;
-	private static inline function get_scene():Scene { return _scene; }
-	private static function set_scene(value:Scene):Scene
-	{
-		if (_goto != null)
-		{
-			if (_goto == value) return value;
-		}
-		else
-		{
-			if (_scene == value) return value;
-		}
-		_goto = value;
-		return _scene;
-	}
-	
-	public static inline function swapScene()
-	{
-		_scene = _goto;
-		_goto = null;
 	}
 	
 	/**
@@ -540,6 +519,30 @@ class KP
 	}
 	
 	/**
+	 * Binary insertion sort
+	 * @param list     A list to insert into
+	 * @param key      The key to insert
+	 * @param compare  A comparison function to determine sort order
+	 */
+	public static function insertSortedKey<T>(list:Array<T>, key:T, compare:T->T->Int):Void
+	{
+		var result:Int = 0,
+			mid:Int = 0,
+			min:Int = 0,
+			max:Int = list.length - 1;
+		while (max >= min)
+		{
+			mid = min + Std.int((max - min) / 2);
+			result = compare(list[mid], key);
+			if (result > 0) max = mid - 1;
+			else if (result < 0) min = mid + 1;
+			else return;
+		}
+
+		list.insert(result > 0 ? mid : mid + 1, key);
+	}
+	
+	/**
 	 * Clamps the object inside the rectangle.
 	 * @param	object		The object to clamp (must have an x and y property).
 	 * @param	x			Rectangle's x.
@@ -681,14 +684,14 @@ class KP
 			return options[Std.int(Math.max(indexOf(options, current) - 1, 0))];
 	}
 	
-		/**
+	/**
 	 * Swaps the current item between a and b. Useful for quick state/string/value swapping.
 	 * @param	current		The currently selected item.
 	 * @param	a			Item a.
 	 * @param	b			Item b.
 	 * @return	Returns a if current is b, and b if current is a.
 	 */
-	public static inline function swap(current:Dynamic, a:Dynamic, b:Dynamic):Dynamic
+	public static inline function swap<T>(current:T, a:T, b:T):T
 	{
 		return current == a ? b : a;
 	}
@@ -908,9 +911,6 @@ class KP
 			}
 		}
 	}
-
-	public static inline function gotoIsNull():Bool { return (_goto == null); }
-	
 	
 	/**
 	 * Cause the screen to shake for a specified length of time.
@@ -925,6 +925,38 @@ class KP
 		_shakeduration = _shakeTime;
 		
 		_shakeEase = ease;
+	}
+	
+	
+		/**
+	 * Gets an array of frame indices.
+	 * @param	from	Starting frame.
+	 * @param	to		Ending frame.
+	 * @param	skip	Skip amount every frame (eg. use 1 for every 2nd frame).
+	 *
+	 * @return	The array.
+	 */
+	public static function frames(from:Int, to:Int, skip:Int = 0):Array<Int>
+	{
+		var a:Array<Int> = new Array<Int>();
+		skip ++;
+		if (from < to)
+		{
+			while (from <= to)
+			{
+				a.push(from);
+				from += skip;
+			}
+		}
+		else
+		{
+			while (from >= to)
+			{
+				a.push(from);
+				from -= skip;
+			}
+		}
+		return a;
 	}
 	
 	@:dox(hide)

@@ -21,20 +21,17 @@ class Scene
 	private var _count:Int;
 
 	// Render information.
-	private var _layerSort:Bool;
-	private var layerList:Array<Int>;
-	private var layerDisplay:Map<Int,Bool>;
-	private var _layerCount:Map<Int, Int>;
-
-	private var renderFirst:Map<Int,Entity>;
-	private var renderLast:Map<Int,Entity>;
+	private var _layerList:Array<Int>;
+	private var _layerDisplay:Map<Int,Bool>;
+	private var _layers:Map<Int,List<Entity>>;
 
 	private var _classCount:Map<String,Int>;
 
-	@:allow(com.khapunk.Entity)
-	private var _typeFirst:Map<String,Entity>;
-	private var _typeCount:Map<String,Int>;
+	private var _types:Map<String,List<Entity>>;
 
+	// Update information.
+	private var _update:List<Entity>;
+	
 	private var recycled:Map<String,Entity>;
 	private var entityNames:Map<String,Entity>;
 	
@@ -57,20 +54,16 @@ class Scene
 		camera = new Vector2();
 		_count = 0;
 
-		layerList = new Array<Int>();
-		_layerCount = new Map<Int, Int>();
-
+		_layerList = new Array<Int>();
+		_update = new List<Entity>();
+		
 		_add = new Array<Entity>();
 		_remove = new Array<Entity>();
 		_recycle = new Array<Entity>();
-
-		layerDisplay = new Map<Int,Bool>();
-		renderFirst = new Map<Int,Entity>();
-		renderLast = new Map<Int,Entity>();
-		_typeFirst = new Map<String,Entity>();
-
+		_layers = new Map < Int, List<Entity> > ();
+		_layerDisplay = new Map<Int,Bool>();
+		_types = new Map < String, List<Entity> > ();
 		_classCount = new Map<String,Int>();
-		_typeCount = new Map<String,Int>();
 		recycled = new Map<String,Entity>();
 		entityNames = new Map<String,Entity>();
 		TileAnimationManager.init();
@@ -103,9 +96,8 @@ class Scene
 	 */
 	public function update() : Void
 	{
-		// update the entities
-		var e:Entity = updateFirst;
-		while (e != null)
+			// update the entities
+		for (e in _update)
 		{
 			if (e.active)
 			{
@@ -113,8 +105,8 @@ class Scene
 				e.update();
 			}
 			if (e.graphic != null && e.graphic.active) e.graphic.update();
-			e = e.updateNext;
 		}
+		
 		TileAnimationManager.update();
 	}
 
@@ -125,7 +117,7 @@ class Scene
 	 */
 	public inline function showLayer(layer:Int, show:Bool=true): Void
 	{
-		layerDisplay.set(layer, show);
+		_layerDisplay.set(layer, show);
 	}
 	
 	/**
@@ -133,7 +125,7 @@ class Scene
 	 */
 	public inline function layerVisible(layer:Int): Bool
 	{
-		return !layerDisplay.exists(layer) || layerDisplay.get(layer);
+		return !_layerDisplay.exists(layer) || _layerDisplay.get(layer);
 	}
 	
 	/**
@@ -152,28 +144,15 @@ class Scene
 	public function render(painter:Painter) : Void
 	{	
 
-	 
-		// sort the depth list
-		if (_layerSort)
-		{
-			if (layerList.length > 1) layerList.sort(layerSort);
-			_layerSort = false;
-		}
-
-		//if (KP.renderMode == RenderMode.HARDWARE)
-			//AtlasData.startScene(this);
-
 		// render the entities in order of depth
 		var e:Entity;
-		for (layer in layerList)
+				// render the entities in order of depth
+		for (layer in _layerList)
 		{
 			if (!layerVisible(layer)) continue;
-			e = renderLast.get(layer);
-			while (e != null)
+			for (e in _layers.get(layer))
 			{
-				
 				if (e.visible) e.render(painter);
-				e = e.renderPrev;
 			}
 		}
 
@@ -230,11 +209,9 @@ class Scene
 	 */
 	public function removeAll()
 	{
-		var e:Entity = updateFirst;
-		while (e != null)
+		for (e in _update)
 		{
 			_remove[_remove.length] = e;
-			e = e.updateNext;
 		}
 	}
 	
@@ -365,16 +342,10 @@ class Scene
 	 */
 	public function bringToFront(e:Entity):Bool
 	{
-		if (e._scene != this || e.renderPrev == null) return false;
-		// pull from list
-		e.renderPrev.renderNext = e.renderNext;
-		if (e.renderNext != null) e.renderNext.renderPrev = e.renderPrev;
-		else renderLast.set(e._layer, e.renderPrev);
-		// place at the start
-		e.renderNext = renderFirst.get(e._layer);
-		e.renderNext.renderPrev = e;
-		renderFirst.set(e._layer, e);
-		e.renderPrev = null;
+		if (e._scene != this) return false;
+		var list = _layers.get(e._layer);
+		list.remove(e);
+		list.push(e);
 		return true;
 	}
 	
@@ -385,16 +356,10 @@ class Scene
 	 */
 	public function sendToBack(e:Entity):Bool
 	{
-		if (e._scene != this || e.renderNext == null) return false;
-		// pull from list
-		e.renderNext.renderPrev = e.renderPrev;
-		if (e.renderPrev != null) e.renderPrev.renderNext = e.renderNext;
-		else renderFirst.set(e._layer, e.renderNext);
-		// place at the end
-		e.renderPrev = renderLast.get(e._layer);
-		e.renderPrev.renderNext = e;
-		renderLast.set(e._layer, e);
-		e.renderNext = null;
+		if (e._scene != this) return false;
+		var list = _layers.get(e._layer);
+		list.remove(e);
+		list.add(e);
 		return true;
 	}
 	
@@ -405,17 +370,8 @@ class Scene
 	 */
 	public function bringForward(e:Entity):Bool
 	{
-		if (e._scene != this || e.renderPrev == null) return false;
-		// pull from list
-		e.renderPrev.renderNext = e.renderNext;
-		if (e.renderNext != null) e.renderNext.renderPrev = e.renderPrev;
-		else renderLast.set(e._layer, e.renderPrev);
-		// shift towards the front
-		e.renderNext = e.renderPrev;
-		e.renderPrev = e.renderPrev.renderPrev;
-		e.renderNext.renderPrev = e;
-		if (e.renderPrev != null) e.renderPrev.renderNext = e;
-		else renderFirst.set(e._layer, e);
+		if (e._scene != this) return false;
+		// TODO: implement bringForward
 		return true;
 	}
 	
@@ -426,17 +382,8 @@ class Scene
 	 */
 	public function sendBackward(e:Entity):Bool
 	{
-		if (e._scene != this || e.renderNext == null) return false;
-		// pull from list
-		e.renderNext.renderPrev = e.renderPrev;
-		if (e.renderPrev != null) e.renderPrev.renderNext = e.renderNext;
-		else renderFirst.set(e._layer, e.renderNext);
-		// shift towards the back
-		e.renderPrev = e.renderNext;
-		e.renderNext = e.renderNext.renderNext;
-		e.renderPrev.renderNext = e;
-		if (e.renderNext != null) e.renderNext.renderPrev = e;
-		else renderLast.set(e._layer, e);
+		if (e._scene != this) return false;
+		// TODO: implement sendBackward
 		return true;
 	}
 	
@@ -471,11 +418,12 @@ class Scene
 	 */
 	public function collideRect(type:String, rX:Float, rY:Float, rWidth:Float, rHeight:Float):Entity
 	{
-		var e:Entity = _typeFirst.get(type);
-		while (e != null)
+		if (_types.exists(type))
 		{
-			if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) return e;
-			e = e.typeNext;
+			for (e in _types.get(type))
+			{
+				if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) return e;
+			}
 		}
 		return null;
 	}
@@ -489,25 +437,26 @@ class Scene
 	 */
 	public function collidePoint(type:String, pX:Float, pY:Float):Entity
 	{
-		var e:Entity = _typeFirst.get(type),
-			result:Entity = null;
-		while (e != null)
+		var result:Entity = null;
+		if (_types.exists(type))
 		{
-			// only look for entities that collide
-			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY))
+			for (e in _types.get(type))
 			{
-				// the first one might be the front one
-				if (result == null)
+				// only look for entities that collide
+				if (e.collidable && e.collidePoint(e.x, e.y, pX, pY))
 				{
-					result = e;
-				// compare if the new collided entity is above the former one (lower valuer is toward, higher value is backward)
-				}
-				else if(e._layer < result.layer)
-				{
-					result = e;
+					// the first one might be the front one
+					if (result == null)
+					{
+						result = e;
+					}
+					// compare if the new collided entity is above the former one (lower valuer is toward, higher value is backward)
+					else if(e.layer < result.layer)
+					{
+						result = e;
+					}
 				}
 			}
-			e = e.typeNext;
 		}
 		return result;
 	}
@@ -654,12 +603,13 @@ class Scene
 	 */
 	public function collideRectInto<E:Entity>(type:String, rX:Float, rY:Float, rWidth:Float, rHeight:Float, into:Array<E>)
 	{
-		var e:Entity = _typeFirst.get(type),
-			n:Int = into.length;
-		while (e != null)
+		var n:Int = into.length;
+		if (_types.exists(type))
 		{
-			if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) into[n ++] = cast e;
-			e = e.typeNext;
+			for (e in _types.get(type))
+			{
+				if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) into[n ++] = cast e;
+			}
 		}
 	}
 
@@ -674,14 +624,13 @@ class Scene
 	 */
 	public function collideCircleInto<E:Entity>(type:String, circleX:Float, circleY:Float, radius:Float , into:Array<E>)
 	{
-		var e:Entity = _typeFirst.get(type),
-			n:Int = into.length;
+		if (!_types.exists(type)) return;
+		var n:Int = into.length;
 
 		radius *= radius;//Square it to avoid the square root
-		while (e != null)
+		for (e in _types.get(type))
 		{
 			if (KP.distanceSquared(circleX, circleY, e.x, e.y) < radius) into[n ++] = cast e;
-			e = e.typeNext;
 		}
 	}
 
@@ -695,12 +644,11 @@ class Scene
 	 */
 	public function collidePointInto<E:Entity>(type:String, pX:Float, pY:Float, into:Array<E>)
 	{
-		var e:Entity = _typeFirst.get(type),
-			n:Int = into.length;
-		while (e != null)
+		if (!_types.exists(type)) return;
+		var n:Int = into.length;
+		for (e in _types.get(type))
 		{
 			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY)) into[n ++] = cast e;
-			e = e.typeNext;
 		}
 	}
 
@@ -715,10 +663,10 @@ class Scene
 	 */
 	public function nearestToRect(type:String, x:Float, y:Float, width:Float, height:Float):Entity
 	{
-		var e:Entity = _typeFirst.get(type),
-			nearDist:Float = KP.NUMBER_MAX_VALUE,
+		if (!_types.exists(type)) return null;
+		var nearDist:Float = KP.NUMBER_MAX_VALUE,
 			near:Entity = null, dist:Float;
-		while (e != null)
+		for (e in _types.get(type))
 		{
 			dist = squareRects(x, y, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
 			if (dist < nearDist)
@@ -726,7 +674,6 @@ class Scene
 				nearDist = dist;
 				near = e;
 			}
-			e = e.typeNext;
 		}
 		return near;
 	}
@@ -740,14 +687,14 @@ class Scene
 	 */
 	public function nearestToEntity(type:String, e:Entity, useHitboxes:Bool = false):Entity
 	{
+		if (!_types.exists(type)) return null;
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
-		var n:Entity = _typeFirst.get(type),
-			nearDist:Float = KP.NUMBER_MAX_VALUE,
+		var nearDist:Float = KP.NUMBER_MAX_VALUE,
 			near:Entity = null,
 			dist:Float,
 			x:Float = e.x - e.originX,
 			y:Float = e.y - e.originY;
-		while (n != null)
+		for (n in _types.get(type))
 		{
 			dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
 			if (dist < nearDist)
@@ -755,7 +702,6 @@ class Scene
 				nearDist = dist;
 				near = n;
 			}
-			n = n.typeNext;
 		}
 		return near;
 	}
@@ -771,14 +717,14 @@ class Scene
 	 */
 	public function nearestToClass(type:String, e:Entity, classType:Dynamic, useHitboxes:Bool = false):Entity
 	{
+		if (!_types.exists(type)) return null;
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
-		var n:Entity = _typeFirst.get(type),
-			nearDist:Float = KP.NUMBER_MAX_VALUE,
+		var nearDist:Float = KP.NUMBER_MAX_VALUE,
 			near:Entity = null,
 			dist:Float,
 			x:Float = e.x - e.originX,
 			y:Float = e.y - e.originY;
-		while (n != null)
+		for (n in _types.get(type))
 		{
 			dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
 			if (dist < nearDist && Std.is(e, classType))
@@ -786,7 +732,6 @@ class Scene
 				nearDist = dist;
 				near = n;
 			}
-			n = n.typeNext;
 		}
 		return near;
 	}
@@ -801,13 +746,13 @@ class Scene
 	 */
 	public function nearestToPoint(type:String, x:Float, y:Float, useHitboxes:Bool = false):Entity
 	{
-		var n:Entity = _typeFirst.get(type),
-			nearDist:Float = KP.NUMBER_MAX_VALUE,
+		if (!_types.exists(type)) return null;
+		var nearDist:Float = KP.NUMBER_MAX_VALUE,
 			near:Entity = null,
 			dist:Float;
 		if (useHitboxes)
 		{
-			while (n != null)
+			for (n in _types.get(type))
 			{
 				dist = squarePointRect(x, y, n.x - n.originX, n.y - n.originY, n.width, n.height);
 				if (dist < nearDist)
@@ -815,12 +760,11 @@ class Scene
 					nearDist = dist;
 					near = n;
 				}
-				n = n.typeNext;
 			}
 		}
 		else
 		{
-			while (n != null)
+			for (n in _types.get(type))
 			{
 				dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
 				if (dist < nearDist)
@@ -828,7 +772,6 @@ class Scene
 					nearDist = dist;
 					near = n;
 				}
-				n = n.typeNext;
 			}
 		}
 		return near;
@@ -838,7 +781,7 @@ class Scene
 	 * How many Entities are in the Scene.
 	 */
 	public var count(get, never):Int;
-	private inline function get_count():Int { return _count; }
+	private inline function get_count():Int { return _update.length; }
 
 	/**
 	 * Returns the amount of Entities of the type are in the Scene.
@@ -847,7 +790,7 @@ class Scene
 	 */
 	public inline function typeCount(type:String):Int
 	{
-		return _typeCount.exists(type) ? _typeCount.get(type) : 0;
+		return _types.exists(type) ? _types.get(type).length : 0;
 	}
 
 	/**
@@ -867,32 +810,42 @@ class Scene
 	 */
 	public inline function layerCount(layer:Int):Int
 	{
-		return _layerCount.exists(layer) ? _layerCount.get(layer) : 0;
+		return _layers.exists(layer) ? _layers.get(layer).length : 0;
 	}
 
 	/**
 	 * The first Entity in the Scene.
 	 */
 	public var first(get, null):Entity;
-	private inline function get_first():Entity { return updateFirst; }
+	private inline function get_first():Entity { return _update.first(); }
 
 	/**
 	 * How many Entity layers the Scene has.
 	 */
 	public var layers(get, null):Int;
-	private inline function get_layers():Int { return layerList.length; }
+	private inline function get_layers():Int { return _layerList.length; }
 
 	/**
 	 * The first Entity of the type.
 	 * @param	type		The type to check.
 	 * @return	The Entity.
-	 */
+	 
 	public function typeFirst(type:String):Entity
 	{
 		if (updateFirst == null) return null;
 		return _typeFirst.get(type);
-	}
+	}*/
 
+		/**
+	 * A list of Entity objects of the type.
+	 * @param	type 		The type to check.
+	 * @return 	The Entity list.
+	 */
+	public inline function entitiesForType(type:String):List<Entity>
+	{
+		return _types.exists(type) ? _types.get(type) : null;
+	}
+	
 	/**
 	 * The first Entity of the Class.
 	 * @param	c		The Class type to check.
@@ -900,12 +853,9 @@ class Scene
 	 */
 	public function classFirst<E:Entity>(c:Class<E>):E
 	{
-		if (updateFirst == null) return null;
-		var e:Entity = updateFirst;
-		while (e != null)
+		for (e in _update)
 		{
 			if (Std.is(e, c)) return cast e;
-			e = e.updateNext;
 		}
 		return null;
 	}
@@ -917,8 +867,7 @@ class Scene
 	 */
 	public function layerFirst(layer:Int):Entity
 	{
-		if (updateFirst == null) return null;
-		return renderFirst.get(layer);
+		return _layers.exists(layer) ? _layers.get(layer).first() : null;
 	}
 
 	/**
@@ -928,8 +877,7 @@ class Scene
 	 */
 	public function layerLast(layer:Int):Entity
 	{
-		if (updateFirst == null) return null;
-		return renderLast.get(layer);
+		return _layers.exists(layer) ? _layers.get(layer).last() : null;
 	}
 
 	/**
@@ -938,8 +886,8 @@ class Scene
 	public var farthest(get, null):Entity;
 	private function get_farthest():Entity
 	{
-		if (updateFirst == null) return null;
-		return renderLast.get(layerList[layerList.length - 1]);
+		if (_layerList.length == 0) return null;
+		return _layers.get(_layerList[_layerList.length - 1]).last();
 	}
 
 	/**
@@ -948,8 +896,8 @@ class Scene
 	public var nearest(get, null):Entity;
 	private function get_nearest():Entity
 	{
-		if (updateFirst == null) return null;
-		return renderFirst.get(layerList[0]);
+		if (_layerList.length == 0) return null;
+		return _layers.get(_layerList[0]).first();
 	}
 
 	/**
@@ -958,8 +906,8 @@ class Scene
 	public var layerFarthest(get, null):Int;
 	private function get_layerFarthest():Int
 	{
-		if (updateFirst == null) return 0;
-		return layerList[layerList.length - 1];
+		if (_layerList.length == 0) return 0;
+		return _layerList[_layerList.length - 1];
 	}
 
 	/**
@@ -968,8 +916,8 @@ class Scene
 	public var layerNearest(get, null):Int;
 	private function get_layerNearest():Int
 	{
-		if (updateFirst == null) return 0;
-		return layerList[0];
+		if (_layerList.length == 0) return 0;
+		return _layerList[0];
 	}
 
 	/**
@@ -979,11 +927,11 @@ class Scene
 	private inline function get_uniqueTypes():Int
 	{
 		var i:Int = 0;
-		for (type in _typeCount) i++;
+		for (type in _types) i++;
 		return i;
 	}
 	
-		/**
+	/**
 	 * Pushes all Entities in the Scene of the type into the Array or Vector. This
 	 * function does not empty the array, that responsibility is left to the user.
 	 * @param	type		The type to check.
@@ -991,12 +939,11 @@ class Scene
 	 */
 	public function getType<E:Entity>(type:String, into:Array<E>)
 	{
-		var e:Entity = _typeFirst.get(type),
-			n:Int = into.length;
-		while (e != null)
+		if (!_types.exists(type)) return;
+		var n:Int = into.length;
+		for (e in _types.get(type))
 		{
 			into[n++] = cast e;
-			e = e.typeNext;
 		}
 	}
 	
@@ -1009,13 +956,11 @@ class Scene
 	 */
 	public function getClass<E:Entity>(c:Class<Dynamic>, into:Array<E>)
 	{
-		var e:Entity = updateFirst,
-			n:Int = into.length;
-		while (e != null)
+		var n:Int = into.length;
+		for (e in _update)
 		{
 			if (Std.is(e, c))
 				into[n++] = cast e;
-			e = e.updateNext;
 		}
 	}
 	
@@ -1027,12 +972,10 @@ class Scene
 	 */
 	public function getLayer<E:Entity>(layer:Int, into:Array<E>)
 	{
-		var e:Entity = renderLast.get(layer),
-			n:Int = into.length;
-		while (e != null)
+		var n:Int = into.length;
+		for (e in _layers.get(layer))
 		{
 			into[n ++] = cast e;
-			e = e.updatePrev;
 		}
 	}
 	
@@ -1043,12 +986,10 @@ class Scene
 	 */
 	public function getAll<E:Entity>(into:Array<E>) : Void
 	{
-		var e:Entity = updateFirst,
-			n:Int = into.length;
-		while (e != null)
+		var n:Int = into.length;
+		for (e in _update)
 		{
 			into[n ++] = cast e;
-			e = e.updateNext;
 		}
 	}
 	
@@ -1129,15 +1070,7 @@ class Scene
 	private function addUpdate(e:Entity)
 	{
 		// add to update list
-		if (updateFirst != null)
-		{
-			updateFirst.updatePrev = e;
-			e.updateNext = updateFirst;
-		}
-		else e.updateNext = null;
-		e.updatePrev = null;
-		updateFirst = e;
-		_count ++;
+		_update.add(e);
 		if (_classCount.get(e._class) != 0) _classCount.set(e._class, 0);
 		_classCount.set(e._class, _classCount.get(e._class) + 1); // increment
 	}
@@ -1145,12 +1078,7 @@ class Scene
 	/** @private Removes Entity from the update list. */
 	private function removeUpdate(e:Entity)
 	{
-		// remove from the update list
-		if (updateFirst == e) updateFirst = e.updateNext;
-		if (e.updateNext != null) e.updateNext.updatePrev = e.updatePrev;
-		if (e.updatePrev != null) e.updatePrev.updateNext = e.updateNext;
-		e.updateNext = e.updatePrev = null;
-		_count --;
+		_update.remove(e);
 		_classCount.set(e._class, _classCount.get(e._class) - 1); // decrement
 	}
 	
@@ -1159,101 +1087,70 @@ class Scene
 	@:allow(com.khapunk.Entity)
 	private function addRender(e:Entity)
 	{
-		var next:Entity = renderFirst.get(e._layer);
-		if (next != null)
+		var list:List<Entity>;
+		if (_layers.exists(e._layer))
 		{
-			// Append entity to existing layer.
-			e.renderNext = next;
-			next.renderPrev = e;
-			_layerCount.set(e._layer, _layerCount.get(e._layer) + 1);
+			list = _layers.get(e._layer);
 		}
 		else
 		{
 			// Create new layer with entity.
-			renderLast.set(e._layer, e);
-			layerList[layerList.length] = e._layer;
-			_layerSort = true;
-			e.renderNext = null;
-			_layerCount.set(e._layer, 1);
+			list = new List<Entity>();
+			_layers.set(e._layer, list);
+
+			if (_layerList.length == 0)
+			{
+				_layerList[0] = e._layer;
+			}
+			else
+			{
+				KP.insertSortedKey(_layerList, e._layer, layerSort);
+			}
 		}
-		renderFirst.set(e._layer, e);
-		e.renderPrev = null;
+		list.add(e);
 	}
 	
 	/** @private Removes Entity from the render list. */
 	@:allow(com.khapunk.Entity)
 	private function removeRender(e:Entity)
 	{
-		if (e.renderNext != null) e.renderNext.renderPrev = e.renderPrev;
-		else renderLast.set(e._layer, e.renderPrev);
-		if (e.renderPrev != null) e.renderPrev.renderNext = e.renderNext;
-		else
+		var list = _layers.get(e._layer);
+		list.remove(e);
+		if (list.length == 0)
 		{
-			// Remove this entity from the layer.
-			renderFirst.set(e._layer, e.renderNext);
-			if (e.renderNext == null)
-			{
-				// Remove the layer from the layer list if this was the last entity.
-				if (layerList.length > 1)
-				{
-					layerList[KP.indexOf(layerList, e._layer)] = layerList[layerList.length - 1];
-					_layerSort = true;
-				}
-				layerList.pop();
-			}
+			_layerList.remove(e._layer);
+			_layers.remove(e._layer);
 		}
-		var count:Int = _layerCount.get(e._layer) - 1;
-		if (count > 0)
-		{
-			_layerCount.set(e._layer, count);
-		}
-		else
-		{
-			// Remove layer from maps if it contains 0 entities.
-			_layerCount.remove(e._layer);
-			renderFirst.remove(e._layer);
-			renderLast.remove(e._layer);
-		}
-		e.renderNext = e.renderPrev = null;
 	}
 	
 	/** @private Adds Entity to the type list. */
 	@:allow(com.khapunk.Entity)
 	private function addType(e:Entity)
 	{
+		var list:List<Entity>;
 		// add to type list
-		if (_typeFirst.get(e._type) != null)
+		if (_types.exists(e._type))
 		{
-			_typeFirst.get(e.type).typePrev = e;
-			e.typeNext = _typeFirst.get(e._type);
-			_typeCount.set(e._type, _typeCount.get(e._type) + 1);
+			list = _types.get(e._type);
 		}
 		else
 		{
-			e.typeNext = null;
-			_typeCount.set(e._type, 1);
+			list = new List<Entity>();
+			_types.set(e._type, list);
 		}
-		e.typePrev = null;
-		_typeFirst.set(e._type, e);
+		list.push(e);
 	}
 	
 	/** @private Removes Entity from the type list. */
 	@:allow(com.khapunk.Entity)
 	private function removeType(e:Entity)
 	{
-		// remove from the type list
-		if (_typeFirst.get(e._type) == e) _typeFirst.set(e._type, e.typeNext);
-		if (e.typeNext != null) e.typeNext.typePrev = e.typePrev;
-		if (e.typePrev != null) e.typePrev.typeNext = e.typeNext;
-		e.typeNext = e.typePrev = null;
-		var count:Int = _typeCount.get(e._type) - 1;
-		if (count <= 0)
+		if (!_types.exists(e._type)) return;
+		var list = _types.get(e._type);
+		list.remove(e);
+		if (list.length == 0)
 		{
-			_typeCount.remove(e._type);
-		}
-		else
-		{
-			_typeCount.set(e._type, count);
+			_types.remove(e._type);
 		}
 	}
 	

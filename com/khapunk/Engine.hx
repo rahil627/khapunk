@@ -32,6 +32,9 @@ class Engine
 	//private var _frameListSum:Int;
 	//private var _frameList:Array<Int>;
 	
+	private var _scene:Scene = new Scene();
+	private var _scenes:List<Scene> = new List<Scene>();
+	
 		/**
 	 * If the game should stop updating/rendering.
 	 */
@@ -104,7 +107,7 @@ class Engine
 		Input.enable();
 
 		// switch scenes
-		if (!KP.gotoIsNull()) checkScene();
+		checkScene();
 
 		// game start
 		
@@ -144,17 +147,16 @@ class Engine
 		// update console
 		//if (KP.consoleEnabled()) KP.console.update();
 		
-		KP.scene.updateLists();
-		if (!KP.gotoIsNull()) checkScene();
+		_scene.updateLists();
+		checkScene();
 		//if (KP.tweener.active && KP.tweener.hasTween) KP.tweener.updateTweens();
-		if (KP.scene.active)
+		if (_scene.active)
 		{
 			//if (KP.scene.hasTween) KP.scene.updateTweens();
-			KP.scene.update();
-			
+			_scene.update();
 		}
 		
-		KP.scene.updateLists(false);
+		_scene.updateLists(false);
 		KP.update();
 	}
 	
@@ -167,7 +169,7 @@ class Engine
 		// update input
 		Input.update();
 		
-		if (KP.scene.visible) KP.scene.render(painter);
+		if (_scene.visible) _scene.render(painter);
 	}
 	
 	
@@ -187,24 +189,48 @@ class Engine
 	}
 	
 	/** @private Switch scenes if they've changed. */
-	private function checkScene()
+	private inline function checkScene()
 	{
-		if (KP.gotoIsNull()) return;
-
-		if (KP.scene != null)
+		if (_scene != null && !_scenes.isEmpty() && _scenes.first() != _scene)
 		{
-			KP.scene.end();
-			KP.scene.updateLists();
-			//if (KP.scene.autoClear && KP.scene.hasTween) KP.scene.clearTweens();
-			//if (contains(KP.scene.sprite)) removeChild(KP.scene.sprite);
-			KP.swapScene();
-			//addChild(KP.scene.sprite);
-			KP.camera = KP.scene.camera;
-			KP.scene.updateLists();
-			KP.scene.begin();
-			KP.scene.updateLists();
+			_scene.end();
+			_scene.updateLists();
+			//if (_scene.autoClear && _scene.hasTween) _scene.clearTweens();
+			_scene = _scenes.first();
+			KP.camera = _scene.camera;
+			_scene.updateLists();
+			_scene.begin();
+			_scene.updateLists();
 		}
 	}
+	
+	public function pushScene(value:Scene): Void
+	{
+		_scenes.push(value);
+	}
+	
+	public function popScene(value:Scene): Scene
+	{
+		return _scenes.pop();
+	}
+	
+	/**
+	 * The currently active Scene object. When you set this, the Scene is flagged
+	 * to switch, but won't actually do so until the end of the current frame.
+	 */
+	public var scene(get, set):Scene;
+	private inline function get_scene():Scene { return _scene; }
+	private function set_scene(value:Scene):Scene
+	{
+		if (_scene == value) return value;
+		if (_scenes.length > 0)
+		{
+			_scenes.pop();
+		}
+		_scenes.push(value);
+		return _scene;
+	}
+	
 	
 	
 }

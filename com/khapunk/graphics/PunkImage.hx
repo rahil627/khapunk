@@ -50,8 +50,8 @@ class PunkImage extends Graphic
 	 * Scale of the image, effects both x and y scale.
 	 */
 	public var scale(get, set):Float;
-	private function get_scale():Float { return _scale; }
-	private function set_scale(value:Float):Float { return _scale = value; }
+	private inline function get_scale():Float { return _scale; }
+	private inline function set_scale(value:Float):Float { return _scale = value; }
 
 	/**
 	 * X scale of the image.
@@ -177,8 +177,8 @@ class PunkImage extends Graphic
 			sy = scale * scaleY;
 
 		// determine drawing location
-		this.point.x = point.x + x - originX - camera.x * scrollX;
-		this.point.y = point.y + y - originY - camera.y * scrollY;
+		this.point.x = point.x + x - originX * sx - camera.x * scrollX;
+		this.point.y = point.y + y - originY * sy - camera.y * scrollY;
 
 		if (_flippedX) this.point.x += _sourceRect.width * sx;
 		if (_flippedY) this.point.y += _sourceRect.height * sy;
@@ -197,8 +197,8 @@ class PunkImage extends Graphic
 		_region.w * (sx * (_flippedX ? -1 : 1)),
 		_region.h * (sy * (_flippedY ? -1 : 1)),
 		angle, 
-		originX,
-		originY);
+		originX * sx,
+		originY * sy);
 
 		painter.set_opacity(1);
 		painter.setColor(Color.White);
