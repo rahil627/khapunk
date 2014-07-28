@@ -29,6 +29,17 @@ class Polygon extends Hitbox
 	* The polygon rotates around this Vector2 when the angle is set.
 	*/
 	public var origin:Vector2;
+	
+	
+	// Polygon bounding box.
+	/** Left x bounding box position. */
+	public var minX(default, null):Int = 0;
+	/** Top y bounding box position. */
+	public var minY(default, null):Int = 0;
+	/** Right x bounding box position. */
+	public var maxX(default, null):Int = 0;
+	/** Bottom y bounding box position. */
+	public var maxY(default, null):Int = 0;
 
 	/**
 	 * Constructor.
@@ -62,8 +73,8 @@ class Polygon extends Hitbox
 	override private function collideMask(other:Mask):Bool
 	{
 		var offset:Float,
-			offsetX:Float = parent.x + _x - other.parent.x,
-			offsetY:Float = parent.y + _y - other.parent.y;
+			offsetX:Float = _parent.x + _x - other._parent.x,
+			offsetY:Float = _parent.y + _y - other._parent.y;
 
 		// project on the vertical axis of the hitbox/mask
 		project(vertical, firstProj);
@@ -117,8 +128,8 @@ class Polygon extends Hitbox
 	override private function collideHitbox(hitbox:Hitbox):Bool
 	{
 		var offset:Float,
-			offsetX:Float = parent.x + _x - hitbox.parent.x,
-			offsetY:Float = parent.y + _y - hitbox.parent.y;
+			offsetX:Float = _parent.x + _x - hitbox._parent.x,
+			offsetY:Float = _parent.y + _y - hitbox._parent.y;
 
 		// project on the vertical axis of the hitbox
 		project(vertical, firstProj);
@@ -180,21 +191,21 @@ class Polygon extends Hitbox
 
 		_fakeEntity.width = tileW;
 		_fakeEntity.height = tileH;
-		_fakeEntity.x = parent.x;
-		_fakeEntity.y = parent.y;
-		_fakeEntity.originX = grid.parent.originX + grid._x;
-		_fakeEntity.originY = grid.parent.originY + grid._y;
+		_fakeEntity.x = _parent.x;
+		_fakeEntity.y = _parent.y;
+		_fakeEntity.originX = grid._parent.originX + grid._x;
+		_fakeEntity.originY = grid._parent.originY + grid._y;
 
 		_fakeTileHitbox._width = tileW;
 		_fakeTileHitbox._height = tileH;
-		_fakeTileHitbox.parent = _fakeEntity;
+		_fakeTileHitbox._parent = _fakeEntity;
 
 		for (r in 0...grid.rows)
 		{
 			for (c in 0...grid.columns)
 			{
-				_fakeEntity.x = grid.parent.x + grid._x + c * tileW;
-				_fakeEntity.y = grid.parent.y + grid._y + r * tileH;
+				_fakeEntity.x = grid._parent.x + grid._x + c * tileW;
+				_fakeEntity.y = grid._parent.y + grid._y + r * tileH;
 				solidTile = grid.getTile(c, r);
 
 				if (solidTile && collideHitbox(_fakeTileHitbox)) return true;
@@ -212,8 +223,8 @@ class Polygon extends Hitbox
 		var p1:Vector2, p2:Vector2;
 		var i:Int, j:Int;
 		var nPoints:Int = _points.length;
-		var offsetX:Float = parent.x + _x;
-		var offsetY:Float = parent.y + _y;
+		var offsetX:Float = _parent.x + _x;
+		var offsetY:Float = _parent.y + _y;
 
 
 		// check if circle center is inside the polygon
@@ -224,10 +235,10 @@ class Polygon extends Hitbox
 			p1 = _points[i];
 			p2 = _points[j];
 
-			var distFromCenter:Float = (p2.x - p1.x) * (circle._y + circle.parent.y - p1.y - offsetY) / (p2.y - p1.y) + p1.x + offsetX;
+			var distFromCenter:Float = (p2.x - p1.x) * (circle._y + circle._parent.y - p1.y - offsetY) / (p2.y - p1.y) + p1.x + offsetX;
 
-			if ((p1.y + offsetY > circle._y + circle.parent.y) != (p2.y + offsetY > circle._y + circle.parent.y)
-				&& (circle._x + circle.parent.x < distFromCenter))
+			if ((p1.y + offsetY > circle._y + circle._parent.y) != (p2.y + offsetY > circle._y + circle._parent.y)
+				&& (circle._x + circle._parent.x < distFromCenter))
 			{
 				edgesCrossed++;
 			}
@@ -239,8 +250,8 @@ class Polygon extends Hitbox
 
 		// check if minimum distance from circle center to each polygon side is less than radius
 		var radiusSqr:Float = circle.radius * circle.radius;
-		var cx:Float = circle._x + circle.parent.x;
-		var cy:Float = circle._y + circle.parent.y;
+		var cx:Float = circle._x + circle._parent.x;
+		var cy:Float = circle._y + circle._parent.y;
 		var minDistanceSqr:Float = 0;
 		var closestX:Float;
 		var closestY:Float;
@@ -292,8 +303,8 @@ class Polygon extends Hitbox
 	private function collidePolygon(other:Polygon):Bool
 	{
 		var offset:Float;
-		var offsetX:Float = parent.x + _x - other.parent.x;
-		var offsetY:Float = parent.y + _y - other.parent.y;
+		var offsetX:Float = _parent.x + _x - other._parent.x;
+		var offsetY:Float = _parent.y + _y - other._parent.y;
 
 		// project other on this polygon axes
 		// for a collision to be present all projections must overlap
@@ -365,10 +376,10 @@ class Polygon extends Hitbox
 	{
 		
 		/** TODO Debug draw*/
-		/*if (parent != null)
+		/*if (_parent != null)
 		{
-			var	offsetX:Float = parent.x + _x - KP.camera.x,
-				offsetY:Float = parent.y + _y - KP.camera.y;
+			var	offsetX:Float = _parent.x + _x - KP.camera.x,
+				offsetY:Float = _parent.y + _y - KP.camera.y;
 
 			graphics.beginFill(0x0000FF, .3);
 
@@ -395,7 +406,7 @@ class Polygon extends Hitbox
 		if (value != _angle)
 		{
 			rotate(value - _angle);
-			if (list != null || parent != null) update();
+			if (list != null || _parent != null) update();
 		}
 		return value;
 	}
@@ -413,12 +424,12 @@ class Polygon extends Hitbox
 		if (_points != value)
 		{
 			_points = value;
-			if (list != null || parent != null) updateAxes();
+			if (list != null || _parent != null) updateAxes();
 		}
 		return value;
 	}
 	
-	/** Updates the parent's bounds for this mask. */
+	/** Updates the _parent's bounds for this mask. */
 	override public function update():Void
 	{
 		project(horizontal, firstProj); // width
@@ -428,17 +439,22 @@ class Polygon extends Hitbox
 		var projY:Int = Math.round(secondProj.min);
 		_height = Math.round(secondProj.max - secondProj.min);
 
+		minX = _x + projX;
+		minY = _y + projY;
+		maxX = Math.round(minX + _width);
+		maxY = Math.round(minY + _height);
+		
 		if (list != null)
 		{
-			// update parent list
+			// update _parent list
 			list.update();
 		}
-		else if (parent != null)
+		else if (_parent != null)
 		{
-			parent.originX = -_x - projX;
-			parent.originY = -_y - projY;
-			parent.width = _width;
-			parent.height = _height;
+			_parent.originX = -_x - projX;
+			_parent.originY = -_y - projY;
+			_parent.width = _width;
+			_parent.height = _height;
 		}
 
 	}

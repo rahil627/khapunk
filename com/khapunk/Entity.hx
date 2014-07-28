@@ -9,9 +9,12 @@ import kha.Painter;
  * ...
  * @author ...
  */
+@:allow(com.khapunk.Mask)
 @:allow(com.khapunk.Scene)
 class Entity
 {
+	private static var _EMPTY = new Entity();
+	
 	// Entity information.
 	private var _class :String;
 	private var _scene:Scene;
@@ -151,7 +154,7 @@ class Entity
 
 		if (graphic != null) this.graphic = graphic;
 		if (mask != null) this.mask = mask;
-		HITBOX.assignTo(this);
+		HITBOX.parent = this;
 		_class = Type.getClassName(Type.getClass(this));
 	}
 	
@@ -584,9 +587,9 @@ class Entity
 	private function set_mask(value:Mask):Mask
 	{
 		if (_mask == value) return value;
-		if (_mask != null) _mask.assignTo(null);
+		if (_mask != null) _mask.parent = null;
 		_mask = value;
-		if (value != null) _mask.assignTo(this);
+		if (value != null) _mask.parent = null;
 		return _mask;
 	}
 

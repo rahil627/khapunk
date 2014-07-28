@@ -96,12 +96,79 @@ class Spritemap extends Animator<Int,Spritemap>
 	 */
 	override public function play(name:String = "", reset:Bool = false, reverse:Bool = false):IAnimation<Int,Spritemap>
 	{
-		super.play(name,reset, reverse);
-		if (_anims.exists(name))_frame = _anim.frames[0];
-		else _frame = _index = 0;
+		if (!reset && _anim != null && _anim.name == name)
+		{
+			return _anim;
+		}
+		
+		if (!_anims.exists(name))
+		{
+			stop(reset);
+			return null;
+		}
+
+		_anim = _anims.get(name);
+		this.reverse = reverse;
+		restart();
+		
 		return _anim;
 	}
 
+		/**
+	 * Plays a new ad hoc animation.
+	 * @param	frames		Array of frame indices to animate through.
+	 * @param	frameRate	Animation speed (in frames per second, 0 defaults to assigned frame rate)
+	 * @param	loop		If the animation should loop
+	 * @param	reset		When the supplied frames are currently playing, should the animation be force-restarted
+	 * @param	reverse		If the animation should be played backward.
+	 * @return	Anim object representing the played animation.
+	 */
+	override public function playFrames(frames:Array<Int>, frameRate:Float = 0, loop:Bool = true, reset:Bool = false, reverse:Bool = false):IAnimation<Int,Spritemap>
+	{
+		if(frames == null || frames.length == 0)
+		{
+			stop(reset);		
+			return null;
+		}
+
+		if(reset == false && _anim != null && _anim.frames == frames)
+			return _anim;
+
+		return playAnimation(new Animation(null, frames, frameRate, loop), reset, reverse);
+	}
+	
+		/**
+	 * Plays or restarts the supplied Animation.
+	 * @param	animation	The Animation object to play
+	 * @param	reset		When the supplied animation is currently playing, should it be force-restarted
+	 * @param	reverse		If the animation should be played backward.
+	 * @return	Anim object representing the played animation.
+	 */
+ 	override public function playAnimation(anim:IAnimation<Int,Spritemap>, reset:Bool = false, reverse:Bool = false): IAnimation<Int,Spritemap>
+	{
+		if(anim == null)
+			throw "No animation supplied";
+			
+		if(reset == false && _anim == anim)
+			return anim;
+
+		_anim = anim;
+		this.reverse = reverse;
+		restart();
+		
+		return anim;
+	}
+	
+		/**
+	 * Resets the animation to play from the beginning.
+	 */
+	override public function restart()
+	{
+		_timer = _index = reverse ? _anim.frames.length - 1 : 0;
+		_frame = _anim.frames[_index];
+		complete = false;
+	}
+	
 	/**
 	 * Gets the frame index based on the column and row of the source image.
 	 * @param	column		Frame column.

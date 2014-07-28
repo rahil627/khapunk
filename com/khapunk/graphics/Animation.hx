@@ -14,13 +14,14 @@ class Animation implements IAnimation<Int,Spritemap>
 	 * @param	frameRate	Animation speed.
 	 * @param	loop		If the animation should loop.
 	 */
-	public function new(name:String, frames:Array<Int>, frameRate:Float = 0, loop:Bool = true)
+	public function new(name:String, frames:Array<Int>, frameRate:Float = 0, loop:Bool = true, parent:Spritemap = null)
 	{
         this.name       = name;
         this.frames     = frames;
         this.frameRate  = frameRate;
         this.loop       = loop;
         this.frameCount = frames.length;
+		this.parent = parent;
 	}
 	
 	/*
@@ -29,6 +30,9 @@ class Animation implements IAnimation<Int,Spritemap>
 	 */
 	public function play(reset:Bool = false , reverse:Bool = false)
 	{
+		if (name == null)
+		_parent.playAnimation(this, reset, reverse);
+		else
 		_parent.play(name, reset, reverse);
 	}
 

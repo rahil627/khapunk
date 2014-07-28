@@ -1,5 +1,7 @@
 package com.khapunk.masks;
 import com.khapunk.Mask;
+import com.khapunk.math.Projection;
+import kha.math.Vector2;
 
 /**
  * ...
@@ -34,22 +36,22 @@ class Hitbox extends Mask
 	/** @private Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
-		if (other.parent != null)
+		if (other._parent != null)
 		{
 			var px:Float = _x, py:Float = _y;
-			if (parent != null)
+			if (_parent != null)
 			{
-				px += parent.x;
-				py += parent.y;
+				px += _parent.x;
+				py += _parent.y;
 			}
 
-			var ox = other.parent.originX + other.parent.x,
-				oy = other.parent.originY + other.parent.y;
+			var ox = other._parent.originX + other._parent.x,
+				oy = other._parent.originY + other._parent.y;
 
 			return px + _width > ox
 				&& py + _height > oy
-				&& px < ox + other.parent.width
-				&& py < oy + other.parent.height;
+				&& px < ox + other._parent.width
+				&& py < oy + other._parent.height;
 		}
 		return false;
 	}
@@ -58,17 +60,17 @@ class Hitbox extends Mask
 	private function collideHitbox(other:Hitbox):Bool
 	{
 		var px:Float = _x, py:Float = _y;
-		if (parent != null)
+		if (_parent != null)
 		{
-			px += parent.x;
-			py += parent.y;
+			px += _parent.x;
+			py += _parent.y;
 		}
 
 		var ox:Float = other._x, oy:Float = other._y;
-		if (other.parent != null)
+		if (other._parent != null)
 		{
-			ox += other.parent.x;
-			oy += other.parent.y;
+			ox += other._parent.x;
+			oy += other._parent.y;
 		}
 
 		return px + _width > ox
@@ -87,7 +89,7 @@ class Hitbox extends Mask
 		if (_x == value) return value;
 		_x = value;
 		if (list != null) list.update();
-		else if (parent != null) update();
+		else if (_parent != null) update();
 		return _x;
 	}
 
@@ -101,7 +103,7 @@ class Hitbox extends Mask
 		if (_y == value) return value;
 		_y = value;
 		if (list != null) list.update();
-		else if (parent != null) update();
+		else if (_parent != null) update();
 		return _y;
 	}
 
@@ -115,7 +117,7 @@ class Hitbox extends Mask
 		if (_width == value) return value;
 		_width = value;
 		if (list != null) list.update();
-		else if (parent != null) update();
+		else if (_parent != null) update();
 		return _width;
 	}
 
@@ -129,24 +131,61 @@ class Hitbox extends Mask
 		if (_height == value) return value;
 		_height = value;
 		if (list != null) list.update();
-		else if (parent != null) update();
+		else if (_parent != null) update();
 		return _height;
 	}
 
-	/** Updates the parent's bounds for this mask. */
+	/** Updates the _parent's bounds for this mask. */
 	override public function update()
 	{
-		if (parent != null)
+		if (_parent != null)
 		{
 			// update entity bounds
-			parent.originX = -_x;
-			parent.originY = -_y;
-			parent.width = _width;
-			parent.height = _height;
-			// update parent list
+			_parent.originX = -_x;
+			_parent.originY = -_y;
+			_parent.width = _width;
+			_parent.height = _height;
+			// update _parent list
 			if (list != null)
 				list.update();
 		}
+	}
+	
+	@:dox(hide)
+	override public function project(axis:Vector2, projection:Projection):Void
+	{
+		var px = _x;
+		var py = _y;
+		var cur:Float,
+			max:Float = Math.NEGATIVE_INFINITY,
+			min:Float = Math.POSITIVE_INFINITY;
+
+		cur = px * axis.x + py * axis.y;
+		if (cur < min)
+			min = cur;
+		if (cur > max)
+			max = cur;
+
+		cur = (px + _width) * axis.x + py * axis.y;
+		if (cur < min)
+			min = cur;
+		if (cur > max)
+			max = cur;
+
+		cur = px * axis.x + (py + _height) * axis.y;
+		if (cur < min)
+			min = cur;
+		if (cur > max)
+			max = cur;
+
+		cur = (px + _width) * axis.x + (py + _height) * axis.y;
+		if (cur < min)
+			min = cur;
+		if (cur > max)
+			max = cur;
+
+		projection.min = min;
+		projection.max = max;
 	}
 	
 }

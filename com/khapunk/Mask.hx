@@ -18,19 +18,30 @@ class Mask
 	// Mask information.
 	private var _class:String;
 	private var check:Map<String,MaskCallback>;
-	
+	private var _parent:Entity;
 
 	/**
 	 * The parent Entity of this mask.
 	 */
-	public var parent:Entity;
+	public var parent(get,set):Entity;
+	private inline function get_parent() : Entity
+	{
+		return _parent != Entity._EMPTY ? _parent : null;
+	}
+	private function set_parent(value:Entity) : Entity
+	{
+		if (value == null) { _parent = Entity._EMPTY; }
+		else { _parent = value; update(); }
+		return value;
+	}
 
 	/**
 	 * The parent Masklist of the mask.
 	 */
 	public var list:Masklist;
 	
-	public function new(){
+	public function new() {
+		_parent = Entity._EMPTY;
 		_class = Type.getClassName(Type.getClass(this));
 		check = new Map<String,MaskCallback>();
 		check.set(Type.getClassName(Mask), collideMask);
@@ -44,11 +55,6 @@ class Mask
 	 */
 	public function collide(mask:Mask):Bool
 	{
-		if (parent == null)
-		{
-			throw "Mask must be attached to a parent Entity";
-		}
-
 		var cbFunc:MaskCallback = check.get(mask._class);
 		if (cbFunc != null) return cbFunc(mask);
 
@@ -72,12 +78,6 @@ class Mask
 		return other.collide(this);
 	}
 	
-	/** @private Assigns the mask to the parent. */
-	public function assignTo(parent:Entity)
-	{
-		this.parent = parent;
-		if (parent != null) update();
-	}
 	
 	/**
 	 * Override this

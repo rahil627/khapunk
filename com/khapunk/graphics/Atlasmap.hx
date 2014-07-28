@@ -66,4 +66,56 @@ class Atlasmap extends Animator<AtlasRegion, Atlasmap>
 		return anim;
 	}
 	
+	/**
+	 * Plays or restarts the supplied Animation.
+	 * @param	animation	The Animation object to play
+	 * @param	reset		When the supplied animation is currently playing, should it be force-restarted
+	 * @param	reverse		If the animation should be played backward.
+	 * @return	Anim object representing the played animation.
+	 */
+ 	override public function playAnimation(anim:IAnimation<AtlasRegion,Atlasmap>, reset:Bool = false, reverse:Bool = false): IAnimation<AtlasRegion,Atlasmap>
+	{
+		if(anim == null)
+			throw "No animation supplied";
+			
+		if(reset == false && _anim == anim)
+			return anim;
+	
+		_anim = anim;
+		this.reverse = reverse;
+		restart();
+		
+		return anim;
+	}
+	
+	/**
+	 * Plays a new ad hoc animation.
+	 * @param	frames		Array of frame indices to animate through.
+	 * @param	frameRate	Animation speed (in frames per second, 0 defaults to assigned frame rate)
+	 * @param	loop		If the animation should loop
+	 * @param	reset		When the supplied frames are currently playing, should the animation be force-restarted
+	 * @param	reverse		If the animation should be played backward.
+	 * @return	Anim object representing the played animation.
+	 */
+	override public function playFrames(frames:Array<AtlasRegion>, frameRate:Float = 0, loop:Bool = true, reset:Bool = false, reverse:Bool = false):IAnimation<AtlasRegion,Atlasmap>
+	{
+		if(frames == null || frames.length == 0)
+		{
+			stop(reset);		
+			return null;
+		}
+
+		if(reset == false && _anim != null && _anim.frames == frames)
+			return _anim;
+
+		return playAnimation(new AtlasAnimation(null, frames, frameRate, loop), reset, reverse);
+	}
+	
+	override public function restart():Void 
+	{
+		_timer = _index = reverse ? _anim.frames.length - 1 : 0;
+		complete = false;
+		updateFrame();
+	}
+	
 }

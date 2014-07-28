@@ -16,22 +16,25 @@ class AtlasAnimation implements IAnimation<AtlasRegion,Atlasmap>
 	 * @param	frameRate	Animation speed.
 	 * @param	loop		If the animation should loop.
 	 */
-	public function new(name:String, frames:Array<AtlasRegion>, frameRate:Float = 0, loop:Bool = true)
+	public function new(name:String, frames:Array<AtlasRegion>, frameRate:Float = 0, loop:Bool = true,parent:Atlasmap = null)
 	{
         this.name       = name;
         this.frames     = frames;
         this.frameRate  = frameRate;
         this.loop       = loop;
         this.frameCount = frames.length;
+		_parent = parent;
 	}
-	
-	/*
+	/**
 	 * Plays the animation.
 	 * @param	reset		If the animation should force-restart if it is already playing.
 	 */
-	public function play(reset:Bool = false)
+	public function play(reset:Bool = false, reverse:Bool = false)
 	{
-		_parent.play(name, reset);
+		if(name == null)
+			_parent.playAnimation(this, reset, reverse);
+		else
+			_parent.play(name, reset, reverse);
 	}
 
 	public var parent(null, set):Atlasmap;

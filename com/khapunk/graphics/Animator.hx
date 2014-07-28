@@ -60,6 +60,9 @@ class Animator<FrameType,ParentType> extends PunkImage
 		
 	}
 
+	public function playFrames(frames:Array<FrameType>, frameRate:Float = 0, loop:Bool = true, reset:Bool = false, reverse:Bool = false):IAnimation<FrameType, ParentType>{return null;} 
+	public function playAnimation(anim:IAnimation<FrameType, ParentType>, reset:Bool = false, reverse:Bool = false): IAnimation<FrameType, ParentType>{return null;}  
+	public function restart() : Void{}
 	
   public function add(name:String, frames:Array<FrameType> = null, frameRate:Float = 0, loop:Bool = true):IAnimation<FrameType,ParentType>{return null;}
 	
