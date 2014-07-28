@@ -141,8 +141,6 @@ class Engine
 		
 		KP.elapsed = Scheduler.deltaTime;
 		
-		
-		
 		// update console
 		//if (KP.consoleEnabled()) KP.console.update();
 		
@@ -157,6 +155,7 @@ class Engine
 		}
 		
 		KP.scene.updateLists(false);
+		KP.update();
 	}
 	
 	/**

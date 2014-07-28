@@ -1,4 +1,5 @@
 package com.khapunk;
+import com.khapunk.utils.Ease.EaseFunction;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.Rectangle;
@@ -46,6 +47,13 @@ class KP
 	//public static var _gameTime:Float;
 	//public static var _systemTime:Float;
 
+	private static var _shakeEase:EaseFunction;
+	private static var _shakeduration:Float=0;
+	private static var _shakeTime:Float=0;
+	private static var _shakeMagnitude:Int=0;
+	private static var _shakeX:Int=0;
+	private static var _shakeY:Int=0;
+	
 	// Bitmap storage.
 	//private static var _bitmap:Map<String,BitmapData> = new Map<String,BitmapData>();
 
@@ -902,4 +910,54 @@ class KP
 	}
 
 	public static inline function gotoIsNull():Bool { return (_goto == null); }
+	
+	
+	/**
+	 * Cause the screen to shake for a specified length of time.
+	 *
+	 * @param	magnitude	Number of pixels to shake in any direction.
+	 * @param	duration	Duration of shake effect, in seconds.
+	 */
+	public static function shake(magnitude:Int, duration:Float, ease:EaseFunction = null)
+	{
+		if (_shakeTime < duration) _shakeTime = duration;
+		_shakeMagnitude = magnitude;
+		_shakeduration = _shakeTime;
+		
+		_shakeEase = ease;
+	}
+	
+	@:dox(hide)
+	public static function update()
+	{
+		// screen shake
+		if (_shakeTime > 0)
+		{
+			var sx:Int = Std.random(_shakeMagnitude*2+1) - _shakeMagnitude;
+			var sy:Int = Std.random(_shakeMagnitude*2+1) - _shakeMagnitude;
+
+			var ease:Float =   _shakeEase != null ? _shakeEase(_shakeTime / _shakeduration) : 1;
+		
+			camera.x += (sx - _shakeX) * ease;
+			camera.y += (sy - _shakeY) * ease;
+
+			_shakeX = sx;
+			_shakeY = sy;
+
+			_shakeTime -= KP.elapsed;
+			if (_shakeTime < 0) _shakeTime = 0;
+		}
+		else if (_shakeX != 0 || _shakeY != 0)
+		{
+			var ease:Float =   _shakeEase != null ? _shakeEase(_shakeTime / _shakeduration) : 1;
+			camera.x -= _shakeX * ease;
+			camera.y -= _shakeY * ease;
+			_shakeX = _shakeY = 0;
+			_shakeEase = null;
+		}
+	}
+	
+
+	
+	
 }
