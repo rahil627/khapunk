@@ -1,4 +1,5 @@
 package com.khapunk.utils;
+import com.khapunk.utils.Gesture;
 import haxe.ds.Vector;
 import kha.Game;
 import kha.input.Keyboard;
@@ -16,8 +17,6 @@ import kha.Sys;
 class Input
 {
 	private static inline var kKeyStringMax = 100;
-
-	public static var  touchNum(default,null):Int;
 	
 	private static var _enabled:Bool = false;
 	private static var _key:Map<Int, Bool> = new Map<Int, Bool>();
@@ -27,11 +26,10 @@ class Input
 	private static var _release:Array<Int> = new Array<Int>();
 	private static var _releaseNum:Int = 0;
 	private static var _mouseWheelDelta:Int = 0;
-	private static var _touches:Vector<Touch> = new Vector<Touch>(10);
+	private static var _touches:Map<Int,Touch> = new Map<Int,Touch>();
 	//private static var _joysticks:Map<Int,Joystick> = new Map<Int,Joystick>();
-	private static var _control:Map<String,Array<Int>> = new Map<String,Array<Int>>();
-	//private static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
-	
+	private static var _control:Map < String, Array<Int> > = new Map < String, Array<Int> > ();
+	private static var _touchOrder:Array<Int> = new Array();
 	
 	/**
 	 * Returns true if the device supports multi touch
@@ -288,11 +286,7 @@ class Input
 			Surface.get().notify(onTouch, onTouchEnd, onTouchMove);
 			multiTouchSupported = true;
 		}
-		for (i in 0..._touches.length)
-		{
-			_touches[0] = new Touch(0, 0, i);
-		}
-		touchNum = 0; 
+
 	
 		if (Sensor.get(SensorType.Accelerometer) != null)
 		{
@@ -347,43 +341,47 @@ class Input
 		
 		if (multiTouchSupported)
 		{
-			for (touch in _touches) {
-				if(touch != null && touch.active)
-				touch.update();
+			for (touch in _touches) touch.update();
+			if (Gesture.enabled) Gesture.update();
+			
+			for (touch in _touches)
+			{
+				if (touch.released && !touch.pressed)
+				{
+					_touches.remove(touch.id);
+					_touchOrder.remove(touch.id);
+				}
 			}
 		}
 	}
 	
 	//------------------------------------------------
 	//Touch input
-	//public static var touches(get, never):Map<Int,Touch>;
-	//private static inline function get_touches():Map < Int, Touch > { return _touches; }
+
+	public static var touches(get, never):Map<Int,Touch>;
+	private static inline function get_touches():Map<Int,Touch> { return _touches; }
+
+	public static var touchOrder(get, never):Array<Int>;
+	private static inline function get_touchOrder():Array<Int> { return _touchOrder; }
 	
 	private static function onTouch(id:Int, x:Int, y:Int) : Void {
 		
-		if (_touches.get(id) == null) {
-			_touches[id] = new Touch(x, y, id);
-		}
-		else {
-			_touches[id].x = x;
-			_touches[id].y = y;
-		}
-		_touches[id].init();
-		_touches[id].active = true;
-		++touchNum;
+		var tp:Touch = new Touch(x, y, id);
+		
+		_touches.set(id, tp);
+		_touchOrder.push(id);
 		
 	}
 	
 	private static function onTouchEnd(id:Int, x:Int, y:Int) : Void
 	{
-		_touches[id].active = false;
-		--touchNum;
+		_touches.get(id).released = true;
 	}
 	
 	private static function onTouchMove(id:Int, x:Int, y:Int) : Void
 	{
-		_touches[id].x = x;
-		_touches[id].y = y;
+		_touches.get(id).x = x;
+		_touches.get(id).y = y;
 	}
 	
 	/**
@@ -394,7 +392,7 @@ class Input
 	{
 		for (touch in _touches)
 		{
-			if(touch != null && touch.active)
+			if(touch.pressed)
 				if (!touchCallback(touch))
 					break;
 		}
@@ -488,20 +486,6 @@ class Input
 		return -1;
 	}
 	
-	/*public static function keyCode(k:String) : Int
-	{
-	#if (flash || js)
-		return k;
-	#else
-		var code = _nativeCorrection.get(e + "_" + e.keyCode);
-
-		if (code == null)
-			return e.keyCode;
-		else
-			return code;
-	#end
-	}*/
-
 	private static function onMouseMove(x: Int, y: Int)
 	{
 		mouseMoved = true;

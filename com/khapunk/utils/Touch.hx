@@ -1,8 +1,6 @@
 package com.khapunk.utils;
+
 import com.khapunk.KP;
-import com.khapunk.utils.Input;
-
-
 
 class Touch
 {
@@ -19,13 +17,18 @@ class Touch
 	 */
 	public var y:Float;
 	/**
+	 * Starting X position of touch
+	 */
+	public var startX:Float;
+	/**
+	 * Starting Y position of touch
+	 */
+	public var startY:Float;
+	/**
 	 * The time this touch has been held
 	 */
 	public var time(default, null):Float;
 
-	@:allow(com.khapunk.utils.Input)
-	private var active(default, default):Bool;
-	
 	/**
 	 * Creates a new touch object
 	 * @param  x  x-axis coord in window
@@ -34,17 +37,12 @@ class Touch
 	 */
 	public function new(x:Float, y:Float, id:Int)
 	{
-		this.x = x;
-		this.y = y;
+		this.startX = this.x = x;
+		this.startY = this.y = y;
 		this.id = id;
 		this.time = 0;
 	}
 
-	public function init() : Void
-	{
-		time = 0;
-	}
-	
 	/**
 	 * The touch x-axis coord in the scene.
 	 */
@@ -64,14 +62,16 @@ class Touch
 	private inline function get_pressed():Bool { return time == 0; }
 
 	/**
+	 * Not implemented yet. Always return false.
+	 */
+	public var released:Bool = false;
+
+	/**
 	 * Updates the touch state.
 	 */
+	@:dox(hide)
 	public function update()
 	{
 		time += KP.elapsed;
-	}
-	
-	public function clone() : Touch {
-		return new Touch(x, y, id);
 	}
 }
