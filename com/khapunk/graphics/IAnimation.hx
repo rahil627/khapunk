@@ -7,7 +7,7 @@ package com.khapunk.graphics;
 interface IAnimation<FrameType, ParentType>
 {
   
-	public function play(reset:Bool = false) : Void;
+	public function play(reset:Bool = false, reverse:Bool = false) : Void;
 	
 	/**
 	 * Name of the animation.

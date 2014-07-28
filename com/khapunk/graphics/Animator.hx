@@ -31,6 +31,11 @@ class Animator<FrameType,ParentType> extends PunkImage
 	private function get_frameCount():Int { return _frameCount; }
 
 	/**
+	* If the animation is played in reverse.
+	*/
+	public var reverse:Bool;
+	
+	/**
 	 * The currently playing animation.
 	 */
 	public var currentAnim(get, null):String;
@@ -64,20 +69,21 @@ class Animator<FrameType,ParentType> extends PunkImage
 	 * @param	reset		If the animation should force-restart if it is already playing.
 	 * @return	Anim object representing the played animation.
 	 */
-	public function play(name:String = "", reset:Bool = false):IAnimation<FrameType,ParentType>
+	public function play(name:String = "", reset:Bool = false, reverse:Bool = false):IAnimation<FrameType,ParentType>
 	{
 		if (!reset && _anim != null && _anim.name == name) return _anim;
 		if (_anims.exists(name))
 		{
 			_anim = _anims.get(name);
-			_timer = _index = 0;
+			_timer = 0;
+			this.reverse = reverse;
+			_index = reverse ?  _anim.frames.length -1 : 0;
 			complete = false;
 			updateFrame();
 		}
 		else
 		{
-			_anim = null;
-			complete = true;
+			stop(reset);
 		}
 		
 		return _anim;
@@ -100,6 +106,12 @@ class Animator<FrameType,ParentType> extends PunkImage
 		return _index;
 	}
   
+	public function stop(reset:Bool = false) {
+		_anim = null;
+		if(reset)_index = 0;
+		complete = true;
+	}
+	
 	
 	/** @private Updates the animation. */
 	override public function update()
@@ -115,17 +127,16 @@ class Animator<FrameType,ParentType> extends PunkImage
 				{
 					
 					_timer --;
-					_index ++;
-					if (_index == _anim.frameCount)
-					{
+					_index += reverse ? -1:1;
+					if ((reverse && index == -1) || (!reverse && _index == _anim.frameCount)){
 						if (_anim.loop)
 						{
-							_index = 0;
+							_index = reverse ? _anim.frameCount -1 : 0;
 							if (callbackFunc != null) callbackFunc();
 						}
 						else
 						{
-							_index = _anim.frameCount - 1;
+							_index = reverse ? 0: _anim.frameCount - 1;
 							complete = true;
 							if (callbackFunc != null) callbackFunc();
 							break;

@@ -94,9 +94,9 @@ class Spritemap extends Animator<Int,Spritemap>
 	 * @param	reset		If the animation should force-restart if it is already playing.
 	 * @return	Anim object representing the played animation.
 	 */
-	override public function play(name:String = "", reset:Bool = false):IAnimation<Int,Spritemap>
+	override public function play(name:String = "", reset:Bool = false, reverse:Bool = false):IAnimation<Int,Spritemap>
 	{
-		super.play(name,reset);
+		super.play(name,reset, reverse);
 		if (_anims.exists(name))_frame = _anim.frames[0];
 		else _frame = _index = 0;
 		return _anim;
@@ -159,6 +159,12 @@ class Spritemap extends Animator<Int,Spritemap>
 	{
 		_frame = _anim.frames[_index];
 		return super.set_index(value);
+	}
+	
+	override public function stop(reset:Bool = false) 
+	{
+		_frame = 0;
+		super.stop(reset);
 	}
 	
 	/**

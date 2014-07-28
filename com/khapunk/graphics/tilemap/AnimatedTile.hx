@@ -34,20 +34,12 @@ class AnimatedTile {
 			frameTimers[i] += KP.elapsed;
 			
 			if (frameTimers[i] > durations[framePos[i]] / speed) {
-				frameTimers[i] = 0;
+				frameTimers[i] = 0;	
 				
-				if (reverse) {
-					framePos[i]--;
-					if (framePos[i] < 0)
+					framePos[i] += reverse ? -1:1;
+					if ((reverse && framePos[i] == -1) || (!reverse && framePos[i] == length)){
 					{
-						framePos[i] = length-1;
-					}
-				}
-				else {
-					framePos[i]++;
-					if (framePos[i] >= length)
-					{
-						framePos[i] = 0;
+						framePos[i] = reverse ? length-1: 0;
 					}
 				}
 			}
