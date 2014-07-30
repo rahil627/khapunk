@@ -99,7 +99,7 @@ class KP
 	
 	
 	/**
-	 * A rectangle representing the size of the screen.
+	 * The time passed since the last frame.
 	 */
 	public static var elapsed:Float;
 	
@@ -928,7 +928,7 @@ class KP
 	}
 	
 	
-		/**
+	/**
 	 * Gets an array of frame indices.
 	 * @param	from	Starting frame.
 	 * @param	to		Ending frame.

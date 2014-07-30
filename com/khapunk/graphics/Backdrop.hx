@@ -80,6 +80,7 @@ class Backdrop extends Graphic
 	
 	private inline function setAtlasRegion(region:AtlasRegion)
 	{
+		_region = region;
 		_source = region.image;
 		_textWidth = Std.int(region.w);
 		_textHeight = Std.int(region.h);
@@ -87,6 +88,9 @@ class Backdrop extends Graphic
 
 	private inline function setBitmapSource(bitmap:Image)
 	{
+		_region = new AtlasRegion();
+		_region.x = 0;
+		_region.y = 0;
 		_source = bitmap;
 		_textWidth = _source.width;
 		_textHeight = _source.height;
@@ -139,7 +143,7 @@ class Backdrop extends Graphic
 			{
 				//_region.draw(px + x, py + y, layer, sx * fsx, sy * fsy, 0, _red, _green, _blue, _alpha);
 				//x += Std.int(_textWidth * fsx);
-				painter.drawImage2(_source, 0, 0,
+				painter.drawImage2(_source, _region.x, _region.y,
 				_textWidth,
 				_textHeight,
 				Std.int(this.point.x *sx) + x,
