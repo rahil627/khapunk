@@ -28,7 +28,7 @@ class TileAtlas
 	function new(source:Dynamic) 
 	{
 		_regions = new Array<AtlasRegion>();
-
+		_rect = new Rectangle(0, 0, 0, 0);
 		if (Std.is(source, Image)) {
 			
 			_image = cast(source,Image);
@@ -48,6 +48,14 @@ class TileAtlas
 			_width = _image.width;
 			_height = _image.height;
 		}
+		else if (Std.is(source, AtlasRegion)) {
+			var t:AtlasRegion = cast(source, AtlasRegion);
+			_image = t.image;
+			_width = t.w;
+			_height = t.h;
+			_rect.x = t.x;
+			_rect.y = t.y;
+		}
 
 	}
 	
@@ -64,10 +72,12 @@ class TileAtlas
 		else if (Std.is(source, TextureAtlas)) {
 			img =  cast(source,TextureAtlas).getImage();
 		}
-		
+		else if (Std.is(source, AtlasRegion)) {
+			img = cast(source, AtlasRegion).image;
+		}
 		if (!_dataPool.exists(img)) {
 			
-			var ta:TileAtlas = new TileAtlas(img);
+			var ta:TileAtlas = new TileAtlas(source);
 			_dataPool.set(img,ta);
 			return ta;
 		}
@@ -111,7 +121,7 @@ class TileAtlas
 	public function prepareTiles(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int,tileMarginHeight:Int) : Void
 	{
 		#if debug
-		 if (_prepared) trace("This atlas is already prepared");
+		// if (_prepared) trace("This atlas is already prepared");
 		#end
 		
 		if (_prepared) return;
@@ -127,10 +137,9 @@ class TileAtlas
 			{
 				r = new AtlasRegion();
 				
-				r.x = x * (tileWidth + tileMarginWidth);
-				r.y = y * (tileHeight + tileMarginHeight);
+				r.x = x * (tileWidth + tileMarginWidth) + Std.int(_rect.x);
+				r.y = y * (tileHeight + tileMarginHeight) + Std.int(_rect.y);
 				
-
 				r.w = tileWidth;
 				r.h = tileHeight;
 				
