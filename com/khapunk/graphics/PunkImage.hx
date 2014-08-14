@@ -106,7 +106,7 @@ class PunkImage extends Graphic
 			}
 			else if (Std.is(source, TileAtlas))
 			{
-				setAtlasRegion(cast(source, TileAtlas).getRegion(0));
+				setBitmapSource(cast(source, TileAtlas).img);
 			}
 			else if (Std.is(source, Image))
 			{

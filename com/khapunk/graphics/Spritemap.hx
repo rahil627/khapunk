@@ -94,7 +94,7 @@ class Spritemap extends Animator<Int,Spritemap>
 	 * @param	reset		If the animation should force-restart if it is already playing.
 	 * @return	Anim object representing the played animation.
 	 */
-	override public function play(name:String = "", reset:Bool = false, reverse:Bool = false):IAnimation<Int,Spritemap>
+	/*override public function play(name:String = "", reset:Bool = false, reverse:Bool = false):IAnimation<Int,Spritemap>
 	{
 		if (!reset && _anim != null && _anim.name == name)
 		{
@@ -106,13 +106,13 @@ class Spritemap extends Animator<Int,Spritemap>
 			stop(reset);
 			return null;
 		}
-
+		
 		_anim = _anims.get(name);
 		this.reverse = reverse;
 		restart();
 		
 		return _anim;
-	}
+	}*/
 
 		/**
 	 * Plays a new ad hoc animation.

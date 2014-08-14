@@ -38,7 +38,8 @@ class TileAtlas
 			_height = _image.height;
 		}
 		else if (Std.is(source, String)) {
-			_image = Loader.the.getImage(cast(source, String));
+			var s:String = cast(source, String);
+			_image = Loader.the.getImage(s);
 			_width = _image.width;
 			_height = _image.height;
 		}

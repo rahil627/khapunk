@@ -842,8 +842,7 @@ class Entity
 		point.y = y - this.y;
 		if (point.x * point.x + point.y * point.y > amount * amount)
 		{
-			point.normalize();
-			point.mult(amount);
+			point.length = amount;
 		}
 		moveBy(point.x, point.y, solidType, sweep);
 	}

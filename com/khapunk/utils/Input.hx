@@ -366,7 +366,7 @@ class Input
 	
 	private static function onTouch(id:Int, x:Int, y:Int) : Void {
 		
-		var tp:Touch = new Touch(x, y, id);
+		var tp:Touch = new Touch(Game.the.painterTransformMouseX(x,y), Game.the.painterTransformMouseY(x,y), id);
 		
 		_touches.set(id, tp);
 		_touchOrder.push(id);
@@ -380,8 +380,8 @@ class Input
 	
 	private static function onTouchMove(id:Int, x:Int, y:Int) : Void
 	{
-		_touches.get(id).x = x;
-		_touches.get(id).y = y;
+		_touches.get(id).x = Game.the.painterTransformMouseX(x,y);
+		_touches.get(id).y = Game.the.painterTransformMouseY(x,y);
 	}
 	
 	/**

@@ -83,6 +83,7 @@ class Animator<FrameType,ParentType> extends PunkImage
 			_index = reverse ?  _anim.frames.length -1 : 0;
 			complete = false;
 			updateFrame();
+			restart();
 		}
 		else
 		{

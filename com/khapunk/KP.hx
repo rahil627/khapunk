@@ -139,6 +139,17 @@ class KP
 		halfWidth = width / 2;
 	}
 	
+	
+	public static var rate(get, set):Float;
+	static function get_rate(): Float {
+		return Scheduler.deltaScale;
+	}
+	static function set_rate(value:Float): Float {
+		Scheduler.deltaScale = value;
+		return Scheduler.deltaScale;
+	}
+	
+	
 	/**
 	 * Resize the screen.
 	 * @param width		New width.
@@ -310,8 +321,7 @@ class KP
 			object.y = y;
 			return;
 		}
-		point.normalize();
-		point.mult(distance);
+		point.length = distance;
 		object.x += point.x;
 		object.y += point.y;
 	}
@@ -327,8 +337,7 @@ class KP
 		point.x = object.x - anchor.x;
 		point.y = object.y - anchor.y;
 		if (point.length > distance) {
-			point.normalize();
-			point.mult(distance);
+			point.length = distance;
 		}
 		object.x = anchor.x + point.x;
 		object.y = anchor.y + point.y;
