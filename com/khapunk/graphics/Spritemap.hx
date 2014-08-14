@@ -34,7 +34,7 @@ class Spritemap extends Animator<Int,Spritemap>
 		}
 		else 
 		{
-			_atlas = new TileAtlas(source);
+			_atlas = TileAtlas.getAtlas(source);
 			_atlas.prepareTiles(frameWidth, frameHeight, 0, 0);
 			_region = _atlas.getRegion(_frame);
 		}

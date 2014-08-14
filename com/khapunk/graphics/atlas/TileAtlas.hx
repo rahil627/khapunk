@@ -16,19 +16,24 @@ class TileAtlas
 	private var _width:Int;
 	private var _height:Int;
 	private var _rect:Rectangle;
+	private var _name:String;
+	private var _prepared:Bool = false;
+	
 	
 	public var cols:Int;
 	public var rows:Int;
 	
-	public function new(source:Dynamic) 
+	private static var _dataPool:Map<Image, TileAtlas> = new Map<Image, TileAtlas>();
+	
+	function new(source:Dynamic) 
 	{
 		_regions = new Array<AtlasRegion>();
-		
+
 		if (Std.is(source, Image)) {
 			
 			_image = cast(source,Image);
-			_width = cast(source,Image).width;
-			_height = cast(source,Image).height;
+			_width = _image.width;
+			_height = _image.height;
 			
 		}
 		else if (Std.is(source, TextureAtlas))
@@ -44,6 +49,35 @@ class TileAtlas
 			_height = _image.height;
 		}
 
+	}
+	
+	public static inline function getAtlas(source:Dynamic): TileAtlas
+	{
+		var img:Image = null;
+		
+		if (Std.is(source, String)) {
+			img = Loader.the.getImage(cast(source, String));
+		}
+		else if (Std.is(source, Image)) {
+			img = cast(source, Image);
+		}
+		else if (Std.is(source, TextureAtlas)) {
+			img =  cast(source,TextureAtlas).getImage();
+		}
+		
+		if (!_dataPool.exists(img)) {
+			
+			var ta:TileAtlas = new TileAtlas(img);
+			_dataPool.set(img,ta);
+			return ta;
+		}
+		
+		return _dataPool.get(img);
+	}
+	
+	public function destroy() : Void
+	{
+		_dataPool.remove(_image);
 	}
 	
 	public var img(get, set): Image;
@@ -74,8 +108,13 @@ class TileAtlas
 		(index > _regions.length-1) ?  return _regions[0]:return _regions[index];
 	}
 	
-	public function prepareTiles(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int,tileMarginHeight:Int)
+	public function prepareTiles(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int,tileMarginHeight:Int) : Void
 	{
+		#if debug
+		 if (_prepared) trace("This atlas is already prepared");
+		#end
+		
+		if (_prepared) return;
 		
 		cols = Math.floor(_image.width / tileWidth);
 		rows = Math.floor(_image.height / tileHeight);
@@ -99,6 +138,8 @@ class TileAtlas
 				
 			}
 		}
+		
+		_prepared = true;
 		
 	}
 	
