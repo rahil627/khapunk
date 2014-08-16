@@ -113,9 +113,7 @@ class Tilemap extends Graphic
 		}
 		else {
 		
-			_atlas = TileAtlas.getAtlas(tileset);
-			_atlas.prepareTiles(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
-		
+			_atlas = TileAtlas.getAtlas(tileset,tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
 		}
 		
 

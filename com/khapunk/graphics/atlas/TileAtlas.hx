@@ -59,7 +59,19 @@ class TileAtlas
 
 	}
 	
-	public static inline function getAtlas(source:Dynamic): TileAtlas
+	/**
+	 * TODO Find a better way to retrieve/create Atlas objects.
+	 * Retrieves an atlas for the given source.
+	 * If an atlas for the given source does not exists one will be created based on the parameters followed by source.
+	 * 
+	 * @param	source the image data (String, Image, TextureAtlas and AtlasRegion) 
+	 * @param	tileWidth The width of each tile.
+	 * @param	tileHeight The height of each tile.
+	 * @param	tileMarginWidth The horizontal spacing between tiles.
+	 * @param	tileMarginHeight The vertical spacing between tiles
+	 * @return  Returns a TileAtlas object.
+	 */
+	public static inline function getAtlas(source:Dynamic, ?tileWidth:Int, ?tileHeight:Int, ?tileMarginWidth:Int, ?tileMarginHeight:Int): TileAtlas
 	{
 		var img:Image = null;
 		
@@ -78,7 +90,8 @@ class TileAtlas
 		if (!_dataPool.exists(img)) {
 			
 			var ta:TileAtlas = new TileAtlas(source);
-			_dataPool.set(img,ta);
+			ta.prepareTiles(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight);
+			_dataPool.set(img, ta);
 			return ta;
 		}
 		
@@ -118,7 +131,7 @@ class TileAtlas
 		(index > _regions.length-1) ?  return _regions[0]:return _regions[index];
 	}
 	
-	public function prepareTiles(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int,tileMarginHeight:Int) : Void
+	function prepareTiles(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int,tileMarginHeight:Int) : Void
 	{
 		#if debug
 		// if (_prepared) trace("This atlas is already prepared");
