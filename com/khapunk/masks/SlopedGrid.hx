@@ -1,6 +1,6 @@
 package com.khapunk.masks;
+import kha.Framebuffer;
 import kha.math.Vector2;
-import kha.Painter;
 import kha.Rectangle;
 
 enum TileType
@@ -397,7 +397,7 @@ class SlopedGrid extends Hitbox
 		return collideBox(ox, oy, other._width, other._height, x, y);
 	}
 	
-	override public function debugDraw(painter:Painter, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(buffer:Framebuffer, scaleX:Float, scaleY:Float):Void
 	{
 		/** TODO debug*/ 
 		

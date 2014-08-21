@@ -3,9 +3,10 @@ import com.khapunk.Graphic;
 import com.khapunk.graphics.atlas.AtlasRegion;
 import com.khapunk.KP;
 import kha.Color;
+import kha.Framebuffer;
+import kha.graphics2.Graphics;
 import kha.Image;
 import kha.math.Vector2;
-import kha.Painter;
 import kha.Sys;
 
 /**
@@ -96,7 +97,7 @@ class Backdrop extends Graphic
 		_textHeight = _source.height;
 	}
 	
-	override public function render(painter:Painter, point:Vector2, camera:Vector2)
+	override public function render(buffer:Graphics, point:Vector2, camera:Vector2)
 	{
 		
 		this.point.x = point.x + x - (scrollByCam ? (camera.x * scrollX):0);
@@ -133,7 +134,9 @@ class Backdrop extends Graphic
 		stepX = ratioX == Math.floor(ratioX) ? 0:stepX;
 		stepY = ratioY == Math.floor(ratioY) ? 0:stepY;
 		
-		painter.setColor(color);
+		buffer.set_color(color);
+		
+		
 		
 		while (y < _height + stepY)
 		{
@@ -143,16 +146,19 @@ class Backdrop extends Graphic
 			{
 				//_region.draw(px + x, py + y, layer, sx * fsx, sy * fsy, 0, _red, _green, _blue, _alpha);
 				//x += Std.int(_textWidth * fsx);
-				painter.drawImage2(_source, _region.x, _region.y,
+				if(angle != 0)
+				buffer.pushRotation(angle,x + (_textWidth * sx * -0.5),y + (_textHeight * sy * -0.5));
+				
+				buffer.drawScaledSubImage(_source, _region.x, _region.y,
 				_textWidth,
 				_textHeight,
 				Std.int(this.point.x *sx) + x,
 				Std.int(this.point.y *sy) + y,
 				_textWidth * sx,
-				_textHeight * sy,
-				angle,
-				_textWidth * sx * 0.5,
-				_textHeight* sy * 0.5);
+				_textHeight * sy);
+				
+				if(angle != 0)
+				buffer.popTransformation();
 				
 				x += Std.int(_textWidth * sx );
 			
@@ -161,7 +167,8 @@ class Backdrop extends Graphic
 			y += Std.int(_textHeight * sy);
 		}
 		
-		painter.setColor(Color.White);
+		
+		buffer.set_color(Color.White);
 	}
 
 	

@@ -1,6 +1,6 @@
 package com.khapunk.masks;
+import kha.Framebuffer;
 import kha.math.Vector2;
-import kha.Painter;
 import kha.Rectangle;
 
 /**
@@ -500,7 +500,7 @@ class Grid extends Hitbox
 		return false;
 	}
 	
-	override public function debugDraw(graphics:Painter, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(buffer:Framebuffer, scaleX:Float, scaleY:Float):Void
 	{
 		/**
 		 * TODO FIX DEBUG

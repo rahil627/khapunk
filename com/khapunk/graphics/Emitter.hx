@@ -4,9 +4,10 @@ import com.khapunk.Graphic;
 import com.khapunk.graphics.atlas.AtlasRegion;
 import com.khapunk.utils.Ease.EaseFunction;
 import kha.Color;
+import kha.Framebuffer;
+import kha.graphics2.Graphics;
 import kha.Image;
 import kha.math.Vector2;
-import kha.Painter;
 import kha.Rectangle;
 
 /**
@@ -235,10 +236,8 @@ class Emitter extends Graphic
 		_particle = null;
 	}
 	
-	override public function render(painter:Painter , point:Vector2, camera:Vector2)
+	override public function render(buffer:Graphics , point:Vector2, camera:Vector2)
 	{
-
-		
 		
 		// quit if there are no particles
 		if (_particle == null)
@@ -291,9 +290,9 @@ class Emitter extends Graphic
 				hw = (ar.w * scale) / 2;
 				hh = (ar.h * scale) / 2;
 				
-				painter.setColor(_color);
-				painter.set_opacity(_color.A);
-				painter.drawImage2(forceSingleImage?imgSource:ar.image, 
+				buffer.set_color(_color);
+				buffer.set_opacity(_color.A);
+				buffer.drawScaledSubImage(forceSingleImage?imgSource:ar.image, 
 				ar.x, 
 				ar.y, 
 				ar.w, 
@@ -301,12 +300,12 @@ class Emitter extends Graphic
 				_p.x - hw, 
 				_p.y - hh, 
 				ar.w * scale,
-				ar.h * scale, 
+				ar.h * scale);/* 
 				rotation, 
 				hw, 
-				hh);
-				painter.setColor(Color.White);
-				painter.set_opacity(1);
+				hh);*/
+				buffer.set_color(Color.White);
+				buffer.set_opacity(1);
 
 				// get next particle
 				p = p._next;

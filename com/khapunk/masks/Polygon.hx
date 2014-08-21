@@ -1,7 +1,7 @@
 package com.khapunk.masks;
 import com.khapunk.math.Projection;
+import kha.Framebuffer;
 import kha.math.Vector2;
-import kha.Painter;
 
 /**
  * ...
@@ -372,7 +372,7 @@ class Polygon extends Hitbox
 		projection.max = max;
 	}
 	
-	override public function debugDraw(painter:Painter, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(buffer:Framebuffer, scaleX:Float, scaleY:Float):Void
 	{
 		
 		/** TODO Debug draw*/

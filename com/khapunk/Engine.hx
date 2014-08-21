@@ -1,7 +1,8 @@
 package com.khapunk;
 import com.khapunk.utils.Input;
+import kha.Framebuffer;
 import kha.Game;
-import kha.Painter;
+import kha.graphics2.Graphics;
 import kha.Rectangle;
 import kha.Scheduler;
 
@@ -163,13 +164,13 @@ class Engine
 	/**
 	 * Renders the game, rendering the Scene and Entities.
 	 */
-	public function render(painter:Painter): Void
+	public function render(buffer:Graphics): Void
 	{
 		
 		// update input
 		Input.update();
 		
-		if (_scene.visible) _scene.render(painter);
+		if (_scene.visible) _scene.render(buffer);
 	}
 	
 	

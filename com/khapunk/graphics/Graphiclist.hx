@@ -1,7 +1,8 @@
 package com.khapunk.graphics;
 import com.khapunk.Graphic;
+import kha.Framebuffer;
+import kha.graphics2.Graphics;
 import kha.math.Vector2;
-import kha.Painter;
 
 /**
  * A Graphic that can contain multiple Graphics of one or various types.
@@ -69,10 +70,10 @@ class Graphiclist extends Graphic
 	}
 	
 	/** @private Renders the Graphics in the list. */
-	override public function render(painter:Painter, point:Vector2, camera:Vector2)
+	override public function render(buffer:Graphics, point:Vector2, camera:Vector2)
 	{
 		renderList(function(g:Graphic) {
-			g.render(painter, this.point, _camera);
+			g.render(buffer, this.point, _camera);
 		}, point, camera);
 	 
 	}

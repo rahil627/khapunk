@@ -3,10 +3,11 @@ import com.khapunk.graphics.atlas.AtlasRegion;
 import com.khapunk.graphics.atlas.TextureAtlas;
 import com.khapunk.graphics.atlas.TileAtlas;
 import kha.Color;
+import kha.Framebuffer;
+import kha.graphics2.Graphics;
 import kha.Image;
 import kha.Loader;
 import kha.math.Vector2;
-import kha.Painter;
 import kha.Rectangle;
 
 /**
@@ -170,7 +171,7 @@ class PunkImage extends Graphic
 	}
 	
 	/** Renders the image. */
-	override public function render(painter:Painter, point:Vector2, camera:Vector2)
+	override public function render(buffer:Graphics, point:Vector2, camera:Vector2)
 	{
 		
 		var sx = scale * scaleX,
@@ -183,10 +184,10 @@ class PunkImage extends Graphic
 		if (_flippedX) this.point.x += _sourceRect.width * sx;
 		if (_flippedY) this.point.y += _sourceRect.height * sy;
 		
-		painter.setColor(Color.fromValue(_color));
-		painter.set_opacity(_alpha);
-
-		painter.drawImage2(
+		buffer.set_color(Color.fromValue(_color));
+		buffer.pushOpacity(_alpha);
+	
+		buffer.drawScaledSubImage(
 		_source,
 		_region.x,
 		_region.y,
@@ -195,13 +196,12 @@ class PunkImage extends Graphic
 		this.point.x,
 		this.point.y,
 		_region.w * (sx * (_flippedX ? -1 : 1)),
-		_region.h * (sy * (_flippedY ? -1 : 1)),
-		angle, 
-		originX * sx,
-		originY * sy);
+		_region.h * (sy * (_flippedY ? -1 : 1))
+		);
+		
 
-		painter.set_opacity(1);
-		painter.setColor(Color.White);
+		buffer.popOpacity();
+		buffer.set_color(Color.White);
 	}
 	
 	/**

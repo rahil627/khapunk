@@ -2,8 +2,9 @@ package com.khapunk;
 import com.khapunk.Graphic;
 import com.khapunk.graphics.Graphiclist;
 import com.khapunk.Scene;
+import kha.Framebuffer;
+import kha.graphics2.Graphics;
 import kha.math.Vector2;
-import kha.Painter;
 
 /**
  * ...
@@ -121,7 +122,7 @@ class Entity
 	/**
 	 * The BitmapData target to draw the Entity to. Leave as null to render to the current screen buffer (default).
 	 */
-	public var renderTarget:Painter;
+	public var renderTarget:Framebuffer;
 	
 
 	
@@ -177,7 +178,7 @@ class Entity
 	 * Renders the Entity. If you override this for special behaviour,
 	 * remember to call super.render() to render the Entity's graphic.
 	 */
-	public function render(painter:Painter):Void
+	public function render(buffer:Graphics):Void
 	{
 		
 		if (graphic != null && graphic.visible)
@@ -191,7 +192,7 @@ class Entity
 			camera.x = _scene == null ? KP.camera.x : _scene.camera.x;
 			camera.y = _scene == null ? KP.camera.y : _scene.camera.y;
 
-			graphic.render(painter, point, camera);
+			graphic.render(buffer, point, camera);
 		}
 	}
 	

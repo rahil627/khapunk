@@ -1,9 +1,10 @@
 package com.khapunk;
 import com.khapunk.graphics.tilemap.TileAnimationManager;
 import com.khapunk.utils.Input;
+import kha.Framebuffer;
 import kha.math.Vector2;
 import kha.Mouse;
-import kha.Painter;
+import kha.graphics2.Graphics;
 
 /**
  * ...
@@ -141,7 +142,7 @@ class Scene
 	 * If you override this to give your Scene render code, remember
 	 * to call super.render() or your Entities will not be rendered.
 	 */
-	public function render(painter:Painter) : Void
+	public function render(buffer:Graphics) : Void
 	{	
 
 		// render the entities in order of depth
@@ -152,7 +153,7 @@ class Scene
 			if (!layerVisible(layer)) continue;
 			for (e in _layers.get(layer))
 			{
-				if (e.visible) e.render(painter);
+				if (e.visible) e.render(buffer);
 			}
 		}
 

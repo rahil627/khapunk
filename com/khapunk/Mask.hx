@@ -1,8 +1,9 @@
 package com.khapunk;
 import com.khapunk.masks.Masklist;
 import com.khapunk.math.Projection;
+import kha.Framebuffer;
 import kha.math.Vector2;
-import kha.Painter;
+
 
 /**
  * ...
@@ -82,7 +83,7 @@ class Mask
 	/**
 	 * Override this
 	 */
-	public function debugDraw(painter:Painter, scaleX:Float, scaleY:Float):Void
+	public function debugDraw(buffer:Framebuffer, scaleX:Float, scaleY:Float):Void
 	{
 
 	}

@@ -1,6 +1,7 @@
 package com.khapunk;
+import kha.Framebuffer;
+import kha.graphics2.Graphics;
 import kha.math.Vector2;
-import kha.Painter;
 
 
 
@@ -94,7 +95,7 @@ class Graphic
 	 * @param  point      The position to draw the graphic.
 	 * @param  camera     The camera offset.
 	 */
-	public function render(painter:Painter, point:Vector2, camera:Vector2) { }
+	public function render(buffer:Graphics, point:Vector2, camera:Vector2) { }
 	
 	/**
 	 * Pause updating this graphic.

@@ -1,7 +1,7 @@
 package com.khapunk.masks;
 import com.khapunk.math.Projection;
+import kha.Framebuffer;
 import kha.math.Vector2;
-import kha.Painter;
 
 /**
  * ...
@@ -251,7 +251,7 @@ class Circle extends Hitbox
 		projection.max = _radius;
 	}
 	
-	override public function debugDraw(painter:Painter, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(buffer:Framebuffer, scaleX:Float, scaleY:Float):Void
 	{
 		/** TODO Add Debug draw*/
 		//graphics.drawCircle((parent.x + _x - HXP.camera.x) * scaleX, (parent.y + _y - HXP.camera.y) * scaleY, radius * scaleX);

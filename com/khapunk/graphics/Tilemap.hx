@@ -5,9 +5,10 @@ import com.khapunk.graphics.atlas.TextureAtlas;
 import com.khapunk.graphics.atlas.TileAtlas;
 import com.khapunk.graphics.tilemap.AnimatedTile;
 import com.khapunk.graphics.tilemap.TileAnimationManager;
+import kha.Framebuffer;
+import kha.graphics2.Graphics;
 import kha.Image;
 import kha.math.Vector2;
-import kha.Painter;
 import kha.Rectangle;
 
 typedef Array2D = Array<Array<Int>>
@@ -445,7 +446,7 @@ class Tilemap extends Graphic
 		usePositions = u;
 	}
 	
-	override public function render(painter:Painter, point:Vector2, camera:Vector2)
+	override public function render(buffer:Graphics, point:Vector2, camera:Vector2)
 	{
 		// determine drawing location
 		this.point.x = point.x + x - camera.x * scrollX;
@@ -495,7 +496,7 @@ class Tilemap extends Graphic
 		//scy = Math.ceil(stepy) / tileHeight;
 		
 		
-		painter.set_opacity(alpha);
+		buffer.set_opacity(alpha);
 		var tr:AtlasRegion;
 		var parent:Int;
 		var animation:AnimatedTile;
@@ -527,13 +528,13 @@ class Tilemap extends Graphic
 					}
 				}
 				tr = _atlas.getRegion(tile);
-				painter.drawImage2(_atlas.img, tr.x, tr.y, tr.w, tr.h,wx, wy, _tile.width, _tile.height);
+				buffer.drawScaledSubImage(_atlas.img, tr.x, tr.y, tr.w, tr.h,wx, wy, _tile.width, _tile.height);
 					//_atlas.prepareTile(tile, Std.int(wx), Std.int(wy), layer, scx, scy, 0, _red, _green, _blue, alpha);
 				wx += stepx;
 			}
 			wy += stepy;
 		}
-		painter.set_opacity(1);
+		buffer.set_opacity(1);
 	}
 	
 	/**
