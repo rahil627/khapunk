@@ -3,6 +3,7 @@ import com.khapunk.utils.Input;
 import kha.Framebuffer;
 import kha.Game;
 import kha.graphics2.Graphics;
+import kha.Image;
 import kha.Rectangle;
 import kha.Scheduler;
 
@@ -100,7 +101,7 @@ class Engine
 		KP.width = Game.the.width;
 		KP.height = Game.the.height;
 		KP.bounds = new Rectangle(0, 0, KP.width, KP.height);
-		
+
 		KP.init();
 		
 		// enable input

@@ -1,6 +1,10 @@
 package com.khapunk;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
+import kha.graphics4.FragmentShader;
+import kha.graphics4.Program;
+import kha.graphics4.VertexShader;
+import kha.Image;
 import kha.math.Vector2;
 
 
@@ -96,6 +100,8 @@ class Graphic
 	 * @param  camera     The camera offset.
 	 */
 	public function render(buffer:Graphics, point:Vector2, camera:Vector2) { }
+	
+	public var program:Program;
 	
 	/**
 	 * Pause updating this graphic.

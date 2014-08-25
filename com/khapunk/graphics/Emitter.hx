@@ -6,6 +6,7 @@ import com.khapunk.utils.Ease.EaseFunction;
 import kha.Color;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
+import kha.graphics4.BlendingOperation;
 import kha.Image;
 import kha.math.Vector2;
 import kha.Rectangle;
@@ -266,19 +267,22 @@ class Emitter extends Graphic
 			{
 				// get time scale
 				t = p._time / p._duration;
-
+				
 				// get particle type
 				type = p._type;
-
+				
+				//setblend
+				//buffer.setBlendingMode(type._sourceBlend, type._destinationBlend);
+				
 				// get position
 				td = (type._ease == null) ? t : type._ease(t);
 				_p.x = this.point.x + p._x + p._moveX * (type._backwards ? 1 - td : td);
 				_p.y = this.point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
 				p._moveY += p._gravity * td;
-
+				
 				frameIndex = type._frames[Std.int(td * type._frames.length)];
 				ar =  _frames[frameIndex];
-
+				
 				_color.R = (type._red + type._redRange * td); // Red
 				_color.G = (type._green + type._greenRange * td); // Green
 				_color.B = (type._blue + type._blueRange * td); //Blue
@@ -292,6 +296,8 @@ class Emitter extends Graphic
 				
 				buffer.set_color(_color);
 				buffer.set_opacity(_color.A);
+				
+				buffer.pushRotation(rotation, _p.x, _p.y);
 				buffer.drawScaledSubImage(forceSingleImage?imgSource:ar.image, 
 				ar.x, 
 				ar.y, 
@@ -300,13 +306,13 @@ class Emitter extends Graphic
 				_p.x - hw, 
 				_p.y - hh, 
 				ar.w * scale,
-				ar.h * scale);/* 
-				rotation, 
-				hw, 
-				hh);*/
+				ar.h * scale);
+				
+				buffer.popTransformation();
+				
 				buffer.set_color(Color.White);
 				buffer.set_opacity(1);
-
+				
 				// get next particle
 				p = p._next;
 			}
@@ -378,6 +384,14 @@ class Emitter extends Graphic
 		if (pt == null) return null;
 		return pt.setAlpha(start, finish, ease);
 	}
+
+	public function setBlend(name:String, source:BlendingOperation, destination:BlendingOperation) : ParticleType
+	{
+		var pt:ParticleType = _types.get(name);
+		if (pt == null) return null;
+		return pt.setBlend(source,destination);
+	}
+	
 	
 	/**
 	 * Sets the scale range of the particle type.

@@ -1,5 +1,6 @@
 package com.khapunk;
 import com.khapunk.utils.Ease.EaseFunction;
+import kha.Image;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.Rectangle;
@@ -52,6 +53,9 @@ class KP
 	//public static var _gameTime:Float;
 	//public static var _systemTime:Float;
 
+	public static var backbufferA:Image;
+	public static var backbufferB:Image;
+	
 	private static var _shakeEase:EaseFunction;
 	private static var _shakeduration:Float=0;
 	private static var _shakeTime:Float=0;
@@ -137,6 +141,10 @@ class KP
 	{
 		halfHeight = height / 2;
 		halfWidth = width / 2;
+		
+				
+		backbufferA = Image.createRenderTarget(KP.width, KP.height);
+		backbufferB = Image.createRenderTarget(KP.width, KP.height);
 	}
 	
 	

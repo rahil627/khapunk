@@ -147,7 +147,8 @@ class Backdrop extends Graphic
 				//_region.draw(px + x, py + y, layer, sx * fsx, sy * fsy, 0, _red, _green, _blue, _alpha);
 				//x += Std.int(_textWidth * fsx);
 				if(angle != 0)
-				buffer.pushRotation(angle,x + (_textWidth * sx * -0.5),y + (_textHeight * sy * -0.5));
+				buffer.pushRotation(angle,x + Std.int(this.point.x *sx) + (_textWidth * sx * 0.5),y + Std.int(this.point.y *sy) + (_textHeight * sy * 0.5));
+				
 				
 				buffer.drawScaledSubImage(_source, _region.x, _region.y,
 				_textWidth,

@@ -176,17 +176,21 @@ class PunkImage extends Graphic
 		
 		var sx = scale * scaleX,
 			sy = scale * scaleY;
-
+			
 		// determine drawing location
 		this.point.x = point.x + x - originX * sx - camera.x * scrollX;
 		this.point.y = point.y + y - originY * sy - camera.y * scrollY;
-
+		
 		if (_flippedX) this.point.x += _sourceRect.width * sx;
 		if (_flippedY) this.point.y += _sourceRect.height * sy;
 		
+		buffer.pushRotation(angle, 
+		this.point.x +  (sx * (_flippedX ? -1 : 1)) * _region.w*0.5 , 
+		this.point.y +  (sy * (_flippedY ? -1 : 1)) * _region.h*0.5);
+		
 		buffer.set_color(Color.fromValue(_color));
 		buffer.pushOpacity(_alpha);
-	
+		
 		buffer.drawScaledSubImage(
 		_source,
 		_region.x,
@@ -199,9 +203,11 @@ class PunkImage extends Graphic
 		_region.h * (sy * (_flippedY ? -1 : 1))
 		);
 		
-
+		buffer.popTransformation();
+		
 		buffer.popOpacity();
 		buffer.set_color(Color.White);
+		
 	}
 	
 	/**

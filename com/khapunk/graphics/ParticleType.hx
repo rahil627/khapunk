@@ -2,6 +2,7 @@ package com.khapunk.graphics;
 
 import com.khapunk.KP;
 import com.khapunk.utils.Ease;
+import kha.graphics4.BlendingOperation;
 import kha.Rectangle;
 
 /**
@@ -36,6 +37,8 @@ class ParticleType
 		_scaleRange = 0;
 		_rotation = 0;
 		_rotationRange = 0;
+		_sourceBlend = BlendingOperation.SourceAlpha;
+		_destinationBlend = BlendingOperation.DestinationAlpha;
 	}
 
 	/**
@@ -63,6 +66,12 @@ class ParticleType
 		return this;
 	}
 
+	public function setBlend(source:BlendingOperation, destination:BlendingOperation) : ParticleType {
+			_sourceBlend = source;
+			_destinationBlend = destination;
+			return this;
+	}
+	
 	/**
 	 * Defines the motion range for this particle type based on the vector.
 	 * @param	x				X distance to move.
@@ -222,6 +231,9 @@ class ParticleType
 	private var _blueRange:Float;
 	private var _colorEase:EaseFunction;
 
+	private var _sourceBlend:BlendingOperation;
+	private var _destinationBlend:BlendingOperation;
+	
 	// Buffer information.
 	//private var _buffer:BitmapData;
 	//private var _bufferRect:Rectangle;
