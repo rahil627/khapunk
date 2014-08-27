@@ -1,5 +1,6 @@
 package com.khapunk;
 import com.khapunk.utils.Input;
+import kha.Canvas;
 import kha.Framebuffer;
 import kha.Game;
 import kha.graphics2.Graphics;
@@ -165,7 +166,7 @@ class Engine
 	/**
 	 * Renders the game, rendering the Scene and Entities.
 	 */
-	public function render(buffer:Graphics): Void
+	public function render(buffer:Canvas): Void
 	{
 		
 		// update input

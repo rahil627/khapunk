@@ -2,8 +2,10 @@ package com.khapunk;
 import com.khapunk.Graphic;
 import com.khapunk.graphics.Graphiclist;
 import com.khapunk.Scene;
+import kha.Canvas;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
+import kha.Image;
 import kha.math.Vector2;
 
 /**
@@ -178,7 +180,7 @@ class Entity
 	 * Renders the Entity. If you override this for special behaviour,
 	 * remember to call super.render() to render the Entity's graphic.
 	 */
-	public function render(buffer:Graphics):Void
+	public function render(buffer:Canvas):Void
 	{
 		
 		if (graphic != null && graphic.visible)

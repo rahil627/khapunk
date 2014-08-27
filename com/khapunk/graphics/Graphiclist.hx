@@ -1,7 +1,9 @@
 package com.khapunk.graphics;
 import com.khapunk.Graphic;
+import kha.Canvas;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
+import kha.Image;
 import kha.math.Vector2;
 
 /**
@@ -70,7 +72,7 @@ class Graphiclist extends Graphic
 	}
 	
 	/** @private Renders the Graphics in the list. */
-	override public function render(buffer:Graphics, point:Vector2, camera:Vector2)
+	override public function render(buffer:Canvas, point:Vector2, camera:Vector2)
 	{
 		renderList(function(g:Graphic) {
 			g.render(buffer, this.point, _camera);

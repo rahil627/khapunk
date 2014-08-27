@@ -54,8 +54,8 @@ import com.khapunk.graphics.PunkImage;
 import com.khapunk.KP;
 import com.khapunk.Scene;
 import kha.Game;
+import kha.Canvas;
 import kha.Loader;
-import kha.Painter;
 
 class Empty extends Game {
 	
@@ -74,11 +74,17 @@ class Empty extends Game {
 		engine.update();
 	}
 	
-	override public function render(painter:Painter):Void 
+	override public function render(buffer:Framebuffer):Void 
 	{
-		painter.begin();
-		engine.render(painter);
-		painter.end();
+		KP.backbufferA.g2.begin();
+		engine.render(KP.backbufferA);
+		KP.backbufferA.g2.end();
+		
+		//Scale and draw our backbuffer into our screen buffer.
+		startRender(buffer);
+		Scaler.scale(KP.backbufferA, buffer, kha.Sys.screenRotation);
+		endRender(buffer);
+		
 	}
 	
 	override public function init():Void 
@@ -105,6 +111,50 @@ class Empty extends Game {
 	
 }
 ```
+
+###Shaders###
+
+With Graphics2 and Graphics4 Khapunk is able to use shaders with ease. 
+To use a shader simply compile and link your shader:
+	
+```
+#!haxe
+
+	//Program object
+	var myProgram:Program = new Program();
+	myProgram.setVertexShader(new VertexShader(Loader.the.getShader("vertex.vert")));
+	myProgram.setFragmentShader(new FragmentShader(Loader.the.getShader("fragment.frag")));
+	
+	//Standard kha vertex shader attributes
+	//Check kha/Shaders/painter-image.vert.glsl for example
+	var structure:VertexStructure = new VertexStructure();
+	myProgram.add("vertexPosition", VertexData.Float3);
+	myProgram.add("texPosition", VertexData.Float2);
+	myProgram.add("vertexColor", VertexData.Float4);
+		
+	//Links and compiles our shader
+	program.link(structure);
+		
+
+```
+
+Then simply assign the program to your graphics:
+
+```
+#!haxe
+
+	myBuffer.g2.program = myProgram;
+	//set uniform
+	myBuffer.g4.setFloat(
+		myProgram.getConstantLocation("myUniform"),
+		10.0
+	);
+
+	myBuffer.g2.begin();
+	//Drawcalls
+	myBuffer.g2.end();
+	
+```	
 
 ---
 

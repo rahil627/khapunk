@@ -3,6 +3,7 @@ package com.khapunk.graphics;
 import com.khapunk.Graphic;
 import com.khapunk.graphics.atlas.AtlasRegion;
 import com.khapunk.utils.Ease.EaseFunction;
+import kha.Canvas;
 import kha.Color;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
@@ -237,7 +238,7 @@ class Emitter extends Graphic
 		_particle = null;
 	}
 	
-	override public function render(buffer:Graphics , point:Vector2, camera:Vector2)
+	override public function render(buffer:Canvas , point:Vector2, camera:Vector2)
 	{
 		
 		// quit if there are no particles
@@ -272,7 +273,7 @@ class Emitter extends Graphic
 				type = p._type;
 				
 				//setblend
-				//buffer.setBlendingMode(type._sourceBlend, type._destinationBlend);
+				//buffer.g2.setBlendingMode(type._sourceBlend, type._destinationBlend);
 				
 				// get position
 				td = (type._ease == null) ? t : type._ease(t);
@@ -294,11 +295,11 @@ class Emitter extends Graphic
 				hw = (ar.w * scale) / 2;
 				hh = (ar.h * scale) / 2;
 				
-				buffer.set_color(_color);
-				buffer.set_opacity(_color.A);
+				buffer.g2.set_color(_color);
+				buffer.g2.set_opacity(_color.A);
 				
-				buffer.pushRotation(rotation, _p.x, _p.y);
-				buffer.drawScaledSubImage(forceSingleImage?imgSource:ar.image, 
+				buffer.g2.pushRotation(rotation, _p.x, _p.y);
+				buffer.g2.drawScaledSubImage(forceSingleImage?imgSource:ar.image, 
 				ar.x, 
 				ar.y, 
 				ar.w, 
@@ -308,10 +309,10 @@ class Emitter extends Graphic
 				ar.w * scale,
 				ar.h * scale);
 				
-				buffer.popTransformation();
+				buffer.g2.popTransformation();
 				
-				buffer.set_color(Color.White);
-				buffer.set_opacity(1);
+				buffer.g2.set_color(Color.White);
+				buffer.g2.set_opacity(1);
 				
 				// get next particle
 				p = p._next;

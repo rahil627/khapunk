@@ -2,6 +2,7 @@ package com.khapunk.graphics;
 import com.khapunk.graphics.atlas.AtlasRegion;
 import com.khapunk.graphics.atlas.TextureAtlas;
 import com.khapunk.graphics.atlas.TileAtlas;
+import kha.Canvas;
 import kha.Color;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
@@ -171,7 +172,7 @@ class PunkImage extends Graphic
 	}
 	
 	/** Renders the image. */
-	override public function render(buffer:Graphics, point:Vector2, camera:Vector2)
+	override public function render(buffer:Canvas, point:Vector2, camera:Vector2)
 	{
 		
 		var sx = scale * scaleX,
@@ -184,14 +185,14 @@ class PunkImage extends Graphic
 		if (_flippedX) this.point.x += _sourceRect.width * sx;
 		if (_flippedY) this.point.y += _sourceRect.height * sy;
 		
-		buffer.pushRotation(angle, 
+		buffer.g2.pushRotation(angle, 
 		this.point.x +  (sx * (_flippedX ? -1 : 1)) * _region.w*0.5 , 
 		this.point.y +  (sy * (_flippedY ? -1 : 1)) * _region.h*0.5);
 		
-		buffer.set_color(Color.fromValue(_color));
-		buffer.pushOpacity(_alpha);
+		buffer.g2.set_color(Color.fromValue(_color));
+		buffer.g2.pushOpacity(_alpha);
 		
-		buffer.drawScaledSubImage(
+		buffer.g2.drawScaledSubImage(
 		_source,
 		_region.x,
 		_region.y,
@@ -203,10 +204,10 @@ class PunkImage extends Graphic
 		_region.h * (sy * (_flippedY ? -1 : 1))
 		);
 		
-		buffer.popTransformation();
+		buffer.g2.popTransformation();
 		
-		buffer.popOpacity();
-		buffer.set_color(Color.White);
+		buffer.g2.popOpacity();
+		buffer.g2.set_color(Color.White);
 		
 	}
 	

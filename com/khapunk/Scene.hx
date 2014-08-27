@@ -1,6 +1,8 @@
 package com.khapunk;
 import com.khapunk.graphics.tilemap.TileAnimationManager;
 import com.khapunk.utils.Input;
+import kha.Canvas;
+import kha.Image;
 import kha.Framebuffer;
 import kha.math.Vector2;
 import kha.Mouse;
@@ -142,7 +144,7 @@ class Scene
 	 * If you override this to give your Scene render code, remember
 	 * to call super.render() or your Entities will not be rendered.
 	 */
-	public function render(buffer:Graphics) : Void
+	public function render(buffer:Canvas) : Void
 	{	
 
 		// render the entities in order of depth

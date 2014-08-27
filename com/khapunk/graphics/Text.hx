@@ -1,10 +1,12 @@
 package com.khapunk.graphics;
 import com.khapunk.Graphic;
+import kha.Canvas;
 import kha.Color;
 import kha.Font;
 import kha.FontStyle;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
+import kha.Image;
 import kha.Kravur;
 import kha.Loader;
 import kha.math.Vector2;
@@ -70,20 +72,20 @@ class Text extends Graphic
 		originX = originY = 0;
 	}
 	
-	override public function render(buffer:Graphics, point:Vector2, camera:Vector2) 
+	override public function render(buffer:Canvas, point:Vector2, camera:Vector2) 
 	{
 			// determine drawing location
 		this.point.x = point.x + x - originX - camera.x * scrollX;
 		this.point.y = point.y + y - originY - camera.y * scrollY;
 
-		buffer.set_color(color);
-		buffer.set_opacity(alpha);
+		buffer.g2.set_color(color);
+		buffer.g2.set_opacity(alpha);
 		
-		buffer.set_font(font);
-		buffer.drawString(text, this.point.x, this.point.y);// scaleX, scaleY, scaleCenterX, scaleCenterY);
+		buffer.g2.set_font(font);
+		buffer.g2.drawString(text, this.point.x, this.point.y);// scaleX, scaleY, scaleCenterX, scaleCenterY);
 
-		buffer.set_opacity(1);
-		buffer.set_color(Color.White);
+		buffer.g2.set_opacity(1);
+		buffer.g2.set_color(Color.White);
 		
 		
 	}

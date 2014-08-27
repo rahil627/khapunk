@@ -1,4 +1,5 @@
 package com.khapunk;
+import kha.Canvas;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
 import kha.graphics4.FragmentShader;
@@ -99,7 +100,7 @@ class Graphic
 	 * @param  point      The position to draw the graphic.
 	 * @param  camera     The camera offset.
 	 */
-	public function render(buffer:Graphics, point:Vector2, camera:Vector2) { }
+	public function render(buffer:Canvas, point:Vector2, camera:Vector2) { }
 	
 	public var program:Program;
 	
