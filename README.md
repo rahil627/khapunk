@@ -143,6 +143,8 @@ Then simply assign the program to your graphics:
 ```
 #!haxe
 
+	myBuffer.g2.begin();
+
 	myBuffer.g2.program = myProgram;
 	//set uniform
 	myBuffer.g4.setFloat(
@@ -150,11 +152,13 @@ Then simply assign the program to your graphics:
 		10.0
 	);
 
-	myBuffer.g2.begin();
+	
 	//Drawcalls
 	myBuffer.g2.end();
 	
-```	
+```
+
+Your shaders should be placed in projectRoot/Sources/Shaders/
 
 ---
 
