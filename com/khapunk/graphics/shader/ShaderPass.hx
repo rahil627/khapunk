@@ -70,6 +70,7 @@ class ShaderPass
 			buffer.g2.program = programs[i];
 			
 			if(shaderConstants[i] != null && shaderConstants[i].hasChanged) setConstants(shaderConstants[i], programs[i],buffer);
+			buffer.g4.setFloat(programs[i].getConstantLocation("flipy"), buffer.g4.renderTargetsInvertedY() ? 1:0);
 			
 			if (i == 0){
 				buffer.g2.drawSubImage(source, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
@@ -96,12 +97,10 @@ class ShaderPass
 		//render previousBuffer since buffer gets swapped
 		target.g2.drawSubImage(previousBuffer, x, y,0,0,(sw == 0 ? source.width:sw),(sh == 0 ? source.height:sh));
 		target.g2.end();
-		flip = false;
 	}
-	var flip:Bool = false;
-	function setConstants(const:ShaderConstants, prog:Program, buff:Image)  : Void
+	
+	function setConstants(const:ShaderConstants = null, prog:Program, buff:Image)  : Void
 	{
-		buff.g4.setFloat(prog.getConstantLocation("flipy"), buff.g4.renderTargetsInvertedY() ? (flip ? 1:0):(flip ? 0:1));
 		const.hasChanged = false;
 		if (const.hasFloatArr()) {
 			for (key in const.floatsArrConstants.keys()) {
