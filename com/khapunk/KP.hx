@@ -55,6 +55,7 @@ class KP
 
 	public static var backbufferA:Image;
 	public static var backbufferB:Image;
+	public static var backbufferC:Image;
 	
 	private static var _shakeEase:EaseFunction;
 	private static var _shakeduration:Float=0;
@@ -145,6 +146,7 @@ class KP
 				
 		backbufferA = Image.createRenderTarget(KP.width, KP.height);
 		backbufferB = Image.createRenderTarget(KP.width, KP.height);
+		backbufferC = Image.createRenderTarget(KP.width, KP.height);
 	}
 	
 	

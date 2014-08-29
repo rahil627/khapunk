@@ -166,12 +166,11 @@ class Engine
 	/**
 	 * Renders the game, rendering the Scene and Entities.
 	 */
-	public function render(buffer:Canvas): Void
+	public function render(buffer:Image): Void
 	{
 		
 		// update input
 		Input.update();
-		
 		if (_scene.visible) _scene.render(buffer);
 	}
 	

@@ -18,11 +18,27 @@ class TextureAtlas {
 	private var regionCache:Map < String, Array<AtlasRegion> > ;
 	public var meta:TPMeta;
 	
+	static var pool:Map<String, TextureAtlas> = new Map<String,TextureAtlas>();
+	
+	public static function get(name:String) {
+		if (pool.exists(name)) {
+			return pool.get(name);
+		}
+		
+		var t:TextureAtlas = new TextureAtlas(name);
+		pool.set(name, t);
+		return t;
+	}
+	
+	public static function clear() : Void {
+		pool = new Map<String,TextureAtlas>();
+	}
+	
 	public function getImage() : Image {
 		return image;
 	}
 	
-	public function new(packerfile:String) {
+	function new(packerfile:String) {
 		map = new Map <String, AtlasRegion>();
 		regionCache = new Map < String, Array<AtlasRegion> >();
 		//---------------------------------

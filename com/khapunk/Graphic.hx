@@ -1,14 +1,7 @@
 package com.khapunk;
+import com.khapunk.graphics.shader.ShaderPass;
 import kha.Canvas;
-import kha.Framebuffer;
-import kha.graphics2.Graphics;
-import kha.graphics4.FragmentShader;
-import kha.graphics4.Program;
-import kha.graphics4.VertexShader;
-import kha.Image;
 import kha.math.Vector2;
-
-
 
 typedef AssignCallback = Void -> Void;
 
@@ -24,6 +17,8 @@ class Graphic
 	private var entity:Entity;
 
 	private var _visible:Bool;
+	
+	public var shaderPass:ShaderPass;
 	
 	/**
 	 * If the graphic should update.
@@ -101,8 +96,6 @@ class Graphic
 	 * @param  camera     The camera offset.
 	 */
 	public function render(buffer:Canvas, point:Vector2, camera:Vector2) { }
-	
-	public var program:Program;
 	
 	/**
 	 * Pause updating this graphic.

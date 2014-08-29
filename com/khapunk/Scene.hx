@@ -1,12 +1,16 @@
 package com.khapunk;
+import com.khapunk.graphics.shader.ShaderPass;
 import com.khapunk.graphics.tilemap.TileAnimationManager;
 import com.khapunk.utils.Input;
 import kha.Canvas;
+import kha.graphics4.BlendingOperation;
+import kha.graphics4.Program;
 import kha.Image;
 import kha.Framebuffer;
 import kha.math.Vector2;
 import kha.Mouse;
 import kha.graphics2.Graphics;
+import kha.Scaler;
 
 /**
  * ...
@@ -26,6 +30,7 @@ class Scene
 	// Render information.
 	private var _layerList:Array<Int>;
 	private var _layerDisplay:Map<Int,Bool>;
+	private var _layerShader:Map<Int,ShaderPass>;
 	private var _layers:Map<Int,List<Entity>>;
 
 	private var _classCount:Map<String,Int>;
@@ -39,6 +44,11 @@ class Scene
 	private var entityNames:Map<String,Entity>;
 	
 
+	private static var layerBuffer:Image;
+	private static var resultbuffer:Image;
+	private static var lastbuffer:Image;
+	private var lastShader:Program;
+	
 	public var active:Bool = true;
 	
 	/**
@@ -64,12 +74,17 @@ class Scene
 		_remove = new Array<Entity>();
 		_recycle = new Array<Entity>();
 		_layers = new Map < Int, List<Entity> > ();
+		_layerShader = new Map<Int,ShaderPass> ();
 		_layerDisplay = new Map<Int,Bool>();
 		_types = new Map < String, List<Entity> > ();
 		_classCount = new Map<String,Int>();
 		recycled = new Map<String,Entity>();
 		entityNames = new Map<String,Entity>();
 		TileAnimationManager.init();
+		
+		layerBuffer = Image.createRenderTarget(KP.width, KP.height);
+		resultbuffer = Image.createRenderTarget(KP.width, KP.height);
+		lastbuffer = Image.createRenderTarget(KP.width, KP.height);
 	}
 	
 	/**
@@ -144,24 +159,64 @@ class Scene
 	 * If you override this to give your Scene render code, remember
 	 * to call super.render() or your Entities will not be rendered.
 	 */
-	public function render(buffer:Canvas) : Void
+	public function render(buffer:Image) : Void
 	{	
 
 		// render the entities in order of depth
 		var e:Entity;
-				// render the entities in order of depth
-		for (layer in _layerList)
-		{
-			if (!layerVisible(layer)) continue;
-			for (e in _layers.get(layer))
-			{
-				if (e.visible) e.render(buffer);
-			}
-		}
-
-		//if (KP.renderMode == RenderMode.HARDWARE)
-		//	AtlasData.endScene();
 		
+				// render the entities in order of depth
+		for (layer in _layerList) {
+			
+			if (!layerVisible(layer)) continue;
+			//If layer has a render pass object assigned
+			if (_layerShader.exists(layer)) {
+				
+				var s:ShaderPass = _layerShader.get(layer);
+				
+				//end buffer 
+				buffer.g2.end();
+			 
+				//store last buffer
+				lastbuffer.g2.begin();
+				lastbuffer.g2.drawImage(buffer, 0, 0);
+				lastbuffer.g2.end();
+				
+				//render layer to layerbuffer
+				layerBuffer.g2.begin();
+				for (e in _layers.get(layer))
+				{
+					if (e.visible) e.render(layerBuffer);
+				}
+				layerBuffer.g2.end();
+				
+				//Apply all shaders to layerBuffer
+				s.execute(layerBuffer,resultbuffer);
+				
+				//Restart main buffer
+				buffer.g2.begin();
+				//buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+				//Draw stored buffer
+				buffer.g2.drawImage(lastbuffer, 0, 0); // ?? shaders also applied ?
+				//Apply original before result buffer
+				if (s.blend)
+				{
+					buffer.g2.drawImage(layerBuffer, 0, 0);
+					buffer.g2.setBlendingMode(s.sourceBlend,s.destinationBlend);
+				}
+				//draw result buffer
+				buffer.g2.drawImage(resultbuffer,0,0);
+				//reset blending
+				if (s.blend)
+				buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+			}
+			else {
+				for (e in _layers.get(layer))
+				{
+					if (e.visible) e.render(buffer);
+				}
+			}
+		}		
 	}
 	
 	/**
@@ -294,6 +349,10 @@ class Scene
 		}
 
 		return cast (addToScene ? add(e) : e);
+	}
+	
+	public function addShaderPass(layer:Int, shaderPass:ShaderPass) : Void {
+		_layerShader.set(layer, shaderPass);
 	}
 	
 	/**
