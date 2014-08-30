@@ -157,9 +157,12 @@ Then simply assign the program to your graphics:
 	myBuffer.g2.end();
 	
 ```
-
-Your shaders should be placed in projectRoot/Sources/Shaders/
-
+  
+Your shaders should be placed in projectRoot/Sources/Shaders/  
+  
+Shaders should have the naming convention: myFrag.frag.glsl and myVert.vert.glsl respectively.  
+To load your shader use Loader.the.getShader with ".glsl" omitted.  
+  
 ---
 
 Tiled 

@@ -126,6 +126,12 @@ class ShaderPass
 			}
 		}
 		
+		if (const.hasInts()) {
+			for (key in const.intConstants.keys()) {
+				buff.g4.setInt(prog.getConstantLocation(key), const.intConstants.get(key));
+			}
+		}
+		
 		
 	}
 	

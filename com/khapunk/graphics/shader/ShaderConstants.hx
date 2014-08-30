@@ -14,6 +14,7 @@ class ShaderConstants
 
 	var floatConstants:Map<String,Float>;
 	var vec2Constants:Map<String,Vector2>;
+	var intConstants:Map<String,Int>;
 	var textureConstant:Map<String,Image>;
 	var floatsArrConstants:Map<String,Array<Float>>;
 	
@@ -30,7 +31,15 @@ class ShaderConstants
 		hasChanged = true;
 	}
 	
-	public function setFloat(name:String,value:Float) : Void {
+	public function setInt(name:String,value:Int) : Void {
+		if (intConstants == null) intConstants = new Map<String,Int>();
+		intConstants.set(name, value);
+		hasChanged = true;
+	}
+	
+	
+	public function setFloat(name:String, value:Float) : Void {
+		trace("ja");
 		if (floatConstants == null) floatConstants = new Map<String,Float>();
 		floatConstants.set(name, value);
 		hasChanged = true;
@@ -53,5 +62,6 @@ class ShaderConstants
 	public function hasVec2() : Bool {return vec2Constants != null;}
 	public function hasFloatArr() : Bool {return floatsArrConstants != null;}
 	public function hasTextures() : Bool {return textureConstant != null;}
+	public function hasInts() : Bool {return intConstants != null;}
 	
 }
