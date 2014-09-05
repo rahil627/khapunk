@@ -25,7 +25,6 @@ class Scene
 
 	// Update information.
 	private var updateFirst:Entity;
-	private var _count:Int;
 
 	// Render information.
 	private var _layerList:Array<Int>;
@@ -46,7 +45,7 @@ class Scene
 
 	private static var layerBuffer:Image;
 	private static var resultbuffer:Image;
-	private static var lastbuffer:Image;
+	//private static var lastbuffer:Image;
 	private var lastShader:Program;
 	
 	public var active:Bool = true;
@@ -65,18 +64,19 @@ class Scene
 	{
 		visible = true;
 		camera = new Vector2();
-		_count = 0;
-
+		
 		_layerList = new Array<Int>();
-		_update = new List<Entity>();
 		
 		_add = new Array<Entity>();
 		_remove = new Array<Entity>();
 		_recycle = new Array<Entity>();
-		_layers = new Map < Int, List<Entity> > ();
-		_layerShader = new Map<Int,ShaderPass> ();
+		
+		_update = new List<Entity>();
 		_layerDisplay = new Map<Int,Bool>();
+		_layerShader = new Map<Int,ShaderPass> ();
+		_layers = new Map < Int, List<Entity> > ();
 		_types = new Map < String, List<Entity> > ();
+		
 		_classCount = new Map<String,Int>();
 		recycled = new Map<String,Entity>();
 		entityNames = new Map<String,Entity>();
@@ -84,7 +84,7 @@ class Scene
 		
 		layerBuffer = Image.createRenderTarget(KP.width, KP.height);
 		resultbuffer = Image.createRenderTarget(KP.width, KP.height);
-		lastbuffer = Image.createRenderTarget(KP.width, KP.height);
+		//lastbuffer = Image.createRenderTarget(KP.width, KP.height);
 	}
 	
 	/**
@@ -178,9 +178,9 @@ class Scene
 				buffer.g2.end();
 			 
 				//store last buffer
-				lastbuffer.g2.begin();
-				lastbuffer.g2.drawImage(buffer, 0, 0);
-				lastbuffer.g2.end();
+				//lastbuffer.g2.begin();
+				//lastbuffer.g2.drawImage(buffer, 0, 0);
+				//lastbuffer.g2.end();
 				
 				//render layer to layerbuffer
 				layerBuffer.g2.begin();
@@ -194,10 +194,10 @@ class Scene
 				s.execute(layerBuffer,resultbuffer);
 				
 				//Restart main buffer
-				buffer.g2.begin();
+				buffer.g2.begin(false);
 				//buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 				//Draw stored buffer
-				buffer.g2.drawImage(lastbuffer, 0, 0); // ?? shaders also applied ?
+				//buffer.g2.drawImage(lastbuffer, 0, 0); // ?? shaders also applied ?
 				//Apply original before result buffer
 				if (s.blend)
 				{
@@ -351,8 +351,22 @@ class Scene
 		return cast (addToScene ? add(e) : e);
 	}
 	
+	/**
+	 * Applies a the given set  of shaders to a layer. 
+	 * There can only be one shader pass object per layer.
+	 * @param	layer 			The layer to apply the shaders to.
+	 * @param	shaderPass 		The shaderpass containing the shader data.
+	 */
 	public function addShaderPass(layer:Int, shaderPass:ShaderPass) : Void {
 		_layerShader.set(layer, shaderPass);
+	}
+	
+	/**
+	 * Removes the shader effects for a layer.
+	 * @param	layer			The layer to remove the shaders from
+	 */
+	public function removeShaderPass(layer:Int): Void {
+		_layerShader.remove(layer);
 	}
 	
 	/**
@@ -456,7 +470,7 @@ class Scene
 	 */
 	public inline function isAtFront(e:Entity):Bool
 	{
-		return e.renderPrev == null;
+		return e == _layers.get(e._layer).first();
 	}
 	
 	/**
@@ -466,7 +480,7 @@ class Scene
 	 */
 	public inline function isAtBack(e:Entity):Bool
 	{
-		return e.renderNext == null;
+		return  e == _layers.get(e._layer).last();
 	}
 
 	/**

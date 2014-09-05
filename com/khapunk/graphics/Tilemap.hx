@@ -5,6 +5,7 @@ import com.khapunk.graphics.atlas.TextureAtlas;
 import com.khapunk.graphics.atlas.TileAtlas;
 import com.khapunk.graphics.tilemap.AnimatedTile;
 import com.khapunk.graphics.tilemap.TileAnimationManager;
+import com.khapunk.masks.Grid;
 import kha.Canvas;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
@@ -537,6 +538,34 @@ class Tilemap extends Graphic
 		}
 		buffer.g2.set_opacity(1);
 	}
+	
+	/**
+	 * Create a Grid object from this tilemap.
+	 * @param solidTiles	Array of tile indexes that should be solid.
+	 * @param grid			A grid to use instead of creating a new one, the function won't check if the grid is of correct dimension.
+	 * @return The grid with a tile solid if the tile index is in [solidTiles].
+	*/
+	public function createGrid(solidTiles:Array<Int>, ?grid:Grid)
+	{
+		if (grid == null)
+		{
+			grid = new Grid(_width, _height, Std.int(_tile.width), Std.int(_tile.height));
+		}
+		
+		for (y in 0..._rows)
+		{
+			for (x in 0..._columns)
+			{
+				if (solidTiles.indexOf(getTile(x, y)) != -1)
+				{
+					grid.setTile(x, y, true);
+				}
+			}
+		}
+		
+		return grid;
+	}
+	
 	
 	/**
 	 * Adds animation information for a tile

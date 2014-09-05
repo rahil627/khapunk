@@ -35,6 +35,9 @@ class Engine
 	//private var _frameListSum:Int;
 	//private var _frameList:Array<Int>;
 	
+	public static var backbuffer(default, null) : Image;
+	
+	
 	private var _scene:Scene = new Scene();
 	private var _scenes:List<Scene> = new List<Scene>();
 	
@@ -115,6 +118,9 @@ class Engine
 		// game start
 		
 		init();
+		
+		backbuffer = Image.createRenderTarget(KP.width, KP.height);
+		
 	}
 	
 	/**
@@ -166,12 +172,14 @@ class Engine
 	/**
 	 * Renders the game, rendering the Scene and Entities.
 	 */
-	public function render(buffer:Image): Void
+	public function render(): Void
 	{
 		
 		// update input
 		Input.update();
-		if (_scene.visible) _scene.render(buffer);
+		backbuffer.g2.begin();
+		if (_scene.visible) _scene.render(backbuffer);
+		backbuffer.g2.end();
 	}
 	
 	

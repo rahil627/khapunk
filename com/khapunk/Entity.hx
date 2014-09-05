@@ -25,13 +25,6 @@ class Entity
 	private var _layer:Int;
 	private var _name:String;
 
-	private var updatePrev:Entity;
-	private var updateNext:Entity;
-	private var renderPrev:Entity;
-	private var renderNext:Entity;
-
-	private var typePrev:Entity;
-	private var typeNext:Entity;
 	private var recycleNext:Entity;
 
 	// Collision information.

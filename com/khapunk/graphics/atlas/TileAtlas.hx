@@ -139,6 +139,9 @@ class TileAtlas
 		
 		if (_prepared) return;
 		
+		tileWidth = tileWidth == 0 ? 1:tileWidth;
+		tileHeight = tileHeight == 0 ? 1:tileHeight;
+		
 		cols = Math.floor(_image.width / tileWidth);
 		rows = Math.floor(_image.height / tileHeight);
 
