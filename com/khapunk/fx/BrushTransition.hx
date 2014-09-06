@@ -48,6 +48,9 @@ class BrushTransition extends ITransitionEffect
 		b2 = new Backdrop(outEffect, true, true);
 		
 		
+		b1.scaleFromCenter = false;
+		b2.scaleFromCenter = false;
+		
 		size = inEffect.width;
 		
 		point = new Vector2();
@@ -70,6 +73,16 @@ class BrushTransition extends ITransitionEffect
 	}
 	
 	/* INTERFACE com.khapunk.fx.ITransitionEffect */
+	
+	public var scaleOutFromCenter(default, set):Bool;
+	function set_scaleOutFromCenter(value:Bool): Bool {
+		return b2.scaleFromCenter = value; 
+	}
+	
+	public var scaleInFromCenter(default, set):Bool;
+	function set_scaleInFromCenter(value:Bool): Bool {
+		return b1.scaleFromCenter = value;
+	}
 	
 	public override function init(): Void {
 		timer = 0;

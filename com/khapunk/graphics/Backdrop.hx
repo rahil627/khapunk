@@ -55,6 +55,8 @@ class Backdrop extends Graphic
 	
 	public var centerScale:Float = 1;
 	
+	public var scaleFromCenter:Bool = true;
+	
 	/**
 	 * Determines if scrolling should be affected by the camera position.
 	 */
@@ -131,8 +133,8 @@ class Backdrop extends Graphic
 		var stepX  = _textWidth * sx;
 		var stepY  = _textHeight * sy;
 		
-		var centerX = stepX * sx * centerScale / 2;
-		var centerY = stepX * sx * centerScale / 2;
+		var centerX = stepX  * centerScale / 2;
+		var centerY = stepY  * centerScale / 2;
 		
 		var ratioX  = _width / stepX;
 		var ratioY  = _height / stepY;
@@ -158,10 +160,10 @@ class Backdrop extends Graphic
 				buffer.g2.drawScaledSubImage(_source, _region.x, _region.y,
 				_textWidth,
 				_textHeight,
-				Std.int(this.point.x * sx) + x - centerX,
-				Std.int(this.point.y * sy) + y - centerY,
-				_textWidth * (sx * centerScale),
-				_textHeight * (sy * centerScale));
+				Std.int(this.point.x * sx) + x - (scaleFromCenter ? centerX:0),
+				Std.int(this.point.y * sy) + y - (scaleFromCenter ? centerY:0),
+				_textWidth * (sx *  (scaleFromCenter ? centerScale:1)),
+				_textHeight * (sy *  (scaleFromCenter ? centerScale:1)));
 				
 				if(angle != 0)
 				buffer.g2.popTransformation();
