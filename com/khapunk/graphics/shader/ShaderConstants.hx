@@ -39,7 +39,6 @@ class ShaderConstants
 	
 	
 	public function setFloat(name:String, value:Float) : Void {
-		trace("ja");
 		if (floatConstants == null) floatConstants = new Map<String,Float>();
 		floatConstants.set(name, value);
 		hasChanged = true;

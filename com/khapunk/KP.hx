@@ -1,4 +1,5 @@
 package com.khapunk;
+import com.khapunk.fx.ITransitionEffect;
 import com.khapunk.utils.Ease.EaseFunction;
 import kha.Image;
 import kha.math.Matrix4;
@@ -20,6 +21,10 @@ class KP
 	public static var scene(get, set):Scene;
 	private static inline function get_scene():Scene { return engine.scene; }
 	private static inline function set_scene(value:Scene):Scene { return engine.scene = value;}
+	
+	public static function transitionTo(scene:Scene, transition:ITransitionEffect): Void {
+		engine.transitionTo(scene,transition);
+	}
 	
 	/**
 	 * Flash equivalent: Number.MAX_VALUE

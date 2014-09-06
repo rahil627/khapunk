@@ -208,7 +208,7 @@ class Scene
 				buffer.g2.drawImage(resultbuffer,0,0);
 				//reset blending
 				if (s.blend)
-				buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+				buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
 			}
 			else {
 				for (e in _layers.get(layer))

@@ -1,9 +1,11 @@
 package com.khapunk;
+import com.khapunk.fx.ITransitionEffect;
 import com.khapunk.utils.Input;
 import kha.Canvas;
 import kha.Framebuffer;
 import kha.Game;
 import kha.graphics2.Graphics;
+import kha.graphics4.BlendingOperation;
 import kha.Image;
 import kha.Rectangle;
 import kha.Scheduler;
@@ -36,6 +38,7 @@ class Engine
 	//private var _frameList:Array<Int>;
 	
 	public static var backbuffer(default, null) : Image;
+	static var transitionBuffer(default, null) : Image;
 	
 	
 	private var _scene:Scene = new Scene();
@@ -120,8 +123,19 @@ class Engine
 		init();
 		
 		backbuffer = Image.createRenderTarget(KP.width, KP.height);
+		transitionBuffer = Image.createRenderTarget(KP.width, KP.height);
 		
 	}
+	
+	var transitionEffect:ITransitionEffect;
+	var transitionToScene:Scene;
+	
+	public function transitionTo(scene:Scene, transition:ITransitionEffect): Void {
+		transitionEffect = transition;
+		transitionToScene = scene;
+		transitionEffect.init();
+	}
+	
 	
 	/**
 	 * Override this, It's called after setup();
@@ -167,6 +181,18 @@ class Engine
 		
 		_scene.updateLists(false);
 		KP.update();
+		
+		if (transitionEffect  != null) {
+			transitionEffect.update();
+			if (transitionEffect.state == TransitionState.OUT) {
+				if (transitionEffect.done()) {
+					transitionEffect.init();
+					transitionEffect.state = TransitionState.IN;
+					scene = transitionToScene;
+					checkScene();
+				}
+			}
+		}
 	}
 	
 	/**
@@ -180,6 +206,21 @@ class Engine
 		backbuffer.g2.begin();
 		if (_scene.visible) _scene.render(backbuffer);
 		backbuffer.g2.end();
+		
+		
+		if (transitionEffect  != null && !transitionEffect.done()) {
+			
+			transitionBuffer.g2.begin(false);
+			transitionEffect.render(backbuffer,transitionBuffer);
+			transitionBuffer.g2.end();
+			
+			backbuffer.g2.begin(false);
+			backbuffer.g2.drawImage(transitionBuffer, 0, 0);
+			backbuffer.g2.end();
+		}
+		
+		
+		
 	}
 	
 	
