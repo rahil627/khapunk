@@ -183,7 +183,7 @@ class Engine
 		KP.update();
 		
 		if (transitionEffect  != null) {
-			transitionEffect.update();
+			
 			if (transitionEffect.state == TransitionState.OUT) {
 				if (transitionEffect.done()) {
 					transitionEffect.init();
@@ -192,6 +192,8 @@ class Engine
 					checkScene();
 				}
 			}
+			
+			transitionEffect.update();
 		}
 	}
 	

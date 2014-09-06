@@ -16,7 +16,7 @@ import kha.math.Vector2;
  * ...
  * @author Sidar Talei
  */
-class PatternTransition implements ITransitionEffect
+class BrushTransition implements ITransitionEffect
 {
 	var point:Vector2;
 	var b1:Backdrop;
@@ -25,9 +25,18 @@ class PatternTransition implements ITransitionEffect
 	var timer:Float;
 	static var program:Program;
 	
-	public var dirX:Float = 0;
-	public var dirY:Float = 0;
-	public var speed:Float = 1;
+	public var dirXIn:Float = 0;
+	public var dirYIn:Float = 0;
+
+	public var dirXOut:Float = 0;
+	public var dirYOut:Float = 0;
+	
+	public var scaleFrom_In:Float = 1;
+	public var scaleFrom_Out:Float = 1;
+	
+	public var scaleTo_In:Float = 1;
+	public var scaleTo_Out:Float = 1;
+	
 	public var state:TransitionState;
 	public var duration:Float = 3;
 	
@@ -73,11 +82,18 @@ class PatternTransition implements ITransitionEffect
 		timer += KP.elapsed;
 		switch(state) {
 			case TransitionState.IN:
-				b1.x += dirX * (1/duration);
-				b1.y += dirY * (1/duration);
+				b1.x += dirXIn * (1 / duration);
+				b1.y += dirYIn * (1 / duration);
+				
+				b1.centerScale = KP.lerp(scaleFrom_In,scaleTo_In,(timer/duration));
+				
 			case TransitionState.OUT:
-				b2.x += dirX * (1/duration);
-				b2.y += dirY * (1/duration);
+				b2.x += dirXOut * (1 / duration);
+				b2.y += dirYOut * (1 / duration);
+				
+				b2.centerScale = KP.lerp(scaleFrom_Out,scaleTo_Out,(timer/duration));
+				
+				
 		}	
 	}
 	

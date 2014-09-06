@@ -37,21 +37,23 @@ class Backdrop extends Graphic
 	/**
 	 * Scale of the canvas, effects both x and y scale.
 	 */
-	public var scale:Float;
+	public var scale:Float = 1;
 	/**
 	 * X scale of the canvas.
 	 */
-	public var scaleX:Float;
+	public var scaleX:Float = 1;
 
 	/**
 	 * Y scale of the canvas.
 	 */
-	public var scaleY:Float;
+	public var scaleY:Float = 1;
 	
 	/**
 	 * Color to be multiplied
 	 */
 	public var color:Color;
+	
+	public var centerScale:Float = 1;
 	
 	/**
 	 * Determines if scrolling should be affected by the camera position.
@@ -129,15 +131,17 @@ class Backdrop extends Graphic
 		var stepX  = _textWidth * sx;
 		var stepY  = _textHeight * sy;
 		
+		var centerX = stepX * sx * centerScale / 2;
+		var centerY = stepX * sx * centerScale / 2;
+		
 		var ratioX  = _width / stepX;
 		var ratioY  = _height / stepY;
+		
 		
 		stepX = ratioX == Math.floor(ratioX) ? 0:stepX;
 		stepY = ratioY == Math.floor(ratioY) ? 0:stepY;
 		
 		buffer.g2.set_color(color);
-		
-		
 		
 		while (y < _height + stepY)
 		{
@@ -154,10 +158,10 @@ class Backdrop extends Graphic
 				buffer.g2.drawScaledSubImage(_source, _region.x, _region.y,
 				_textWidth,
 				_textHeight,
-				Std.int(this.point.x *sx) + x,
-				Std.int(this.point.y *sy) + y,
-				_textWidth * sx,
-				_textHeight * sy);
+				Std.int(this.point.x * sx) + x - centerX,
+				Std.int(this.point.y * sy) + y - centerY,
+				_textWidth * (sx * centerScale),
+				_textHeight * (sy * centerScale));
 				
 				if(angle != 0)
 				buffer.g2.popTransformation();
