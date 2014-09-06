@@ -2,6 +2,7 @@ package com.khapunk;
 import com.khapunk.fx.ITransitionEffect;
 import com.khapunk.utils.Input;
 import kha.Canvas;
+import kha.Color;
 import kha.Framebuffer;
 import kha.Game;
 import kha.graphics2.Graphics;
@@ -129,11 +130,13 @@ class Engine
 	
 	var transitionEffect:ITransitionEffect;
 	var transitionToScene:Scene;
+	var clearTransition:Bool;
 	
 	public function transitionTo(scene:Scene, transition:ITransitionEffect): Void {
 		transitionEffect = transition;
 		transitionToScene = scene;
-		transitionEffect.init();
+		transitionEffect.reset();
+		clearTransition = true;
 	}
 	
 	
@@ -181,14 +184,19 @@ class Engine
 		
 		_scene.updateLists(false);
 		KP.update();
+	}
+	
+	function updateTransition() 
+	{
 		
-		if (transitionEffect  != null) {
+		if (transitionEffect  != null && !transitionEffect.completed()) {
 			
 			if (transitionEffect.state == TransitionState.OUT) {
-				if (transitionEffect.done()) {
-					transitionEffect.init();
-					transitionEffect.state = TransitionState.IN;
+				if (transitionEffect.stateDone()) {
+					
+					transitionEffect.changeState();
 					scene = transitionToScene;
+					transitionToScene = null;
 					checkScene();
 				}
 			}
@@ -209,9 +217,11 @@ class Engine
 		if (_scene.visible) _scene.render(backbuffer);
 		backbuffer.g2.end();
 		
-		
-		if (transitionEffect  != null && !transitionEffect.done()) {
+	
+		//Render our transition effect and update its logic
+		if (transitionEffect  != null && !transitionEffect.completed()) {
 			
+			updateTransition();
 			transitionBuffer.g2.begin(false);
 			transitionEffect.render(backbuffer,transitionBuffer);
 			transitionBuffer.g2.end();
@@ -220,7 +230,6 @@ class Engine
 			backbuffer.g2.drawImage(transitionBuffer, 0, 0);
 			backbuffer.g2.end();
 		}
-		
 		
 		
 	}

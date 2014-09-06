@@ -16,7 +16,7 @@ import kha.math.Vector2;
  * ...
  * @author Sidar Talei
  */
-class BrushTransition implements ITransitionEffect
+class BrushTransition extends ITransitionEffect
 {
 	var point:Vector2;
 	var b1:Backdrop;
@@ -37,12 +37,13 @@ class BrushTransition implements ITransitionEffect
 	public var scaleTo_In:Float = 1;
 	public var scaleTo_Out:Float = 1;
 	
-	public var state:TransitionState;
 	public var duration:Float = 3;
 	
 
 	public function new(inEffect:Image, outEffect:Image) 
 	{
+		super();
+		
 		b1 = new Backdrop(inEffect, true, true);
 		b2 = new Backdrop(outEffect, true, true);
 		
@@ -70,14 +71,12 @@ class BrushTransition implements ITransitionEffect
 	
 	/* INTERFACE com.khapunk.fx.ITransitionEffect */
 	
-	public function init(): Void {
-		if (state == TransitionState.IN) state = TransitionState.OUT;
+	public override function init(): Void {
 		timer = 0;
 		b1.x = b1.y = b2.y = b2.x = 0;
 	}
 	
-	
-	public function update():Void 
+	public override function update():Void 
 	{
 		timer += KP.elapsed;
 		switch(state) {
@@ -97,11 +96,11 @@ class BrushTransition implements ITransitionEffect
 		}	
 	}
 	
-	public function done(): Bool {
+	public override function stateDone(): Bool {
 		return timer >= duration;
 	}
 	
-	public function render(backbuffer:Canvas, transitionBuffer:Canvas):Void 
+	public override function render(backbuffer:Canvas, transitionBuffer:Canvas):Void 
 	{
 		transitionBuffer.g2.program = program;
 		transitionBuffer.g4.setFloat(program.getConstantLocation("transition"), state == TransitionState.IN ? 1:0);
@@ -111,10 +110,17 @@ class BrushTransition implements ITransitionEffect
 				transitionBuffer.g2.setBlendingMode(BlendingOperation.DestinationAlpha, BlendingOperation.SourceAlpha);
 				b1.render(transitionBuffer, point, point);
 			case TransitionState.OUT:
-				transitionBuffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+				transitionBuffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.DestinationAlpha);
 				b2.render(transitionBuffer, point, point);
 		}
 		
+	}
+	
+	/* INTERFACE com.khapunk.fx.ITransitionEffect */
+	
+	public override function completed():Bool 
+	{
+		return (state == TransitionState.IN) && stateDone();
 	}
 	
 }
