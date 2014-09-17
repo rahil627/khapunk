@@ -82,7 +82,9 @@ class Scene
 		entityNames = new Map<String,Entity>();
 		TileAnimationManager.init();
 		
+		if(layerBuffer == null)
 		layerBuffer = Image.createRenderTarget(KP.width, KP.height);
+		if(resultbuffer == null)
 		resultbuffer = Image.createRenderTarget(KP.width, KP.height);
 		//lastbuffer = Image.createRenderTarget(KP.width, KP.height);
 	}

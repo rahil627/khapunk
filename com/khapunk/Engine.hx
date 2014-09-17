@@ -11,6 +11,9 @@ import kha.Image;
 import kha.Rectangle;
 import kha.Scheduler;
 
+
+typedef TransitionCallback = Void -> Void;
+
 /**
  * ...
  * @author ...
@@ -42,7 +45,7 @@ class Engine
 	static var transitionBuffer(default, null) : Image;
 	
 	
-	private var _scene:Scene = new Scene();
+	private var _scene:Scene;
 	private var _scenes:List<Scene> = new List<Scene>();
 	
 		/**
@@ -123,6 +126,8 @@ class Engine
 		
 		init();
 		
+		_scene = new Scene();
+		
 		backbuffer = Image.createRenderTarget(KP.width, KP.height);
 		transitionBuffer = Image.createRenderTarget(KP.width, KP.height);
 		
@@ -131,8 +136,12 @@ class Engine
 	var transitionEffect:ITransitionEffect;
 	var transitionToScene:Scene;
 	var clearTransition:Bool;
+	var callbackOut:TransitionCallback;
+	var callbackComplete:TransitionCallback;
 	
-	public function transitionTo(scene:Scene, transition:ITransitionEffect): Void {
+	public function transitionTo(scene:Scene, transition:ITransitionEffect, cbOut:TransitionCallback = null, complete:TransitionCallback = null): Void {
+		callbackOut = cbOut;
+		callbackComplete = complete;
 		transitionEffect = transition;
 		transitionToScene = scene;
 		transitionEffect.reset();
@@ -194,6 +203,7 @@ class Engine
 			if (transitionEffect.state == TransitionState.OUT) {
 				if (transitionEffect.stateDone()) {
 					
+					if (callbackOut != null) callbackOut();
 					transitionEffect.changeState();
 					scene = transitionToScene;
 					transitionToScene = null;
@@ -213,22 +223,28 @@ class Engine
 		
 		// update input
 		Input.update();
-		backbuffer.g2.begin();
-		if (_scene.visible) _scene.render(backbuffer);
-		backbuffer.g2.end();
+		if (_scene.visible){
+			backbuffer.g2.begin();
+			_scene.render(backbuffer);
+			backbuffer.g2.end();
+		}
 		
-	
+		
 		//Render our transition effect and update its logic
 		if (transitionEffect  != null && !transitionEffect.completed()) {
 			
 			updateTransition();
-			transitionBuffer.g2.begin(false);
-			transitionEffect.render(backbuffer,transitionBuffer);
-			transitionBuffer.g2.end();
+			
+			//Don't forget to start the transition buffer in your transition logic
+			transitionEffect.render(backbuffer, transitionBuffer);
 			
 			backbuffer.g2.begin(false);
 			backbuffer.g2.drawImage(transitionBuffer, 0, 0);
 			backbuffer.g2.end();
+			
+			if (transitionEffect.completed() && callbackComplete != null )
+			callbackComplete();
+			
 		}
 		
 		

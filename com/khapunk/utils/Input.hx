@@ -8,6 +8,8 @@ import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.input.Surface;
 import kha.Key;
+import kha.Scaler;
+import kha.ScreenCanvas;
 import kha.Sys;
 
 /**
@@ -143,7 +145,7 @@ class Input
 	private static function get_mouseX():Int
 	{
 		//return Std.int(_mouseX / (Sys.pixelWidth / Game.the.width));//KP.screen.mouseX;
-		return Game.the.painterTransformMouseX(_mouseX, _mouseY);
+		return Scaler.transformX(_mouseX, _mouseY,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation);
 	}
 
 	/**
@@ -153,7 +155,7 @@ class Input
 	private static function get_mouseY():Int
 	{
 		//return Std.int(_mouseY / (Sys.pixelHeight/Game.the.height));//KP.screen.mouseX;
-		return Game.the.painterTransformMouseY(_mouseX, _mouseY);
+		return Scaler.transformY(_mouseX, _mouseY,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation);
 	}
 	
 	
@@ -366,7 +368,10 @@ class Input
 	
 	private static function onTouch(id:Int, x:Int, y:Int) : Void {
 		
-		var tp:Touch = new Touch(Game.the.painterTransformMouseX(x,y), Game.the.painterTransformMouseY(x,y), id);
+		var tp:Touch = new Touch(
+		Scaler.transformX(x, y,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation), 
+		Scaler.transformY(x, y,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation), 
+		id);
 		
 		_touches.set(id, tp);
 		_touchOrder.push(id);
@@ -380,8 +385,8 @@ class Input
 	
 	private static function onTouchMove(id:Int, x:Int, y:Int) : Void
 	{
-		_touches.get(id).x = Game.the.painterTransformMouseX(x,y);
-		_touches.get(id).y = Game.the.painterTransformMouseY(x,y);
+		_touches.get(id).x = Scaler.transformX(x, y,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation);
+		_touches.get(id).y = Scaler.transformY(x, y,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation);
 	}
 	
 	/**

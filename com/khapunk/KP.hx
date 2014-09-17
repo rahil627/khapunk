@@ -1,4 +1,5 @@
 package com.khapunk;
+import com.khapunk.Engine.TransitionCallback;
 import com.khapunk.fx.ITransitionEffect;
 import com.khapunk.utils.Ease.EaseFunction;
 import kha.Image;
@@ -22,8 +23,8 @@ class KP
 	private static inline function get_scene():Scene { return engine.scene; }
 	private static inline function set_scene(value:Scene):Scene { return engine.scene = value;}
 	
-	public static function transitionTo(scene:Scene, transition:ITransitionEffect): Void {
-		engine.transitionTo(scene,transition);
+	public static function transitionTo(scene:Scene, transition:ITransitionEffect, cbOut:TransitionCallback = null, onComplete:TransitionCallback = null): Void {
+		engine.transitionTo(scene,transition,cbOut,onComplete);
 	}
 	
 	/**
