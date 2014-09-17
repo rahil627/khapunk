@@ -287,7 +287,7 @@ class Engine
 		_scenes.push(value);
 	}
 	
-	public function popScene(value:Scene): Scene
+	public function popScene(): Scene
 	{
 		return _scenes.pop();
 	}
