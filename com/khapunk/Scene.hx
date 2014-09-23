@@ -193,23 +193,11 @@ class Scene
 				layerBuffer.g2.end();
 				
 				//Apply all shaders to layerBuffer
-				s.execute(layerBuffer,resultbuffer);
+				s.execute(layerBuffer,buffer);
 				
 				//Restart main buffer
 				buffer.g2.begin(false);
-				//buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
-				//Draw stored buffer
-				//buffer.g2.drawImage(lastbuffer, 0, 0); // ?? shaders also applied ?
-				//Apply original before result buffer
-				if (s.blend)
-				{
-					buffer.g2.drawImage(layerBuffer, 0, 0);
-					buffer.g2.setBlendingMode(s.sourceBlend,s.destinationBlend);
-				}
-				//draw result buffer
-				buffer.g2.drawImage(resultbuffer,0,0);
-				//reset blending
-				if (s.blend)
+				if (s.blend) //reset blending mode to default
 				buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
 			}
 			else {

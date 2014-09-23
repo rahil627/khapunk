@@ -3,6 +3,7 @@ package com.khapunk.graphics;
 import com.khapunk.Graphic;
 import com.khapunk.graphics.atlas.AtlasRegion;
 import com.khapunk.utils.Ease.EaseFunction;
+import haxe.ds.Vector;
 import kha.Canvas;
 import kha.Color;
 import kha.Framebuffer;
@@ -22,8 +23,12 @@ class Emitter extends Graphic
 	/**
 	 * Amount of currently existing particles.
 	 */
-	public var particleCount(default, null):Int;
-
+	public var particleCount(get, null):Int;
+	function get_particleCount(): Int {
+		return activeCount;
+	}
+	var activeCount(default, null):Int;
+	
 	public var forceSingleImage:Bool;
 	private var imgSource:Image;
 	
@@ -31,6 +36,7 @@ class Emitter extends Graphic
 	private var _types:Map<String,ParticleType>;
 	private var _particle:Particle;
 	private var _cache:Particle;
+	private var _cache2:Particle;
 	private var _color:Color;
 	
 	// Source information.
@@ -44,21 +50,32 @@ class Emitter extends Graphic
 	private static var SIN(get,never):Float;
 	private static inline function get_SIN():Float { return Math.PI / 2; }
 	
+	public var activeBlend:Bool = false;
+	public var sourceBlend:BlendingOperation;
+	public var destinationBlend:BlendingOperation;
+	
+	private var particles:Vector<Particle>;
+	private var next:Int = 0;
+	public var maxParticles:Int = 100;
+	
+	
 	/**
 	 * Constructor. Sets the source image to use for newly added particle types.
 	 * @param	source			Source image.
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function new()
+	public function new(maxCount:Int = 1000)
 	{
+		maxParticles = maxCount;
 		super();
 		_p = new Vector2();
 		//_tint = new ColorTransform();
 		_types = new Map<String,ParticleType>();
 		active = true;
-		particleCount = 0;
+		activeCount = 0;
 		_color = Color.White;
+		particles = new Vector<Particle>(maxParticles);
 	}
 	
 	/**
@@ -178,33 +195,23 @@ class Emitter extends Graphic
 	override public function update()
 	{
 		// quit if there are no particles
-		if (_particle == null) return;
-
-		// particle info
-		var e:Float = KP.elapsed,
-			p:Particle = _particle,
-			n:Particle;
+		if (activeCount == 0) return;
 
 		// loop through the particles
-		while (p != null)
+		for (i in 0...activeCount )
 		{
-			p._time += e; // Update particle time elapsed
-			if (p._time >= p._duration) // remove on time-out
+			_particle = particles[i];
+			_particle._time += KP.elapsed; // Update particle time elapsed
+			if (_particle._time >= _particle._duration) // remove on time-out
 			{
-				if (p._next != null) p._next._prev = p._prev;
-				if (p._prev != null) p._prev._next = p._next;
-				else _particle = p._next;
-				n = p._next;
-				p._next = _cache;
-				p._prev = null;
-				_cache = p;
-				p = n;
-				particleCount --;
+				_cache = particles[i];
+				_cache2 = particles[activeCount - 1];
+				
+				particles[i] = _cache2;
+				particles[activeCount - 1] = _cache;
+				activeCount--;
 				continue;
 			}
-
-			// get next particle
-			p = p._next;
 		}
 	}
 	
@@ -213,48 +220,29 @@ class Emitter extends Graphic
 	 */
 	public function clear() 
 	{
-		// quit if there are no particles
-		if (_particle == null) 
-		{
-			return;
-		}
-		
-		// particle info
-		var p:Particle = _particle, 
-			n:Particle;
-
-		// loop through the particles
-		while (p != null)
-		{
-			// move this particle to the cache
-			n = p._next;
-			p._next = _cache;
-			p._prev = null;
-			_cache = p;
-			p = n;
-			particleCount--;
-		}
-
-		_particle = null;
+		activeCount = 0;
 	}
 	
 	override public function render(buffer:Canvas , point:Vector2, camera:Vector2)
 	{
 		
 		// quit if there are no particles
-		if (_particle == null)
+		if (activeCount == 0)
 		{
 			return;
 		}
 		else
 		{
+			
+			if (activeBlend)
+			buffer.g2.setBlendingMode(sourceBlend, destinationBlend);
+			
 			// get rendering position
 			this.point.x = point.x + x - camera.x * scrollX;
 			this.point.y = point.y + y - camera.y * scrollY;
 
 			// particle info
 			var t:Float, td:Float,
-				p:Particle = _particle,
 				type:ParticleType;
 
 			var frameIndex:Int;
@@ -264,24 +252,25 @@ class Emitter extends Graphic
 			var hw:Float;
 			var hh:Float;
 			// loop through the particles
-			while (p != null)
+			for(i in 0...activeCount)
 			{
+				_particle = particles[i];
 				// get time scale
-				t = p._time / p._duration;
+				t = _particle._time / _particle._duration;
 				
 				// get particle type
-				type = p._type;
+				type = _particle._type;
 				
 				//setblend
 				//buffer.g2.setBlendingMode(type._sourceBlend, type._destinationBlend);
 				
 				// get position
 				td = (type._ease == null) ? t : type._ease(t);
-				_p.x = this.point.x + p._x + p._moveX * (type._backwards ? 1 - td : td);
-				_p.y = this.point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
-				p._moveY += p._gravity * td;
+				_p.x = this.point.x + _particle._x + _particle._moveX * (type._backwards ? 1 - td : td);
+				_p.y = this.point.y + _particle._y + _particle._moveY * (type._backwards ? 1 - td : td);
+				_particle._moveY += _particle._gravity * td;
 				
-				frameIndex = type._frames[Std.int(td * type._frames.length)];
+				frameIndex = type._frames[Std.int(td * (type._frames.length-1))];
 				ar =  _frames[frameIndex];
 				
 				_color.R = (type._red + type._redRange * td); // Red
@@ -313,9 +302,6 @@ class Emitter extends Graphic
 				
 				buffer.g2.set_color(Color.White);
 				buffer.g2.set_opacity(1);
-				
-				// get next particle
-				p = p._next;
 			}
 		} 
 	}
@@ -450,23 +436,21 @@ class Emitter extends Graphic
 	 */
 	public function emit(name:String, ?x:Float = 0, ?y:Float = 0):Particle
 	{
+		if (activeCount + 1 > maxParticles) return null;
+		
 		var p:Particle, type:ParticleType = _types.get(name);
 
 		if (type == null)
 			throw "Particle type \"" + name + "\" does not exist.";
 
-		if (_cache != null)
+		if (particles.get(activeCount) != null)
 		{
-			p = _cache;
-			_cache = p._next;
+			p = particles.get(activeCount);
 		}
 		else
 		{
-			p = new Particle();
+			p = particles.set(activeCount, new Particle());
 		}
-		p._next = _particle;
-		p._prev = null;
-		if (p._next != null) p._next._prev = p;
 
 		p._type = type;
 		p._time = 0;
@@ -478,8 +462,8 @@ class Emitter extends Graphic
 		p._x = x;
 		p._y = y;
 		p._gravity = type._gravity + type._gravityRange * KP.random;
-		particleCount ++;
-		return (_particle = p);
+		activeCount ++;
+		return p;
 	}
 	
 	/**

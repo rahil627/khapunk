@@ -12,46 +12,47 @@ class ShaderPass
 {
 
 	var programs:Array<Program>;
-	var _blend:Bool = false;
-
-	var previousBuffer:Image;
-	var buffer:Image;
 	var shaderConstants:Array<ShaderConstants>;
+	var sampleSource:Array<Bool>;
+	var _blend:Bool = false;
+	
 	public var sourceBlend:BlendingOperation;
 	public var destinationBlend:BlendingOperation;
 	
-	static var bufferA:Image;
+	static var buffer:Image;
 	static var bufferB:Image;
 	
 	public function new() {
 		sourceBlend = BlendingOperation.SourceAlpha;
 		destinationBlend = BlendingOperation.BlendOne;
 		
-		if (bufferA == null) {
-			bufferA = Image.createRenderTarget(KP.width, KP.height);
+		if (buffer == null) {
+			buffer = Image.createRenderTarget(KP.width, KP.height);
 			bufferB = Image.createRenderTarget(KP.width, KP.height);
 		}
 		
 	}
 	
 	public static function resize(w:Int, h:Int) : Void {
-		bufferA.unload();
-		bufferB.unload();
+		buffer.unload();
+		//bufferB.unload();
 		
-		bufferA = Image.createRenderTarget(KP.width, KP.height);
-		bufferB = Image.createRenderTarget(KP.width, KP.height);
+		buffer = Image.createRenderTarget(w, h);
+		bufferB = Image.createRenderTarget(w, h);
 	}
 	
 	/**
-	 * Sets
+	 * Sets the properties containing the shader programs and their constants.
 	 * @param	Array<Program>
 	 * @param	Array<Canvas>
-	 * @param	blend
+	 * @param	blend Whether the source should be rendered first with processed buffer on top with the blending setting.
+	 * @param	sampleSource<Bool> Whether the current iteration should sample from the original source input.
 	 */
-	public function setPrograms(programs:Array<Program>, shaderConstants:Array<ShaderConstants>, blend:Bool): Void {
+	public function setPrograms(programs:Array<Program>, shaderConstants:Array<ShaderConstants>, sampleSource:Array<Bool>, blend:Bool): Void {
 		this.programs = programs;
-		_blend = blend;
 		this.shaderConstants = shaderConstants;
+		this.sampleSource = sampleSource;
+		_blend = blend;
 	}
 	
 	public var blend(get, null): Bool;
@@ -61,74 +62,88 @@ class ShaderPass
 	
 	public function execute(source:Image, target:Image, x:Float = 0, y:Float = 0, sx:Float = 0, sy:Float = 0, sw:Float = 0, sh:Float = 0) : Void {
 		
-		buffer = bufferA;
-		
+		buffer.g2.begin();
 		for (i in 0...programs.length)
 		{
-			
-			buffer.g2.begin();
 			buffer.g2.program = programs[i];
 			
-			if(shaderConstants[i] != null && shaderConstants[i].hasChanged) setConstants(shaderConstants[i], programs[i],buffer);
-			buffer.g4.setFloat(programs[i].getConstantLocation("flipy"), buffer.g4.renderTargetsInvertedY() ? 1:0);
+			//If shader constant is not null AND either shader constant has changed OR previous program is the same as current program or the next.
+			//If the program is the same as the previous/next one we update the uniforms with the specified shader constant object.
+			//Due to the hasChanged flag the changes might never get applied, this way we ensure the same shader gets applied with different settings.
+			if (
+					shaderConstants[i] != null && 
+					(
+						shaderConstants[i].hasChanged || 
+						(( i > 0) ? (programs[i - 1] == programs[i]):false) ||
+						(( i < programs.length - 1) ? (programs[i + 1] == programs[i]):false)
+					)
+				)
+			{
+				setConstants(shaderConstants[i], programs[i]);
+			}
 			
-			if (i == 0){
+			if (i > 0) buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendZero);
+			
+			if (sampleSource[i]) {
 				buffer.g2.drawSubImage(source, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 			}
 			else {
-				buffer.g2.drawSubImage(previousBuffer, 0, 0,sx,sy,(sw == 0 ? previousBuffer.width:sw),(sh == 0 ? previousBuffer.height:sh));
+				buffer.g2.end();
+				bufferB.g2.begin();
+				bufferB.g2.drawSubImage(buffer, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
+				bufferB.g2.end();
+				
+				buffer.g2.begin(false);
+				buffer.g2.drawSubImage(bufferB, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 			}
 			
-			buffer.g2.end();
-			
-			
-			if (buffer == bufferA) {
-				previousBuffer = buffer;
-				buffer = bufferB;
-			}
-			else {
-				previousBuffer = buffer;
-				buffer = bufferA;
-			}
 			
 		}
+		buffer.g2.end();
 		
-		target.g2.begin();
-		//render previousBuffer since buffer gets swapped
-		target.g2.drawSubImage(previousBuffer, x, y,0,0,(sw == 0 ? source.width:sw),(sh == 0 ? source.height:sh));
+		target.g2.begin(false);
+		
+		if (blend)
+		{
+			target.g2.drawSubImage(source, x, y,0,0,(sw == 0 ? source.width:sw),(sh == 0 ? source.height:sh));
+			target.g2.setBlendingMode(sourceBlend, destinationBlend);
+		}
+		else buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendZero);
+		target.g2.drawSubImage(buffer, x, y, 0, 0, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
+		
 		target.g2.end();
 	}
 	
-	function setConstants(const:ShaderConstants = null, prog:Program, buff:Image)  : Void
+	function setConstants(const:ShaderConstants = null, prog:Program)  : Void
 	{
 		const.hasChanged = false;
 		if (const.hasFloatArr()) {
 			for (key in const.floatsArrConstants.keys()) {
-				buff.g4.setFloats(prog.getConstantLocation(key), const.floatsArrConstants.get(key));
+				buffer.g4.setFloats(prog.getConstantLocation(key), const.floatsArrConstants.get(key));
 			}
 		}
 		
 		if (const.hasFloats()) {
 			for (key in const.floatConstants.keys()) {
-				buff.g4.setFloat(prog.getConstantLocation(key), const.floatConstants.get(key));
+				buffer.g4.setFloat(prog.getConstantLocation(key), const.floatConstants.get(key));
 			}
 		}
 		
 		if (const.hasVec2()) {
 			for (key in const.vec2Constants.keys()) {
-				buff.g4.setVector2(prog.getConstantLocation(key), const.vec2Constants.get(key));
+				buffer.g4.setVector2(prog.getConstantLocation(key), const.vec2Constants.get(key));
 			}
 		}
 		
 		if (const.hasTextures()) {
 			for (key in const.textureConstant.keys()) {
-				buff.g4.setTexture(prog.getTextureUnit(key), const.textureConstant.get(key));
+				buffer.g4.setTexture(prog.getTextureUnit(key), const.textureConstant.get(key));
 			}
 		}
 		
 		if (const.hasInts()) {
 			for (key in const.intConstants.keys()) {
-				buff.g4.setInt(prog.getConstantLocation(key), const.intConstants.get(key));
+				buffer.g4.setInt(prog.getConstantLocation(key), const.intConstants.get(key));
 			}
 		}
 		

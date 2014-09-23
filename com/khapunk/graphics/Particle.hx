@@ -35,6 +35,6 @@ class Particle
 	private var _gravity:Float;
 
 	// List information.
-	private var _prev:Particle;
-	private var _next:Particle;
+	//private var _prev:Particle;
+	//private var _next:Particle;
 }
