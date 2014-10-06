@@ -82,7 +82,7 @@ class ShaderPass
 				setConstants(shaderConstants[i], programs[i]);
 			}
 			
-			if (i > 0) buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendZero);
+			if (i == 1) buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendOne);
 			
 			if (sampleSource[i]) {
 				buffer.g2.drawSubImage(source, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
@@ -94,6 +94,7 @@ class ShaderPass
 				bufferB.g2.end();
 				
 				buffer.g2.begin(false);
+				buffer.g2.program = null; 
 				buffer.g2.drawSubImage(bufferB, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 			}
 			
@@ -124,6 +125,7 @@ class ShaderPass
 		}
 		
 		if (const.hasFloats()) {
+			
 			for (key in const.floatConstants.keys()) {
 				buffer.g4.setFloat(prog.getConstantLocation(key), const.floatConstants.get(key));
 			}

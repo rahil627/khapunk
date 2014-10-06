@@ -3,6 +3,7 @@ import com.khapunk.graphics.shader.ShaderPass;
 import com.khapunk.graphics.tilemap.TileAnimationManager;
 import com.khapunk.utils.Input;
 import kha.Canvas;
+import kha.Color;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.Program;
 import kha.Image;
@@ -49,6 +50,9 @@ class Scene
 	private var lastShader:Program;
 	
 	public var active:Bool = true;
+	
+	
+	public var clearColor:Color = Color.White;
 	
 	/**
 	 * If the render() loop is performed.
@@ -166,7 +170,7 @@ class Scene
 
 		// render the entities in order of depth
 		var e:Entity;
-		
+		buffer.g2.clear(clearColor);
 				// render the entities in order of depth
 		for (layer in _layerList) {
 			

@@ -19,7 +19,7 @@ class Spritemap extends Animator<Int,Spritemap>
 	private var _rect:Rectangle;
 	private var _frame:Int;
 	
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null, name:String = ""){
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, tileMarginWidth:Int = 0, tileMarginHeight:Int = 0, cbFunc:CallbackFunction = null, name:String = ""){
 	
 
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
@@ -34,11 +34,10 @@ class Spritemap extends Animator<Int,Spritemap>
 		}
 		else 
 		{
-			_atlas = TileAtlas.getAtlas(source,frameWidth, frameHeight, 0, 0);
+			_atlas = TileAtlas.getAtlas(source,frameWidth, frameHeight, tileMarginWidth, tileMarginHeight);
 			_region = _atlas.getRegion(_frame);
 		}
 
-	
 		_width = Std.int(_atlas.img.width);
 		_height = Std.int(_atlas.img.height);
 		

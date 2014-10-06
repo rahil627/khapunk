@@ -83,7 +83,8 @@ class Atlasmap extends Animator<AtlasRegion, Atlasmap>
 	
 		_anim = anim;
 		this.reverse = reverse;
-		restart();
+		if (reset) restart();
+		else updateFrame();
 		
 		return anim;
 	}

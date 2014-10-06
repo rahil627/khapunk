@@ -4,6 +4,8 @@ Khapunk
 Khapunk is a port of [Haxepunk] ( which is a port of Flashpunk... )  
 Haxepunk credits go to :  [Matt Tuttle] 
 
+***Make sure you read the Wiki pages***
+
 ~~~~
 > Khapunk is currently under development!
 ~~~~  

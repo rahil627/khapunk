@@ -56,16 +56,14 @@ class Emitter extends Graphic
 	
 	private var particles:Vector<Particle>;
 	private var next:Int = 0;
-	public var maxParticles:Int = 100;
+	public var maxParticles:Int;
 	
 	
 	/**
 	 * Constructor. Sets the source image to use for newly added particle types.
-	 * @param	source			Source image.
-	 * @param	frameWidth		Frame width.
-	 * @param	frameHeight		Frame height.
+	 * @param	maxCount maximum particles to be active at once.
 	 */
-	public function new(maxCount:Int = 1000)
+	public function new(maxCount:Int = 100)
 	{
 		maxParticles = maxCount;
 		super();
@@ -190,6 +188,7 @@ class Emitter extends Graphic
 	{
 		_frames = null;
 		_indices = null;
+		activeCount = 0;
 	}
 	
 	override public function update()
@@ -303,6 +302,9 @@ class Emitter extends Graphic
 				buffer.g2.set_color(Color.White);
 				buffer.g2.set_opacity(1);
 			}
+			
+			if (activeBlend)
+			buffer.g2.setBlendingMode(BlendingOperation.DestinationAlpha, InverseSourceAlpha);
 		} 
 	}
 	
