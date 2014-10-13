@@ -198,12 +198,12 @@ class Entity
 		var graphicScrollX = graphic != null ? graphic.scrollX : 1;
 		var graphicScrollY = graphic != null ? graphic.scrollY : 1;
 		
-		buffer.g2.set_color(Color.fromValue(0xFFE33C3C));
+		buffer.g2.set_color(Color.fromValue(0xFFFF3737));
 		buffer.g2.drawRect((x - originX - KP.camera.x * graphicScrollX), (y - originY - KP.camera.y * graphicScrollY), width, height, 1 );
 		buffer.g2.set_color(Color.White);
 		
-		buffer.g2.set_color(Color.fromValue(0xFFFF8040));
-		buffer.g2.drawRect((x - originX - KP.camera.x * graphicScrollX)-2, (y - originY - KP.camera.y * graphicScrollY)-2, 4, 4, 1 );
+		buffer.g2.set_color(Color.Green);
+		buffer.g2.drawRect((x - originX - KP.camera.x * graphicScrollX)-3, (y - originY - KP.camera.y * graphicScrollY)-3, 6, 6, 1.5 );
 		buffer.g2.set_color(Color.White);
 		
 		

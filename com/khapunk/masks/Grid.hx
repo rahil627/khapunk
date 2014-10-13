@@ -1,5 +1,6 @@
 package com.khapunk.masks;
 import kha.Canvas;
+import kha.Color;
 import kha.Framebuffer;
 import kha.math.Vector2;
 import kha.Rectangle;
@@ -503,11 +504,11 @@ class Grid extends Hitbox
 	#if debug
 	override public function debugDraw(buffer:Canvas):Void
 	{
-		/**
-		 * TODO FIX DEBUG
+		
+		
 		    var cellX:Float, cellY:Float,
-			stepX = tileWidth * scaleX,
-			stepY = tileHeight * scaleY;
+			stepX = tileWidth ,
+			stepY = tileHeight ;
 
 		// determine drawing location
 		var px = _x + _parent.x - KP.camera.x;
@@ -529,8 +530,8 @@ class Grid extends Hitbox
 		if (starty < 0) starty = 0;
 		if (desty > rows) desty = rows;
 
-		px = (px + (startx * tileWidth)) * scaleX;
-		py = (py + (starty * tileHeight)) * scaleY;
+		px = (px + (startx * tileWidth)) ;
+		py = (py + (starty * tileHeight)) ;
 
 		var row:Array<Bool>;
 		cellY = py;
@@ -542,39 +543,36 @@ class Grid extends Hitbox
 			{
 				if (row[x])
 				{
-					graphics.lineStyle(1, 0xFFFFFF, 0.3);
-					graphics.drawRect(cellX, cellY, stepX, stepY);
-
+					
+					buffer.g2.set_color(Color.White);
+					
+					buffer.g2.drawRect(cellX, cellY, stepX, stepY,2);
+					
+					buffer.g2.set_color(Color.fromFloats(1, 0, 0, 1));
+					
 					if (x < columns - 1 && !row[x + 1])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX + stepX, cellY);
-						graphics.lineTo(cellX + stepX, cellY + stepY);
+						buffer.g2.drawLine(cellX + stepX, cellY,cellX + stepX, cellY + stepY,3);
 					}
 					if (x > 0 && !row[x - 1])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY);
-						graphics.lineTo(cellX, cellY + stepY);
+						buffer.g2.drawLine(cellX, cellY, cellX, cellY + stepY,3);
 					}
 					if (y < rows - 1 && !data[y + 1][x])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY + stepY);
-						graphics.lineTo(cellX + stepX, cellY + stepY);
+						buffer.g2.drawLine(cellX, cellY + stepY,cellX + stepX, cellY + stepY,3);
 					}
 					if (y > 0 && !data[y - 1][x])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY);
-						graphics.lineTo(cellX + stepX, cellY);
+						buffer.g2.drawLine(cellX, cellY, cellX + stepX, cellY,3);
+					
 					}
 				}
 				cellX += stepX;
 			}
 			cellY += stepY;
-		}*/
-	
+		}
+			buffer.g2.set_color(Color.White);
 		
 	}
 	#end

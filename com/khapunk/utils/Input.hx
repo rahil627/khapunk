@@ -413,7 +413,6 @@ class Input
 		
 		if (code == -1) // No key
 			return;
-
 		lastKey = code;
 		
 		if (key == Key.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
@@ -421,15 +420,15 @@ class Input
 		{
 			
 			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
-		
-			if (key == Key.SHIFT)
-				char = char.toUpperCase();
-			else char = char.toLowerCase();
-
+			
+			//if (key == Key.SHIFT)
+			//	char = char.toUpperCase();
+			//else char = char.toLowerCase();
+			
 			keyString += char;
 			 
 		}
-
+		
 		if (!_key[code])
 		{
 			_key[code] = true;
