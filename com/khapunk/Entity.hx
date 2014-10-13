@@ -3,6 +3,7 @@ import com.khapunk.Graphic;
 import com.khapunk.graphics.Graphiclist;
 import com.khapunk.Scene;
 import kha.Canvas;
+import kha.Color;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
 import kha.Image;
@@ -190,6 +191,25 @@ class Entity
 			graphic.render(buffer, point, camera);
 		}
 	}
+	
+	#if debug
+	public function debugDraw(buffer:Canvas):Void {
+		
+		var graphicScrollX = graphic != null ? graphic.scrollX : 1;
+		var graphicScrollY = graphic != null ? graphic.scrollY : 1;
+		
+		buffer.g2.set_color(Color.fromValue(0xFFE33C3C));
+		buffer.g2.drawRect((x - originX - KP.camera.x * graphicScrollX), (y - originY - KP.camera.y * graphicScrollY), width, height, 1 );
+		buffer.g2.set_color(Color.White);
+		
+		buffer.g2.set_color(Color.fromValue(0xFFFF8040));
+		buffer.g2.drawRect((x - originX - KP.camera.x * graphicScrollX)-2, (y - originY - KP.camera.y * graphicScrollY)-2, 4, 4, 1 );
+		buffer.g2.set_color(Color.White);
+		
+		
+		if(mask!=null)mask.debugDraw(buffer);
+	}
+	#end
 	
 	/**
 	 * Checks for a collision against an Entity type.
@@ -580,7 +600,7 @@ class Entity
 		if (_mask == value) return value;
 		if (_mask != null) _mask.parent = null;
 		_mask = value;
-		if (value != null) _mask.parent = null;
+		if (value != null) _mask.parent = this;
 		return _mask;
 	}
 

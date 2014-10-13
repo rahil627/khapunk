@@ -1,6 +1,8 @@
 package com.khapunk.masks;
 import com.khapunk.Mask;
 import com.khapunk.math.Projection;
+import kha.Canvas;
+import kha.Color;
 import kha.math.Vector2;
 
 /**
@@ -187,5 +189,17 @@ class Hitbox extends Mask
 		projection.min = min;
 		projection.max = max;
 	}
+	
+	#if debug
+	public override function debugDraw(buffer:Canvas):Void {
+		
+		if (parent != null)
+		{
+			buffer.g2.set_color(Color.fromValue(0xFF22BB1E));
+			buffer.g2.drawRect((parent.x - KP.camera.x + x), (parent.y - KP.camera.y + y), width, height);
+			buffer.g2.set_color(Color.White);
+		}
+	}
+	#end
 	
 }

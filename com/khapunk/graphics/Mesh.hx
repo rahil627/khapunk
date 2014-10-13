@@ -1,12 +1,12 @@
 package com.khapunk.graphics;
+import com.khapunk.Graphic;
 import com.khapunk.graphics.primitives.Geometry;
+import kha.Canvas;
 import kha.graphics4.CompareMode;
 import kha.Image;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 
-import com.khapunk.Graphic;
-import kha.Canvas;
 
 /**
  * ...
@@ -41,6 +41,11 @@ class Mesh extends Graphic
 	 */
 	public var angle:Float;
 
+	
+	
+	public var z : Float;
+
+	
 	/**
 	 * Scale of the image, effects both x and y scale.
 	 */
@@ -56,7 +61,7 @@ class Mesh extends Graphic
 		helperMatrix.matrix[8] = 0; helperMatrix.matrix[9] = Math.sin(a) ; helperMatrix.matrix[10] = Math.cos(a); helperMatrix.matrix[11] = 1;
 		helperMatrix.matrix[12] = 1; helperMatrix.matrix[13] = 1; helperMatrix.matrix[14] = 1; helperMatrix.matrix[15] = 1;
 		
-		matrix.multmat(helperMatrix);
+		matrix = matrix.multmat(helperMatrix);
 		
 	}
 	/*
@@ -128,24 +133,22 @@ class Mesh extends Graphic
 		buffer.g4.setProgram(Geometry.meshProgram);
 		
 		// determine drawing location
-		matrix.matrix[3 ] = point.x + x - originX * sx - camera.x * scrollX;
-		matrix.matrix[7 ] = point.y + y - originY * sy - camera.y * scrollY;
-		matrix.matrix[11] = 100;
+		matrix.matrix[3 ] = point.x + x - originX * sx - camera.x * scrollX - KP.halfWidth;
+		matrix.matrix[7 ] = point.y + y - originY * sy - camera.y * scrollY - KP.halfHeight;
+		matrix.matrix[11] = -z;
+		var proj = Matrix4.perspectiveProjection(95,640/480,0.1,100).multmat(matrix);
 		
-		///var proj = matrix.multmat(Matrix4.orthogonalProjection(0, 640, 0, 480, 0.01, 100));
-	
 		buffer.g4.setBool(Geometry.meshProgram.getConstantLocation("texturing"), textured);
-		buffer.g4.setBool(Geometry.meshProgram.getConstantLocation("lighted"), textured);
+	
 		if (textured)
 		buffer.g4.setTexture(Geometry.meshProgram.getTextureUnit("tex"), texture);
-		buffer.g4.setMatrix(Geometry.meshProgram.getConstantLocation("mvpMatrix"), matrix);
+		buffer.g4.setMatrix(Geometry.meshProgram.getConstantLocation("mvpMatrix"), proj);
 		
 		buffer.g4.setVertexBuffer(geom.vertexBuffer);
 		buffer.g4.setIndexBuffer(geom.indexBuffer);
 		buffer.g4.drawIndexedVertices();
 		
 		buffer.g4.setDepthMode(false , CompareMode.Always );
-		
 		buffer.g2.program = null;
 		
 		

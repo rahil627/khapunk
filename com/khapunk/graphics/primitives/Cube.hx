@@ -154,7 +154,7 @@ class Cube extends Geometry {
 			0, -1, 0
 		];
 
-		var indices = [for (i in 0...Std.int(vertices.length / 3)) i];
+		/*var indices = [for (i in 0...Std.int(vertices.length / 3)) i];*/
 
 		/*
 		var vertices = [
@@ -191,14 +191,22 @@ class Cube extends Geometry {
 			0, 0, -1,
 			0, 0, -1,
 			0, 0, -1
-		];
+		];*/
 
-		var indices = [0, 1, 2, 0, 2, 3,
-					   3, 2, 6, 3, 6, 7,
-					   7, 6, 5, 7, 5, 4,
-					   0, 1, 5, 0, 5, 4,
-					   0, 3, 7, 0, 7, 4,
-					   1, 2, 6, 1, 6, 5];*/
+		var indices = [
+					   0, 1, 2, 
+					   2, 3, 0,
+					   3, 2, 6, 
+					   6, 7, 3,
+					   7, 6, 5, 
+					   5, 4, 7,
+					   4, 5, 1,
+					   1, 0, 4,
+					   4, 0, 3, 
+					   3, 7, 4,
+					   1, 5, 6, 
+					   6, 2, 1
+					 ];
 
 
 		var data:Array<Float> = new Array();
@@ -211,10 +219,10 @@ class Cube extends Geometry {
 			data.push(normals[i * 3]);
 			data.push(normals[i * 3 + 1]);
 			data.push(normals[i * 3 + 2]);
-			data.push(0xFF);
-			data.push(0xFF);
-			data.push(0x00);
-			data.push(0xFF);
+			data.push(Math.random());
+			data.push(Math.random());
+			data.push(Math.random());
+			data.push(1.0);
 		}
 
     	super(data, indices);

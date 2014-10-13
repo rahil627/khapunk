@@ -1,4 +1,5 @@
 package com.khapunk.masks;
+import kha.Canvas;
 import kha.Framebuffer;
 import kha.math.Vector2;
 import kha.Rectangle;
@@ -397,7 +398,8 @@ class SlopedGrid extends Hitbox
 		return collideBox(ox, oy, other._width, other._height, x, y);
 	}
 	
-	override public function debugDraw(buffer:Framebuffer, scaleX:Float, scaleY:Float):Void
+	#if debug
+	override public function debugDraw(buffer:Canvas):Void
 	{
 		/** TODO debug*/ 
 		
@@ -545,6 +547,7 @@ class SlopedGrid extends Hitbox
 			cellY += stepY;
 		}*/
 	}
+	#end
 	
 	
 

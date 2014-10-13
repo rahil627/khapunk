@@ -17,12 +17,14 @@ void kore() {
 	
 	color = vertexColor;
 
-	vec4 lightDir = vec4(0.3, 0.3, 0.3, 1.0);
-	vec4 ambient = vec4(0.2, 0.2, 0.2, 1.0);
-	ambient = ambient * color;
-	vec4 diffuse = color;
-	color = ambient + diffuse * dot(lightDir, vec4(normalPosition, 1.0));
+	//vec4 lightDir = vec4(0.3, 0.3, 0.3, 1.0);
+	//vec4 ambient = vec4(0.2, 0.2, 0.2, 1.0);
+	//ambient = ambient * color;
+	//vec4 diffuse = color;
+	//color = ambient + diffuse * dot(lightDir, vec4(normalPosition, 1.0));
 
+	color = vertexColor;
+	
 	norm = normalPosition;
 	texCoord = texPosition;
 }

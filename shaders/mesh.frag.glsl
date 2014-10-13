@@ -19,5 +19,5 @@ void kore() {
 		gl_FragColor = color;
 	}
 
-	if (gl_FragColor.a <= 0.5) discard;
+	//if (gl_FragColor.a <= 0.5) discard;
 }

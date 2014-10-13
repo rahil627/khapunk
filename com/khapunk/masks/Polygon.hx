@@ -1,5 +1,6 @@
 package com.khapunk.masks;
 import com.khapunk.math.Projection;
+import kha.Canvas;
 import kha.Framebuffer;
 import kha.math.Vector2;
 
@@ -371,8 +372,8 @@ class Polygon extends Hitbox
 		projection.min = min;
 		projection.max = max;
 	}
-	
-	override public function debugDraw(buffer:Framebuffer, scaleX:Float, scaleY:Float):Void
+	#if debug
+	override public function debugDraw(buffer:Canvas):Void
 	{
 		
 		/** TODO Debug draw*/
@@ -395,6 +396,7 @@ class Polygon extends Hitbox
 			graphics.drawCircle((offsetX + origin.x) * scaleX, (offsetY + origin.y) * scaleY, 2);
 		}*/
 	}
+	#end
 	
 	/**
 	 * Rotation angle (in degrees) of the polygon (rotates around origin Vector2).

@@ -52,7 +52,7 @@ class Scene
 	public var active:Bool = true;
 	
 	
-	public var clearColor:Color = Color.White;
+	public var backgroundColor:Color = Color.White;
 	
 	/**
 	 * If the render() loop is performed.
@@ -84,7 +84,6 @@ class Scene
 		_classCount = new Map<String,Int>();
 		recycled = new Map<String,Entity>();
 		entityNames = new Map<String,Entity>();
-		TileAnimationManager.init();
 		
 		if(layerBuffer == null)
 		layerBuffer = Image.createRenderTarget(KP.width, KP.height);
@@ -170,7 +169,7 @@ class Scene
 
 		// render the entities in order of depth
 		var e:Entity;
-		buffer.g2.clear(clearColor);
+		buffer.g2.clear(backgroundColor);
 				// render the entities in order of depth
 		for (layer in _layerList) {
 			
@@ -193,6 +192,10 @@ class Scene
 				for (e in _layers.get(layer))
 				{
 					if (e.visible) e.render(layerBuffer);
+					#if debug
+						if(KP.consoleEnabled() && KP.console.debug)
+						e.debugDraw(layerBuffer);
+					#end
 				}
 				layerBuffer.g2.end();
 				
@@ -208,6 +211,10 @@ class Scene
 				for (e in _layers.get(layer))
 				{
 					if (e.visible) e.render(buffer);
+					#if debug
+						if(KP.consoleEnabled() && KP.console.debug)
+						e.debugDraw(buffer);
+					#end
 				}
 			}
 		}		

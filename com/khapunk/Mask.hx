@@ -1,6 +1,7 @@
 package com.khapunk;
 import com.khapunk.masks.Masklist;
 import com.khapunk.math.Projection;
+import kha.Canvas;
 import kha.Framebuffer;
 import kha.math.Vector2;
 
@@ -83,10 +84,12 @@ class Mask
 	/**
 	 * Override this
 	 */
-	public function debugDraw(buffer:Framebuffer, scaleX:Float, scaleY:Float):Void
+	#if debug
+	public function debugDraw(buffer:Canvas):Void
 	{
-
+		
 	}
+	#end
 
 	/** Updates the parent's bounds for this mask. */
 	public function update(): Void

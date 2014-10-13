@@ -1,4 +1,5 @@
 package com.khapunk;
+import com.khapunk.debug.Console;
 import com.khapunk.Engine.TransitionCallback;
 import com.khapunk.fx.ITransitionEffect;
 import com.khapunk.utils.Ease.EaseFunction;
@@ -54,8 +55,27 @@ class KP
 
 	/** TODO FIX THIS SHIT */
 	// Console information.
-	//private static var _console:Console;
-
+	
+	private static var _console:Console;
+	/**
+	 * The global Console object.
+	 */
+	public static var console(get, never):Console;
+	private static inline function get_console():Console
+	{
+		if (_console == null) _console = new Console();
+		return _console;
+	}
+	
+	/**
+	 * Checks if the console is enabled.
+	 */
+	public static function consoleEnabled() : Bool
+	{
+		return _console != null;
+	}
+	
+	
 	// Time information.
 	//private static var _time:Float;
 	//public static var _updateTime:Float;

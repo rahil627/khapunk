@@ -1,4 +1,5 @@
 package com.khapunk.masks;
+import kha.Canvas;
 import kha.Framebuffer;
 import kha.math.Vector2;
 import kha.Rectangle;
@@ -499,8 +500,8 @@ class Grid extends Hitbox
 
 		return false;
 	}
-	
-	override public function debugDraw(buffer:Framebuffer, scaleX:Float, scaleY:Float):Void
+	#if debug
+	override public function debugDraw(buffer:Canvas):Void
 	{
 		/**
 		 * TODO FIX DEBUG
@@ -576,6 +577,7 @@ class Grid extends Hitbox
 	
 		
 	}
+	#end
 	
 	public function squareProjection(axis:Vector2, point:Vector2):Void
 	{

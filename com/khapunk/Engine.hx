@@ -1,5 +1,6 @@
 package com.khapunk;
 import com.khapunk.fx.ITransitionEffect;
+import com.khapunk.graphics.tilemap.TileAnimationManager;
 import com.khapunk.utils.Input;
 import kha.Canvas;
 import kha.Color;
@@ -130,6 +131,7 @@ class Engine
 		
 		backbuffer = Image.createRenderTarget(KP.width, KP.height);
 		transitionBuffer = Image.createRenderTarget(KP.width, KP.height);
+		TileAnimationManager.init();
 		
 	}
 	
@@ -174,11 +176,16 @@ class Engine
 		 *  Update console
 		 *  Update input
 		 * */
+	
+		 // update console
+		#if debug
+		if (KP.consoleEnabled()) KP.console.update();
+		#end 
 		
 		if (paused) return;
 		
 		KP.elapsed = Scheduler.deltaTime;
-		
+	
 		// update console
 		//if (KP.consoleEnabled()) KP.console.update();
 		
