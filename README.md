@@ -1,7 +1,7 @@
 Khapunk - Next
 ========
 
-This branch is entirely a work in progress. In this branch I'm porting over version 3.0 of haxepunk, which is currently also a work in progress. Unlike 2.x Haxepunk 3.0 is tailored more towards the GPU instead of using OpenFL.
+This branch is entirely a work in progress. In this branch I'm porting over [version 3.0 of haxepunk](https://github.com/HaxePunk/HaxePunk/tree/release-3.0.0), which is currently also a work in progress. Unlike 2.x Haxepunk 3.0 is tailored more towards the GPU instead of using OpenFL.
 
 
 
