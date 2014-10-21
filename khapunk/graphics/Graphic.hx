@@ -1,8 +1,8 @@
-package haxepunk.graphics;
+package khapunk.graphics;
 
-import haxepunk.math.Matrix4;
-import haxepunk.math.Vector3;
-import haxepunk.scene.Camera;
+import khapunk.math.Matrix4;
+import khapunk.math.Vector3;
+import khapunk.scene.Camera;
 
 interface Graphic
 {

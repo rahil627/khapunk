@@ -16,18 +16,21 @@ class Sensor
 	public static var gyroY(default, null):Float;
 	public static var gyroZ(default, null):Float;
 	
+	public static var accelerometerSupported(default, null):Bool = false;
+	public static var gyroscopeSupported(default, null):Bool = false;
 	
 	@:allow(khapunk.inputs.Input)
-	private static function init():Void
+	private static function init():Void{
 		
 		if (kha.input.Sensor.get(SensorType.Accelerometer) != null)
 		{
-			Sensor.get(SensorType.Accelerometer).notify(onAccel);
-			accelerationSupported = true;
+			kha.input.Sensor.get(SensorType.Accelerometer).notify(onAccel);
+			accelerometerSupported = true;
 		}
+		
 		if (kha.input.Sensor.get(SensorType.Gyroscope) != null)
 		{
-			Sensor.get(SensorType.Gyroscope).notify(onGyro);
+			kha.input.Sensor.get(SensorType.Gyroscope).notify(onGyro);
 			gyroscopeSupported = true;
 		}
 		

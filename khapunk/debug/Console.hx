@@ -1,5 +1,6 @@
 package khapunk.debug;
 
+import kha.Color;
 import khapunk.graphics.*;
 import khapunk.math.*;
 import khapunk.scene.*;
@@ -18,22 +19,22 @@ class Console
 
 	private function new()
 	{
-		lines = [LibInfo.name + " " + LibInfo.fullVersion];
+		//lines = [LibInfo.name + " " + LibInfo.fullVersion];
 		origin = new Vector3();
-		text = new Text(lines.join("\n"), 12);
-		text.color.fromRGB(0.2, 0.2, 0.2);
+		//text = new Text(lines.join("\n"), 12);
+		//text.color = Color.fromFloats(0.2, 0.2, 0.2);
 	}
 
 	public function update(elapsed:Float):Void
 	{
-		text.text = lines.join("\n") + "\n> " + input;
+		//text.text = lines.join("\n") + "\n> " + input;
 	}
 
 	public function draw(camera:Camera):Void
 	{
-		origin.y = HXP.window.height - text.height;
+		origin.y = KP.height;
 		// TODO: only use projection and not worldview matrix
-		text.draw(camera, origin);
+		//text.draw(camera, origin);
 	}
 
 	@:allow(haxepunk.scene.Scene)
@@ -46,7 +47,7 @@ class Console
 		return instance;
 	}
 
-	private var text:Text;
+	//private var text:Text;
 	private var lines:Array<String>;
 	private var origin:Vector3;
 	private var input:String = "";

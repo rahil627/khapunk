@@ -1,7 +1,7 @@
 package khapunk.graphics;
 
+import kha.Loader;
 import khapunk.math.Matrix4;
-import khapunk.renderers.Renderer;
 import kha.Color;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
@@ -46,7 +46,7 @@ class Pass
 		return shader = value;
 	}
 
-	public function addTexture(texture:Texture, uniformName:String="uImage0")
+	public function addTexture(texture:Image, uniformName:String="tex")
 	{
 		// keep uniform to allow removal of textures?
 		// var uniform = shader.uniform(uniformName);
@@ -75,22 +75,22 @@ class Pass
 		// assign any textures
 		for (i in 0..._textures.length)
 		{
-			_textures[i].bind(i);
+			//_textures[i].bind(i);
 		}
 	}
 
-	private static var _defaultShader(get, null):Shader;
-	private static inline function get__defaultShader():Shader {
+	private static var _defaultShader(get, null):Program;
+	private static inline function get__defaultShader():Program {
 		if (_defaultShader == null)
 		{
 			/*#if flash
 			var vert = "m44 op, va0, vc0\nmov v0, va1";
 			var frag = "tex oc, v0, fs0 <linear nomip 2d wrap>";
 			#else*/
-			var vert = Assets.getText("shaders/default.vert");
-			var frag = Assets.getText("shaders/default.frag");
+			//var vert = Assets.getText("shaders/default.vert");
+			//var frag = Assets.getText("shaders/default.frag");
 			//#end
-			_defaultShader = new Shader(vert, frag);
+			//_defaultShader = new Shader(vert, frag);
 		}
 		return _defaultShader;
 	}
@@ -143,7 +143,7 @@ class Material
 
 	public static inline function fromAsset(id:String):Material
 	{
-		return fromText(Assets.getText(id));
+		return fromText(Loader.the.getBlob(id).toString());
 	}
 
 	public var firstPass(get, never):Pass;
@@ -259,9 +259,7 @@ class Material
 	private function color(color:Color):Void
 	{
 		next();
-		color.r = float();
-		color.g = float();
-		color.b = float();
+		color = Color.fromFloats(float(),float(),float(),1);
 	}
 
 	private function pass(technique:Technique)
@@ -283,7 +281,7 @@ class Material
 					color(pass.emissive);
 				case "program":
 					expected("program");
-					pass.shader = new Shader(Assets.getText(next()), Assets.getText(next()));
+					///pass.shader = new Shader(Assets.getText(next()), Assets.getText(next())); TODO FIX
 				case "depth_check":
 					expected("depth_check");
 					pass.depthCheck = bool();
@@ -309,7 +307,7 @@ class Material
 	{
 		expected("texture");
 		var texture = next();
-		if (Assets.exists(texture))
+		if (Loader.the.getImage(texture) != null)
 		{
 			// addTexture(Texture.fromAsset(texture));
 		}

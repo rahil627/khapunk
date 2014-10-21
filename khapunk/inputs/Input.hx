@@ -190,7 +190,7 @@ class Input
 	/**
 	 * Update all input subsystems.
 	 */
-	@:allow(haxepunk.Engine)
+	@:allow(khapunk.Engine)
 	private static function update():Void
 	{
 		Keyboard.update();

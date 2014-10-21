@@ -92,7 +92,7 @@ class Scene
 	}
 
 	/** @private Adds Entity to the type list. */
-	@:allow(haxepunk.scene.Entity)
+	@:allow(khapunk.scene.Entity)
 	private function addType(e:Entity)
 	{
 		var list:Array<Entity>;
@@ -110,7 +110,7 @@ class Scene
 	}
 
 	/** @private Removes Entity from the type list. */
-	@:allow(haxepunk.scene.Entity)
+	@:allow(khapunk.scene.Entity)
 	private function removeType(e:Entity)
 	{
 		if (!_types.exists(e.type)) return;
@@ -123,14 +123,14 @@ class Scene
 	}
 
 	/** @private Register the entities instance name. */
-	@:allow(haxepunk.scene.Entity)
+	@:allow(khapunk.scene.Entity)
 	private inline function registerName(e:Entity)
 	{
 		_entityNames.set(e.name, e);
 	}
 
 	/** @private Unregister the entities instance name. */
-	@:allow(haxepunk.scene.Entity)
+	@:allow(khapunk.scene.Entity)
 	private inline function unregisterName(e:Entity):Void
 	{
 		_entityNames.remove(e.name);
@@ -138,7 +138,7 @@ class Scene
 
 	public function draw()
 	{
-		KP.backbuffer.g2.begin(true, camera.clearColor));
+		KP.backbuffer.g2.begin(true, camera.clearColor);
 		for (i in 0..._entities.length)
 		{
 			_entities[i].draw(camera);
@@ -166,7 +166,6 @@ class Scene
 	private var _frameListSum:Float = 0;
 	private var _frameList:Array<Float>;
 
-	private var _spriteBatch:SpriteBatch;
 	private var _entities:Array<Entity>;
 	private var _types:StringMap<Array<Entity>>;
 	private var _entityNames:StringMap<Entity>;

@@ -38,7 +38,7 @@ class Camera extends SceneNode
 
 	public function update():Void
 	{
-		if (_projection == null) make2D(HXP.window.width, HXP.window.height);
+		if (_projection == null) make2D(KP.width, KP.height);
 		transform.identity();
 		transform.translate(-position.x, -position.y, -position.z);
 		transform.multiply(_projection);

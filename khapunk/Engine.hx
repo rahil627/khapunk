@@ -1,10 +1,10 @@
-package haxepunk;
+package khapunk;
 
-import haxepunk.math.Math;
-import haxepunk.math.Matrix4;
-import haxepunk.scene.Scene;
-import haxepunk.graphics.Material;
-import haxepunk.inputs.Input;
+import khapunk.math.Math;
+import khapunk.math.Matrix4;
+import khapunk.scene.Scene;
+import khapunk.graphics.Material;
+import khapunk.inputs.Input;
 
 class Engine
 {
@@ -15,23 +15,22 @@ class Engine
 
 	public function new(?scene:Scene)
 	{
-		super();
 		_scenes = new List<Scene>();
 		pushScene(scene == null ? new Scene() : scene);
 	}
 
-	override public function setup():Void
+	public function setup():Void
 	{
 		// Init the input system
 		Input.init();
 	}
 
-	override public function render():Void
+	public function render():Void
 	{
 		scene.draw();
 	}
 
-	override public function update(deltaTime:Float):Void
+	public function update(deltaTime:Float):Void
 	{
 		scene.update(deltaTime);
 

@@ -19,7 +19,7 @@ class InputState
 	public var pressed:Int = 0;
 	public var released:Int = 0;
 
-	@:allow(haxepunk.inputs)
+	@:allow(khapunk.inputs)
 	private function new() { }
 
 	public function value(v:InputValue):Int

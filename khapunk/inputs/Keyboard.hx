@@ -1,6 +1,7 @@
 package khapunk.inputs;
 
 import haxe.ds.IntMap;
+import kha.Key;
 import khapunk.inputs.Input;
 import khapunk.inputs.InputState;
 
@@ -141,18 +142,18 @@ class Keyboard
 	/**
 	 * Kha onKeyDown event.
 	 */
-	private static function onKeyDown(key:Key, char:String):Void
+	private static function onKeyDown(key:kha.Key, char:String):Void
 	{
-		getInputState(char).pressed += 1;
+		getInputState(char.charCodeAt(0)).pressed += 1;
 		last = cast char;
 	}
 
 	/**
 	 * Kha onKeyUp event.
 	 */
-	private static function onKeyUp(key:Key, char:String):Void
+	private static function onKeyUp(key:kha.Key, char:String):Void
 	{
-		getInputState(char).released += 1;
+		getInputState(char.charCodeAt(0)).released += 1;
 		last = cast char;
 	}
 

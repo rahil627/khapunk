@@ -146,7 +146,7 @@ class Mouse
 	 */
 	private static function onMouseDown(button: Int, x: Int, y: Int):Void
 	{
-		onMouseMove(button, x, y);
+		onMouseMove(x, y);
 
 		getInputState(button).pressed += 1;
 		last = cast button;
@@ -157,7 +157,7 @@ class Mouse
 	 */
 	private static function onMouseUp(button: Int, x: Int, y: Int):Void
 	{
-		onMouseMove(button, x, y);
+		onMouseMove(x, y);
 
 		getInputState(button).released += 1;
 		last = cast button;

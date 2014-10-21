@@ -1,5 +1,5 @@
 package khapunk.graphics;
-import khapunk.Graphic;
+import khapunk.graphics.Graphic;
 import kha.Canvas;
 import kha.Color;
 import kha.Font;
@@ -11,6 +11,7 @@ import kha.Kravur;
 import kha.Loader;
 import kha.math.Vector2;
 import khapunk.math.Matrix4;
+import khapunk.math.Vector3;
 import khapunk.scene.Camera;
 
 /**
@@ -66,7 +67,6 @@ class Text implements Graphic
 	
 	public function new(?font:Kravur) 
 	{
-		super();
 		if (font == null)
 		this.font = DEFAULT_FONT;
 		else {
@@ -79,9 +79,6 @@ class Text implements Graphic
 	
 	public function draw(camera:Camera, offset:Vector3):Void
 	{
-			// determine drawing location
-		this.point.x = point.x + x - originX - camera.x * scrollX;
-		this.point.y = point.y + y - originY - camera.y * scrollY;
 		_matrix.identity();
 		_matrix.scale(scaleX * scale, scaleY * scale,1.0);
 		_matrix.rotateZ(angle);

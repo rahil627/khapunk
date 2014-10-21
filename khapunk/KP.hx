@@ -11,7 +11,7 @@ class KP
 	* Width of the game.
 	*/
 	public static var width(get, null):Int;
-	static function get_width() : Void {
+	static function get_width() : Int {
 		return Loader.the.width;
 	}
 
@@ -19,7 +19,7 @@ class KP
 	 * Height of the game.
 	 */
 	public static var height(get, null):Int;
-	static function get_height() : Void {
+	static function get_height() : Int {
 		return Loader.the.height;
 	}
 	

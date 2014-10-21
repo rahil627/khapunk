@@ -9,7 +9,7 @@ typedef MatrixValue = Float;
 #if flash
 typedef NativeMatrix4 = flash.geom.Matrix3D;
 #else
-typedef NativeMatrix4 = kha.math.Matrix4;
+typedef NativeMatrix4 = js.html.Float32Array;
 #end
 
 class Matrix4 implements ArrayAccess<MatrixValue>
