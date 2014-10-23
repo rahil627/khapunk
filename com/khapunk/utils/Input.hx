@@ -1,7 +1,9 @@
 package com.khapunk.utils;
+import com.khapunk.utils.Gamepad.GamepadState;
 import com.khapunk.utils.Gesture;
 import haxe.ds.Vector;
 import kha.Game;
+import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.input.Mouse;
 import kha.input.Sensor;
@@ -29,7 +31,7 @@ class Input
 	private static var _releaseNum:Int = 0;
 	private static var _mouseWheelDelta:Int = 0;
 	private static var _touches:Map<Int,Touch> = new Map<Int,Touch>();
-	//private static var _joysticks:Map<Int,Joystick> = new Map<Int,Joystick>();
+	private static var _gamepads:Map<Int,com.khapunk.utils.Gamepad> = new Map<Int,com.khapunk.utils.Gamepad>();
 	private static var _control:Map < String, Array<Int> > = new Map < String, Array<Int> > ();
 	private static var _touchOrder:Array<Int> = new Array();
 	
@@ -282,13 +284,13 @@ class Input
 	
 	public static function enable()
 	{
+		
 		Keyboard.get().notify(onKeyDown, onKeyUp);
 		Mouse.get().notify(onMouseDown, onMouseUp, onMouseMove, onMouseWheel);
 		if (Surface.get() != null) {
 			Surface.get().notify(onTouch, onTouchEnd, onTouchMove);
 			multiTouchSupported = true;
 		}
-
 	
 		if (Sensor.get(SensorType.Accelerometer) != null)
 		{
@@ -301,6 +303,44 @@ class Input
 			gyroscopeSupported = true;
 		}
 		
+	}
+	
+	/**
+	 * Returns a joystick object (creates one if not connected)
+	 * @param  id The id of the joystick, starting with 0
+	 * @return    A Joystick object
+	 */
+	public static function gamepad(id:Int):com.khapunk.utils.Gamepad
+	{
+		var joy:com.khapunk.utils.Gamepad = _gamepads.get(id);
+		if (joy == null)
+		{
+			if (Gamepad.get(id) != null)
+			{
+				
+				joy = new com.khapunk.utils.Gamepad();
+				Gamepad.get(id).notify(joy.onGamepadAxis, joy.onGamepadButton);
+				_gamepads.set(id, joy);
+			}
+		}
+		return joy;
+	}
+	
+	/**
+	 * Returns the number of connected joysticks
+	 */
+	public static var gamepads(get, never):Int;
+	private static function get_gamepads():Int
+	{
+		var count:Int = 0;
+		for (gamepad in _gamepads)
+		{
+			if (gamepad.connected)
+			{
+				count += 1;
+			}
+		}
+		return count;
 	}
 	
 	static private function onGyro(x: Float, y: Float, z: Float) : Void 
@@ -340,6 +380,8 @@ class Input
 		if (midMouseReleased) 	midMouseReleased = false;
 		
 		if (mouseMoved) 		mouseMoved = false;
+		
+		for (gamepad in _gamepads) gamepad.update();
 		
 		if (multiTouchSupported)
 		{
