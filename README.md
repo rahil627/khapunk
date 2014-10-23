@@ -21,7 +21,7 @@ TODO
 -----
 * Input  
     - [x] Mouse and keyboard  
-    - [0] Joystick/Gamepad
+    - [x] Joystick/Gamepad
     - [x] Touchsupport 
 
 
