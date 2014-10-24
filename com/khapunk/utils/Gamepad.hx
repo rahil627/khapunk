@@ -143,7 +143,7 @@ class Gamepad
 	}
 	
 	public function onGamepadAxis(axis:Int, value:Float) : Void {
-		this.axis[axis] = value < deadZone ? 0:value;
+		this.axis[axis] = KP.sign(value) == -1 ?  ((value > -deadZone) ? 0:value) : ((value < deadZone) ? 0:value);
 		connected = true;
 	}
 	

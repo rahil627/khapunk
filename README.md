@@ -78,21 +78,19 @@ class Empty extends Game {
 	
 	override public function render(buffer:Framebuffer):Void 
 	{
-		KP.backbufferA.g2.begin();
-		engine.render(KP.backbufferA);
-		KP.backbufferA.g2.end();
-		
+		engine.render();
+	
 		//Scale and draw our backbuffer into our screen buffer.
 		startRender(buffer);
-		Scaler.scale(KP.backbufferA, buffer, kha.Sys.screenRotation);
+		Scaler.scale(Engine.backbuffer, buffer, kha.Sys.screenRotation);
 		endRender(buffer);
 		
 	}
 	
 	override public function init():Void 
 	{
-		Loader.the.loadRoom("MyRoom", onLoaded);
 		engine.setup();
+		Loader.the.loadRoom("MyRoom", onLoaded);
 	}
 	
 	function onLoaded() : Void
