@@ -52,7 +52,7 @@ class Scene
 	public var active:Bool = true;
 	
 	
-	public var backgroundColor:Color = Color.White;
+	public var backgroundColor:Color = Color.Black;
 	
 	/**
 	 * If the render() loop is performed.
@@ -188,7 +188,7 @@ class Scene
 				//lastbuffer.g2.end();
 				
 				//render layer to layerbuffer
-				layerBuffer.g2.begin();
+				layerBuffer.g2.begin(true, Color.fromFloats(0,0,0,0));
 				for (e in _layers.get(layer))
 				{
 					if (e.visible) e.render(layerBuffer);
@@ -205,7 +205,9 @@ class Scene
 				//Restart main buffer
 				buffer.g2.begin(false);
 				if (s.blend) //reset blending mode to default
-				buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
+				buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+				
+				buffer.g2.program = null;
 			}
 			else {
 				for (e in _layers.get(layer))

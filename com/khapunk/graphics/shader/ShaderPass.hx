@@ -1,7 +1,10 @@
 package com.khapunk.graphics.shader;
 import kha.Canvas;
+import kha.Color;
 import kha.graphics4.BlendingOperation;
+import kha.graphics4.CompareMode;
 import kha.graphics4.Program;
+import kha.graphics4.TextureFormat;
 import kha.Image;
 
 /**
@@ -62,7 +65,8 @@ class ShaderPass
 	
 	public function execute(source:Image, target:Image, x:Float = 0, y:Float = 0, sx:Float = 0, sy:Float = 0, sw:Float = 0, sh:Float = 0) : Void {
 		
-		buffer.g2.begin();
+		buffer.g2.begin(true, Color.fromFloats(0, 0, 0, 0));
+		
 		for (i in 0...programs.length)
 		{
 			buffer.g2.program = programs[i];
@@ -82,14 +86,14 @@ class ShaderPass
 				setConstants(shaderConstants[i], programs[i]);
 			}
 			
-			if (i == 1) buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendOne);
+			if (i >= 1) buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
 			
 			if (sampleSource[i]) {
 				buffer.g2.drawSubImage(source, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 			}
 			else {
 				buffer.g2.end();
-				bufferB.g2.begin();
+				bufferB.g2.begin(true, Color.fromFloats(0, 0, 0, 0));
 				bufferB.g2.drawSubImage(buffer, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 				bufferB.g2.end();
 				
@@ -104,12 +108,14 @@ class ShaderPass
 		
 		target.g2.begin(false);
 		
+	
+		
 		if (blend)
 		{
 			target.g2.drawSubImage(source, x, y,0,0,(sw == 0 ? source.width:sw),(sh == 0 ? source.height:sh));
 			target.g2.setBlendingMode(sourceBlend, destinationBlend);
 		}
-		else buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendZero);
+		else target.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		target.g2.drawSubImage(buffer, x, y, 0, 0, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 		
 		target.g2.end();

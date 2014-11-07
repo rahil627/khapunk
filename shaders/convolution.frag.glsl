@@ -38,6 +38,6 @@ void kore()
 		vec4 tmp = texture2D(tex, texCoord.st + offset[i]);
 		sum += tmp * (kernel[i]/division + bias);
 	 }
-	
-	gl_FragColor = sum*color.a;
+
+	gl_FragColor = sum;
 }
