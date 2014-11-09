@@ -487,8 +487,8 @@ class Tilemap extends Graphic
 		*/
 			
 		var wx:Float;
-		var sx:Float = (this.point.x + startx * tw );
-		var	wy:Float = (this.point.y + starty * th );
+		var sx:Float = ( Math.floor(this.point.x) + startx * tw );
+		var	wy:Float = ( Math.floor(this.point.y) + starty * th );
 		var	stepx:Float = tw;
 		var	stepy:Float = th;
 		var	tile:Int = 0;

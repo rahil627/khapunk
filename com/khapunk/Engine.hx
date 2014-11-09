@@ -2,12 +2,7 @@ package com.khapunk;
 import com.khapunk.fx.ITransitionEffect;
 import com.khapunk.graphics.tilemap.TileAnimationManager;
 import com.khapunk.utils.Input;
-import kha.Canvas;
-import kha.Color;
-import kha.Framebuffer;
 import kha.Game;
-import kha.graphics2.Graphics;
-import kha.graphics4.BlendingOperation;
 import kha.Image;
 import kha.Rectangle;
 import kha.Scheduler;
@@ -47,7 +42,7 @@ class Engine
 	
 	
 	private var _scene:Scene;
-	private var _scenes:List<Scene> = new List<Scene>();
+	private var _scenes:Array<Scene> = new Array<Scene>();
 	
 		/**
 	 * If the game should stop updating/rendering.
@@ -128,6 +123,7 @@ class Engine
 		init();
 		
 		_scene = new Scene();
+		KP.camera = _scene.camera;
 		
 		backbuffer = Image.createRenderTarget(KP.width, KP.height);
 		transitionBuffer = Image.createRenderTarget(KP.width, KP.height);
@@ -276,12 +272,12 @@ class Engine
 	/** @private Switch scenes if they've changed. */
 	private inline function checkScene()
 	{
-		if (_scene != null && !_scenes.isEmpty() && _scenes.first() != _scene)
+		if (_scene != null && _scenes.length != 0 && _scenes[_scenes.length-1] != _scene)
 		{
 			_scene.end();
 			_scene.updateLists();
 			//if (_scene.autoClear && _scene.hasTween) _scene.clearTweens();
-			_scene = _scenes.first();
+			_scene = _scenes[_scenes.length-1];
 			KP.camera = _scene.camera;
 			_scene.updateLists();
 			_scene.begin();
@@ -307,12 +303,14 @@ class Engine
 	private inline function get_scene():Scene { return _scene; }
 	private function set_scene(value:Scene):Scene
 	{
+	
 		if (_scene == value) return value;
 		if (_scenes.length > 0)
 		{
 			_scenes.pop();
 		}
 		_scenes.push(value);
+			
 		return _scene;
 	}
 	

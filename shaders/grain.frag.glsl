@@ -133,7 +133,7 @@ void kore()
     }
 
     vec3 col = texture2D(tex, texCoord).rgb;
-
+	float alpha = texture2D(tex, texCoord).a;
     //noisiness response curve based on scene luminance
     vec3 lumcoeff = vec3(0.299,0.587,0.114);
     float luminance = mix(0.0,dot(col, lumcoeff),lumamount);
@@ -144,5 +144,5 @@ void kore()
     noise = mix(noise,vec3(0.0),pow(lum,4.0));
     col = col+noise*grainamount;
 
-    gl_FragColor =  vec4(col,1.0);
+    gl_FragColor =  vec4(col,1.0) * alpha;
 }

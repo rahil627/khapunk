@@ -1,4 +1,4 @@
-package com.khapunk.fx.programs ;
+package com.khapunk.fx.programs;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.Program;
 import kha.graphics4.VertexData;

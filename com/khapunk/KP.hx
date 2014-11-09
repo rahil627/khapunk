@@ -25,7 +25,7 @@ class KP
 	private static inline function set_scene(value:Scene):Scene { return engine.scene = value;}
 	
 	public static function pushScene(scene:Scene): Void {engine.pushScene(scene); }
-	public static function popScene(scene:Scene): Void {engine.popScene(); }
+	public static function popScene(): Void {engine.popScene(); }
 	
 	
 	public static function transitionTo(scene:Scene, transition:ITransitionEffect, cbOut:TransitionCallback = null, onComplete:TransitionCallback = null): Void {

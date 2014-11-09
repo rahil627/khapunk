@@ -86,7 +86,7 @@ class ShaderPass
 				setConstants(shaderConstants[i], programs[i]);
 			}
 			
-			if (i >= 1) buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
+			if (i == 1) buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendOne);
 			
 			if (sampleSource[i]) {
 				buffer.g2.drawSubImage(source, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));

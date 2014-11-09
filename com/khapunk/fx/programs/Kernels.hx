@@ -1,4 +1,4 @@
-package com.khapunk.fx.programs ;
+package com.khapunk.fx.programs;
 
 /**
  * ...
