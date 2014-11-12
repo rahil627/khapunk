@@ -228,7 +228,9 @@ class Engine
 		Input.update();
 		if (_scene.visible){
 			backbuffer.g2.begin();
+			backbuffer.g2.pushTransformation(KP.camera.matrix);
 			_scene.render(backbuffer);
+			backbuffer.g2.popTransformation();
 			backbuffer.g2.end();
 		}
 		

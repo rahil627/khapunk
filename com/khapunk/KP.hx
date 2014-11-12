@@ -2,6 +2,7 @@ package com.khapunk;
 import com.khapunk.debug.Console;
 import com.khapunk.Engine.TransitionCallback;
 import com.khapunk.fx.ITransitionEffect;
+import com.khapunk.graphics.Camera;
 import com.khapunk.utils.Ease.EaseFunction;
 import kha.Image;
 import kha.math.Matrix4;
@@ -146,7 +147,7 @@ class KP
 	/**
 	 * Point used to determine drawing offset in the render loop.
 	 */
-	public static var camera:Vector2 = new Vector2();
+	public static var camera:Camera = new Camera();
 	
 	/**
 	 * Half the screen width.

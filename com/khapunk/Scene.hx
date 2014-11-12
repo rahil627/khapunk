@@ -1,4 +1,5 @@
 package com.khapunk;
+import com.khapunk.graphics.Camera;
 import com.khapunk.graphics.shader.ShaderPass;
 import com.khapunk.graphics.tilemap.TileAnimationManager;
 import com.khapunk.utils.Input;
@@ -62,12 +63,12 @@ class Scene
 	/**
 	 * Point used to determine drawing offset in the render loop.
 	 */
-	public var camera:Vector2;
+	public var camera:Camera;
 	
 	public function new() 
 	{
 		visible = true;
-		camera = new Vector2();
+		camera = new Camera();
 		
 		_layerList = new Array<Int>();
 		
