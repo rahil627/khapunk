@@ -29,10 +29,13 @@ class Camera
 		Matrix3.translation(-KP.halfWidth, -KP.halfHeight);
 	}
 	
-	public function rotateAround(angle:Float,screenX:Float,screenY:Float,scalex:Float = null,scaley:Float = null): Void {
+	public function rotateAround(angle:Float, screenX:Float, screenY:Float, scalex:Float = null, scaley:Float = null): Void {
+		
+		scaleX = scaley == null ? scaleY:scaley;
+		scaleY = scalex == null ? scaleX:scalex;
 		rotation = angle;
 		matrix = Matrix3.translation(screenX, screenY) * 
-		Matrix3.scale((scalex == null ? scaleX:scalex), (scaley == null ? scaleY:scaley)) * 
+		Matrix3.scale(scaleX,scaleY) * 
 		Matrix3.rotation(rotation) * 
 		Matrix3.translation(-screenX, -screenY);
 	}

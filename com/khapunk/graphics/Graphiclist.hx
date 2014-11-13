@@ -47,7 +47,10 @@ class Graphiclist extends Graphic
 		}
 	}
 	
-	private inline function renderList(renderFunc:Graphic->Void, point:Vector2, camera:Vector2)
+
+	
+	/** @private Renders the Graphics in the list. */
+	override public function render(buffer:Canvas, point:Vector2, camera:Vector2)
 	{
 		point.x += x;
 		point.y += y;
@@ -60,24 +63,15 @@ class Graphiclist extends Graphic
 			{
 				if (g.relative)
 				{
-					point.x = point.x;
-					point.y = point.y;
+					this.point.x = point.x;
+					this.point.y = point.y;
 				}
-				else point.x = point.y = 0;
+				else this.point.x = this.point.y = 0;
 				_camera.x = camera.x;
 				_camera.y = camera.y;
-				renderFunc(g);
+				g.render(buffer, this.point, _camera);
 			}
 		}
-	}
-	
-	/** @private Renders the Graphics in the list. */
-	override public function render(buffer:Canvas, point:Vector2, camera:Vector2)
-	{
-		renderList(function(g:Graphic) {
-			g.render(buffer, this.point, _camera);
-		}, point, camera);
-	 
 	}
 	
 	/**
