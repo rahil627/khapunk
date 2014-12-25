@@ -55,7 +55,7 @@ class Backdrop extends Graphic
 	
 	public var centerScale:Float = 1;
 	
-	public var scaleFromCenter:Bool = true;
+	public var scaleFromCenter:Bool = false;
 	
 	/**
 	 * Determines if scrolling should be affected by the camera position.
@@ -139,9 +139,9 @@ class Backdrop extends Graphic
 		var ratioX  = _width / stepX;
 		var ratioY  = _height / stepY;
 		
-		
-		stepX = ratioX == Math.floor(ratioX) ? 0:stepX;
-		stepY = ratioY == Math.floor(ratioY) ? 0:stepY;
+		//WHY YOU NO FIX?!
+		//stepX = ratioX == Math.floor(ratioX) ? 0:stepX;
+		//stepY = ratioY == Math.floor(ratioY) ? 0:stepY;
 		
 		buffer.g2.set_color(color);
 		
