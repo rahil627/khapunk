@@ -10,10 +10,11 @@ Haxepunk credits go to :  [Matt Tuttle]
   
 Should work on every kha backend as long they are up to date.  
 
-* Tested so far on  
-    - Flash  
+* Tested on  
     - HTML5 
     - Android
+    - Windows (DX9 and OpenGL)
+    - Any up to date backend should work.
 
 TODO
 -----
