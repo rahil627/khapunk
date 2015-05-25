@@ -23,10 +23,11 @@ class Camera
 	
 	public function rotate(angle:Float): Void {
 		rotation = angle;
-		matrix = Matrix3.translation(KP.halfWidth, KP.halfHeight) * 
-		Matrix3.scale(scaleX, scaleY) * 
-		Matrix3.rotation(rotation) * 
-		Matrix3.translation(-KP.halfWidth, -KP.halfHeight);
+		matrix = Matrix3.identity();
+		matrix = matrix.multmat(Matrix3.translation(KP.halfWidth, KP.halfHeight))
+		.multmat(Matrix3.scale(scaleX, scaleY))
+		.multmat(Matrix3.rotation(rotation))
+		.multmat(Matrix3.translation( -KP.halfWidth, -KP.halfHeight));
 	}
 	
 	public function rotateAround(angle:Float, screenX:Float, screenY:Float, scalex:Float = null, scaley:Float = null): Void {
@@ -34,27 +35,26 @@ class Camera
 		scaleX = scaley == null ? scaleY:scaley;
 		scaleY = scalex == null ? scaleX:scalex;
 		rotation = angle;
-		matrix = Matrix3.translation(screenX, screenY) * 
-		Matrix3.scale(scaleX,scaleY) * 
-		Matrix3.rotation(rotation) * 
-		Matrix3.translation(-screenX, -screenY);
+		matrix = Matrix3.translation(screenX, screenY).multmat( Matrix3.scale(scaleX, scaleY))
+		.multmat(Matrix3.rotation(rotation))
+		.multmat(Matrix3.translation( -screenX, -screenY));
 	}
 	
 	
 	public function scale(x:Float,y:Float) : Void {
 		scaleX = x;
 		scaleY = y;
-		matrix = Matrix3.translation(KP.halfWidth, KP.halfHeight) * 
-		Matrix3.scale(scaleX, scaleY) * 
-		Matrix3.rotation(rotation) * 
-		Matrix3.translation(-KP.halfWidth, -KP.halfHeight);
+		matrix = Matrix3.translation(KP.halfWidth, KP.halfHeight)
+		.multmat(Matrix3.scale(scaleX, scaleY))
+		.multmat(Matrix3.rotation(rotation))
+		.multmat(Matrix3.translation( -KP.halfWidth, -KP.halfHeight)); 
 	}
 	
 	public function  translate(screenX:Float, screenY:Float) : Void {
 
-		matrix = Matrix3.translation(screenX, screenY) * 
-		Matrix3.scale(scaleX, scaleY) * 
-		Matrix3.rotation(rotation) * 
-		Matrix3.translation(-screenX, -screenY);
+		matrix = Matrix3.translation(screenX, screenY)
+		.multmat(Matrix3.scale(scaleX, scaleY))
+		.multmat(Matrix3.rotation(rotation))
+		.multmat(Matrix3.translation(-screenX, -screenY)); 
 	}
 }
