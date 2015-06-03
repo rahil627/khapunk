@@ -120,7 +120,7 @@ class KP
 	public static var point2:Vector2 	= new Vector2();
 	public static var zero:Vector2 		= new Vector2();
 	public static var rect:Rectangle 	= new Rectangle(0,0,0,0);
-	public static var matrix:Matrix4 	= new Matrix4([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+	public static var matrix:Matrix4 	= new Matrix4(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 	public static var entity:Entity;
 
 	/**
@@ -897,7 +897,7 @@ class KP
 	 */
 	public static inline function timeFlag():Float
 	{
-		return Scheduler.deltaTime;
+		return elapsed;
 	}
 	
 	/**

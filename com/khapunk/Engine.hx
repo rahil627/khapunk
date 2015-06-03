@@ -37,6 +37,9 @@ class Engine
 	//private var _frameListSum:Int;
 	//private var _frameList:Array<Int>;
 	
+	private var oldTime:Float = 0;
+	private var currentTime:Float = 0;
+	
 	public static var backbuffer(default, null) : Image;
 	static var transitionBuffer(default, null) : Image;
 	
@@ -73,9 +76,7 @@ class Engine
 	 * @param   renderMode      Overrides the default render mode for this target
 	 */
 	public function new()
-	{
-		
-		
+	{	
 		//KP.assignedFrameRate = frameRate;
 		//KP.fixed = fixed;
 
@@ -173,14 +174,20 @@ class Engine
 		 *  Update input
 		 * */
 	
+		
+		 
+		 
 		 // update console
 		#if debug
 		if (KP.consoleEnabled()) KP.console.update();
 		#end 
 		
 		if (paused) return;
+
+	    oldTime = currentTime;
+	    currentTime = Scheduler.time();
 		
-		KP.elapsed = Scheduler.deltaTime;
+		KP.elapsed = (currentTime - oldTime);
 	
 		// update console
 		//if (KP.consoleEnabled()) KP.console.update();
