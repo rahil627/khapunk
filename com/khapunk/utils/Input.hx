@@ -363,19 +363,11 @@ class Input
 	 */
 	public static function update()
 	{
-		if(_pressNum > -1)
-		do {
-		    _press[_pressNum] = -1;	
-		}while (--_pressNum > -1);
 		
+		while (_pressNum > -1) _press[_pressNum--] = -1;
+        while (_releaseNum > -1) _release[_releaseNum--] = -1;
+
 		_pressNum = 0;
-		
-		if(_releaseNum > -1)
-		do {
-			_release[_releaseNum] = -1;
-		}
-		while (--_releaseNum > -1);
-		
 		_releaseNum = 0;
 		
 		if (mousePressed) 		mousePressed = false;
