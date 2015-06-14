@@ -3,7 +3,9 @@ import com.khapunk.debug.Console;
 import com.khapunk.Engine.TransitionCallback;
 import com.khapunk.fx.ITransitionEffect;
 import com.khapunk.graphics.Camera;
+import com.khapunk.graphics.shader.ShaderConstants;
 import com.khapunk.utils.Ease.EaseFunction;
+import kha.graphics4.Program;
 import kha.Image;
 import kha.math.Matrix4;
 import kha.math.Vector2;
@@ -31,6 +33,15 @@ class KP
 	
 	public static function transitionTo(scene:Scene, transition:ITransitionEffect, cbOut:TransitionCallback = null, onComplete:TransitionCallback = null): Void {
 		engine.transitionTo(scene,transition,cbOut,onComplete);
+	}
+	
+	
+	public static inline function addPostProcessShader(name:String, p:Program, s:ShaderConstants,  sampleSource:Bool = true)  : Void {
+		engine.addPostprocessShader(name, p, s, sampleSource);
+	}
+	
+	public static inline function removePostProcessShader(name:String) : Void {
+		engine.removePostProcessShader(name);
 	}
 	
 	/**

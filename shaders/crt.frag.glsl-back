@@ -66,8 +66,13 @@ float maskLight=1.5;
 
 // sRGB to Linear.
 // Assuing using sRGB typed textures this should not be needed.
-float ToLinear1(float c){return(c<=0.04045)?c/12.92:pow(abs((c+0.055)/1.055),2.4);}
-vec3 ToLinear(vec3 c){return vec3(ToLinear1(c.r),ToLinear1(c.g),ToLinear1(c.b));}
+float ToLinear1(float c){
+	return(c<=0.04045)?c/12.92:pow(abs((c+0.055)/1.055),2.4);
+}
+vec3 ToLinear(vec3 c){
+	return vec3(ToLinear1(c.r),ToLinear1(c.g),ToLinear1(c.b));
+	
+}
 
 // Linear to sRGB.
 // Assuing using sRGB typed textures this should not be needed.

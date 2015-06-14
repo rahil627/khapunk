@@ -1,8 +1,12 @@
 package com.khapunk;
 import com.khapunk.fx.ITransitionEffect;
+import com.khapunk.graphics.shader.ShaderConstants;
+import com.khapunk.graphics.shader.ShaderPass;
 import com.khapunk.graphics.tilemap.TileAnimationManager;
 import com.khapunk.utils.Input;
+import haxe.ds.HashMap;
 import kha.Game;
+import kha.graphics4.Program;
 import kha.Image;
 import kha.Rectangle;
 import kha.Scheduler;
@@ -67,6 +71,8 @@ class Engine
 	 */
 	public var tickRate:Int;
 	
+	private var postprocess:Map<String, Program>;
+	
 	/**
 	 * Constructor. Defines startup information about your game.
 	 * @param	width			The width of your game.
@@ -97,19 +103,24 @@ class Engine
 		//_frameList = new Array<Int>();
 		//_systemTime = _delta = _frameListSum = 0;
 		//_frameLast = 0;
-		
-		
-		
 	}
 	@:allow(kha.Game)
-	private function setup() : Void {
-		
+		private function setup(?width:Int, ?height:Int) : Void {
+			   
 		// global game properties
-		
-		KP.width = Game.the.width;
-		KP.height = Game.the.height;
+	   
+		if (width != null)
+				KP.width = width;
+		else
+				KP.width = Game.the.width;
+	   
+		if (height != null)
+				KP.height = height;
+		else
+				KP.height = Game.the.height;
+	   
 		KP.bounds = new Rectangle(0, 0, KP.width, KP.height);
-
+		
 		KP.init();
 		
 		// enable input
@@ -121,7 +132,8 @@ class Engine
 
 		// game start
 		
-		init();
+		postprocess = new Map<String,Program>();
+		shaderpass = new ShaderPass();
 		
 		_scene = new Scene();
 		KP.camera = _scene.camera;
@@ -129,6 +141,10 @@ class Engine
 		backbuffer = Image.createRenderTarget(KP.width, KP.height);
 		transitionBuffer = Image.createRenderTarget(KP.width, KP.height);
 		TileAnimationManager.init();
+		
+		init();
+		
+		
 		
 	}
 	
@@ -241,6 +257,9 @@ class Engine
 			backbuffer.g2.end();
 		}
 		
+		if (shaderpass.Count() > 0) {
+			shaderpass.execute(backbuffer, backbuffer);
+		}
 		
 		//Render our transition effect and update its logic
 		if (transitionEffect  != null && !transitionEffect.completed()) {
@@ -323,6 +342,23 @@ class Engine
 		return _scene;
 	}
 	
+	private var shaderpass:ShaderPass;
+	
+	public function addPostprocessShader(name:String, p:Program, s:ShaderConstants,  sampleSource:Bool = true) : Void{
+		shaderpass.addProgram(p, s, sampleSource);
+		postprocess.set(name, p);
+	}
+	
+	public function removePostProcessShader(name:String) : Void
+	{
+		if(postprocess.exists(name)){
+			var p:Program  = postprocess.get(name);
+			shaderpass.removeProgram(p);
+		}
+		else {
+		 throw "Program not found";	
+		}
+	}
 	
 	
 }

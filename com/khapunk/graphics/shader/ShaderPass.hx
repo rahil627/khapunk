@@ -1,8 +1,11 @@
 package com.khapunk.graphics.shader;
+import com.khapunk.Graphic;
 import kha.Canvas;
 import kha.Color;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
+import kha.graphics4.Graphics;
+import kha.graphics4.Graphics2;
 import kha.graphics4.Program;
 import kha.graphics4.TextureFormat;
 import kha.Image;
@@ -30,18 +33,23 @@ class ShaderPass
 		destinationBlend = BlendingOperation.BlendOne;
 		
 		if (buffer == null) {
-			buffer = Image.createRenderTarget(KP.width, KP.height);
-			bufferB = Image.createRenderTarget(KP.width, KP.height);
+			buffer = Image.createRenderTarget(KP.width, KP.height,TextureFormat.RGBA32);
+			bufferB = Image.createRenderTarget(KP.width, KP.height,TextureFormat.RGBA32);
 		}
 		
 	}
 	
 	public static function resize(w:Int, h:Int) : Void {
-		buffer.unload();
+		//buffer.unload();
 		//bufferB.unload();
 		
-		buffer = Image.createRenderTarget(w, h);
-		bufferB = Image.createRenderTarget(w, h);
+		//buffer = Image.createRenderTarget(w, h);
+		//bufferB = Image.createRenderTarget(w, h);
+	}
+	
+	public function Count() {
+		if (programs == null)  return 0;
+		return programs.length;
 	}
 	
 	/**
@@ -58,9 +66,31 @@ class ShaderPass
 		_blend = blend;
 	}
 	
-	public var blend(get, null): Bool;
+	public var blend(get, set): Bool;
 	function get_blend() : Bool {
 		return _blend;
+	}
+	function set_blend(value:Bool) : Bool {
+		_blend = value;
+		return _blend;
+	}
+	
+	public function addProgram(p:Program, sc:ShaderConstants, ss:Bool) {
+			if (this.programs == null) this.programs = new Array();
+			if (this.shaderConstants == null) this.shaderConstants = new Array<ShaderConstants>();
+			if (this.sampleSource == null) this.sampleSource = new Array<Bool>();
+			
+			this.programs.push(p);
+			this.shaderConstants.push(sc);
+			this.sampleSource.push(ss);
+	}
+	
+	public function removeProgram(p:Program) {
+		var index:Int  = programs.indexOf(p);
+		
+		programs.splice(index, 1);
+		shaderConstants.splice(index, 1);
+		sampleSource.splice(index, 1);
 	}
 	
 	public function execute(source:Image, target:Image, x:Float = 0, y:Float = 0, sx:Float = 0, sy:Float = 0, sw:Float = 0, sh:Float = 0) : Void {
@@ -121,7 +151,7 @@ class ShaderPass
 		target.g2.end();
 	}
 	
-	function setConstants(const:ShaderConstants = null, prog:Program)  : Void
+	function setConstants(const:ShaderConstants, prog:Program)  : Void
 	{
 		const.hasChanged = false;
 		if (const.hasFloatArr()) {
@@ -131,7 +161,6 @@ class ShaderPass
 		}
 		
 		if (const.hasFloats()) {
-			
 			for (key in const.floatConstants.keys()) {
 				buffer.g4.setFloat(prog.getConstantLocation(key), const.floatConstants.get(key));
 			}
