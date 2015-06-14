@@ -99,6 +99,7 @@ class ShaderPass
 		
 		for (i in 0...programs.length)
 		{
+			//should only happen if sampling from source?
 			buffer.g2.program = programs[i];
 			
 			//If shader constant is not null AND either shader constant has changed OR previous program is the same as current program or the next.
@@ -116,18 +117,22 @@ class ShaderPass
 				setConstants(shaderConstants[i], programs[i]);
 			}
 			
-			if (i == 1) buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendOne);
-			
+			//if (i == 1) buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendOne);
+
 			if (sampleSource[i]) {
 				buffer.g2.drawSubImage(source, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 			}
 			else {
+				
+				//Do blending here?
 				buffer.g2.end();
 				bufferB.g2.begin(true, Color.fromFloats(0, 0, 0, 0));
+				bufferB.g2.program = programs[i];
 				bufferB.g2.drawSubImage(buffer, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
+				bufferB.g2.program = null;
 				bufferB.g2.end();
 				
-				buffer.g2.begin(false);
+				buffer.g2.begin();
 				buffer.g2.program = null; 
 				buffer.g2.drawSubImage(bufferB, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 			}
@@ -137,15 +142,13 @@ class ShaderPass
 		buffer.g2.end();
 		
 		target.g2.begin(false);
-		
-	
-		
+
 		if (blend)
 		{
 			target.g2.drawSubImage(source, x, y,0,0,(sw == 0 ? source.width:sw),(sh == 0 ? source.height:sh));
 			target.g2.setBlendingMode(sourceBlend, destinationBlend);
 		}
-		else target.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+		//else target.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		target.g2.drawSubImage(buffer, x, y, 0, 0, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 		
 		target.g2.end();
