@@ -111,6 +111,9 @@ class KP
 
 	// Pseudo-random number generation (the seed is set in Engine's contructor).
 	private static var _seed:Int = 0;
+	
+	
+	
 
 	// Volume control.
 	//private static var _volume:Float = 1;
@@ -148,7 +151,9 @@ class KP
 	/**
 	 * The time passed since the last frame.
 	 */
-	public static var elapsed:Float;
+	public static var elapsed:Float = 0;
+	
+	private static var deltaScale:Float = 1.0;
 	
 	/**
 	 * A rectangle representing the size of the screen.
@@ -194,11 +199,11 @@ class KP
 	
 	public static var rate(get, set):Float;
 	static function get_rate(): Float {
-		return Scheduler.deltaScale;
+		return  deltaScale;
 	}
 	static function set_rate(value:Float): Float {
-		Scheduler.deltaScale = value;
-		return Scheduler.deltaScale;
+		deltaScale = value;
+		return  deltaScale;
 	}
 	
 	

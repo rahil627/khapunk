@@ -188,9 +188,7 @@ class Engine
 		/** TODO 
 		 *  Update console
 		 *  Update input
-		 * */
-	
-		
+		 * */		
 		 
 		 
 		 // update console
@@ -200,13 +198,17 @@ class Engine
 		
 		if (paused) return;
 
-	    oldTime = currentTime;
+			//Delta time based on render tick
+		oldTime = currentTime;
 	    currentTime = Scheduler.time();
 		
-		KP.elapsed = (currentTime - oldTime);
+		KP.elapsed = (currentTime - oldTime) * KP.rate;
 	
+		//--------------------------------------------------
+		
 		// update console
 		//if (KP.consoleEnabled()) KP.console.update();
+		
 		
 		_scene.updateLists();
 		checkScene();
@@ -277,7 +279,6 @@ class Engine
 			callbackComplete();
 			
 		}
-		
 		
 	}
 	

@@ -118,7 +118,7 @@ class Entity
 	/**
 	 * The BitmapData target to draw the Entity to. Leave as null to render to the current screen buffer (default).
 	 */
-	public var renderTarget:Framebuffer;
+	//public var renderTarget:Framebuffer;
 	
 
 	

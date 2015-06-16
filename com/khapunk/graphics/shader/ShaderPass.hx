@@ -1,11 +1,7 @@
 package com.khapunk.graphics.shader;
-import com.khapunk.Graphic;
 import kha.Canvas;
 import kha.Color;
 import kha.graphics4.BlendingOperation;
-import kha.graphics4.CompareMode;
-import kha.graphics4.Graphics;
-import kha.graphics4.Graphics2;
 import kha.graphics4.Program;
 import kha.graphics4.TextureFormat;
 import kha.Image;
@@ -100,26 +96,12 @@ class ShaderPass
 		for (i in 0...programs.length)
 		{
 			//should only happen if sampling from source?
-			buffer.g2.program = programs[i];
-			
-			//If shader constant is not null AND either shader constant has changed OR previous program is the same as current program or the next.
-			//If the program is the same as the previous/next one we update the uniforms with the specified shader constant object.
-			//Due to the hasChanged flag the changes might never get applied, this way we ensure the same shader gets applied with different settings.
-			if (
-					shaderConstants[i] != null && 
-					(
-						shaderConstants[i].hasChanged || 
-						(( i > 0) ? (programs[i - 1] == programs[i]):false) ||
-						(( i < programs.length - 1) ? (programs[i + 1] == programs[i]):false)
-					)
-				)
-			{
-				setConstants(shaderConstants[i], programs[i]);
-			}
+			if(sampleSource[i]){
+				buffer.g2.program = programs[i];
+				setConstants(shaderConstants[i], programs[i], buffer);
 			
 			//if (i == 1) buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendOne);
 
-			if (sampleSource[i]) {
 				buffer.g2.drawSubImage(source, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 			}
 			else {
@@ -128,6 +110,7 @@ class ShaderPass
 				buffer.g2.end();
 				bufferB.g2.begin(true, Color.fromFloats(0, 0, 0, 0));
 				bufferB.g2.program = programs[i];
+				setConstants(shaderConstants[i], programs[i],bufferB);
 				bufferB.g2.drawSubImage(buffer, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 				bufferB.g2.program = null;
 				bufferB.g2.end();
@@ -154,36 +137,36 @@ class ShaderPass
 		target.g2.end();
 	}
 	
-	function setConstants(const:ShaderConstants, prog:Program)  : Void
+	function setConstants(const:ShaderConstants, prog:Program, buff:Canvas)  : Void
 	{
 		const.hasChanged = false;
 		if (const.hasFloatArr()) {
 			for (key in const.floatsArrConstants.keys()) {
-				buffer.g4.setFloats(prog.getConstantLocation(key), const.floatsArrConstants.get(key));
+				buff.g4.setFloats(prog.getConstantLocation(key), const.floatsArrConstants.get(key));
 			}
 		}
 		
 		if (const.hasFloats()) {
 			for (key in const.floatConstants.keys()) {
-				buffer.g4.setFloat(prog.getConstantLocation(key), const.floatConstants.get(key));
+				buff.g4.setFloat(prog.getConstantLocation(key), const.floatConstants.get(key));
 			}
 		}
 		
 		if (const.hasVec2()) {
 			for (key in const.vec2Constants.keys()) {
-				buffer.g4.setVector2(prog.getConstantLocation(key), const.vec2Constants.get(key));
+				buff.g4.setVector2(prog.getConstantLocation(key), const.vec2Constants.get(key));
 			}
 		}
 		
 		if (const.hasTextures()) {
 			for (key in const.textureConstant.keys()) {
-				buffer.g4.setTexture(prog.getTextureUnit(key), const.textureConstant.get(key));
+				buff.g4.setTexture(prog.getTextureUnit(key), const.textureConstant.get(key));
 			}
 		}
 		
 		if (const.hasInts()) {
 			for (key in const.intConstants.keys()) {
-				buffer.g4.setInt(prog.getConstantLocation(key), const.intConstants.get(key));
+				buff.g4.setInt(prog.getConstantLocation(key), const.intConstants.get(key));
 			}
 		}
 		

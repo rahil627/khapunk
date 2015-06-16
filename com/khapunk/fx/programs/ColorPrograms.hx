@@ -17,6 +17,7 @@ enum Colorshaders {
 	Protanopia;
 	Invert;
 	Grayscale;
+	Gameboy;
 }
  
 class ColorPrograms
@@ -26,6 +27,7 @@ class ColorPrograms
 	public static var protanopia:Program;
 	public static var invert:Program;
 	public static var grayscale:Program;
+	public static var gameboy:Program;
 	
 	
 	public static function init(colorshader:Colorshaders) : Void {
@@ -64,7 +66,13 @@ class ColorPrograms
 			grayscale = new Program();
 			grayscale.setFragmentShader(new FragmentShader(Loader.the.getShader("grayscale.frag")));
 			grayscale.setVertexShader(vert);
-			grayscale.link(structure);
+			grayscale.link(structure);	
+		case Colorshaders.Gameboy:
+			gameboy = new Program();
+			gameboy.setFragmentShader(new FragmentShader(Loader.the.getShader("gameboy-palette.frag")));
+			gameboy.setVertexShader(vert);
+			gameboy.link(structure);
+			
 		}
 		
 		
