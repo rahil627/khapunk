@@ -4,6 +4,7 @@ import com.khapunk.Engine.TransitionCallback;
 import com.khapunk.fx.ITransitionEffect;
 import com.khapunk.graphics.Camera;
 import com.khapunk.graphics.shader.ShaderConstants;
+import com.khapunk.graphics.shader.ShaderPass.BlendingSet;
 import com.khapunk.utils.Ease.EaseFunction;
 import kha.graphics4.Program;
 import kha.Image;
@@ -36,8 +37,8 @@ class KP
 	}
 	
 	
-	public static inline function addPostProcessShader(name:String, p:Program, s:ShaderConstants,  sampleSource:Bool = true)  : Void {
-		engine.addPostprocessShader(name, p, s, sampleSource);
+	public static inline function addPostProcessShader(name:String, p:Program, s:ShaderConstants,  sampleSource:Bool = true, blendin:BlendingSet = null)  : Void {
+		engine.addPostprocessShader(name, p, s, sampleSource, blendin);
 	}
 	
 	public static inline function removePostProcessShader(name:String) : Void {

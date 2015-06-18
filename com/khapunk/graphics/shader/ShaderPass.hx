@@ -16,6 +16,7 @@ class ShaderPass
 	var programs:Array<Program>;
 	var shaderConstants:Array<ShaderConstants>;
 	var sampleSource:Array<Bool>;
+	var blendings:Array<BlendingSet>;
 	var _blend:Bool = false;
 	
 	public var sourceBlend:BlendingOperation;
@@ -71,14 +72,16 @@ class ShaderPass
 		return _blend;
 	}
 	
-	public function addProgram(p:Program, sc:ShaderConstants, ss:Bool) {
+	public function addProgram(p:Program, sc:ShaderConstants, ss:Bool, blending:BlendingSet = null) {
 			if (this.programs == null) this.programs = new Array();
 			if (this.shaderConstants == null) this.shaderConstants = new Array<ShaderConstants>();
 			if (this.sampleSource == null) this.sampleSource = new Array<Bool>();
+			if (this.blendings == null) this.blendings = new Array<BlendingSet>();
 			
 			this.programs.push(p);
 			this.shaderConstants.push(sc);
 			this.sampleSource.push(ss);
+			this.blendings.push(blending);
 	}
 	
 	public function removeProgram(p:Program) {
@@ -100,9 +103,9 @@ class ShaderPass
 				buffer.g2.program = programs[i];
 				setConstants(shaderConstants[i], programs[i], buffer);
 			
-			//if (i == 1) buffer.g2.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendOne);
-
+				if (blendings[i] != null) buffer.g2.setBlendingMode(blendings[i].OperationA, blendings[i].OperationB);
 				buffer.g2.drawSubImage(source, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
+				if (blendings[i] != null) buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 			}
 			else {
 				
@@ -126,13 +129,9 @@ class ShaderPass
 		
 		target.g2.begin(false);
 
-		if (blend)
-		{
-			target.g2.drawSubImage(source, x, y,0,0,(sw == 0 ? source.width:sw),(sh == 0 ? source.height:sh));
-			target.g2.setBlendingMode(sourceBlend, destinationBlend);
-		}
-		//else target.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+		if (blend)target.g2.setBlendingMode(sourceBlend, destinationBlend);
 		target.g2.drawSubImage(buffer, x, y, 0, 0, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
+		if (blend)target.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		
 		target.g2.end();
 	}
@@ -173,4 +172,10 @@ class ShaderPass
 		
 	}
 	
+}
+
+class BlendingSet {
+	public function new(){};
+	public var OperationA:BlendingOperation; 
+	public var OperationB:BlendingOperation; 
 }

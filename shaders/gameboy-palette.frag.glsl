@@ -25,7 +25,7 @@ void kore()
   vec3 col1 = vec3(0.612, 0.725, 0.086);
   vec3 col2 = vec3(0.549, 0.667, 0.078);
   vec3 col3 = vec3(0.188, 0.392, 0.188);
-  vec3 col4 = vec3(0.063, 0.247, 0.063);
+  vec3 col4 = vec3(0.063, 0.247, 0.063); 
 
   float dist1 = length(color - col1);
   float dist2 = length(color - col2);
@@ -37,7 +37,7 @@ void kore()
   d = min(d, dist4);
 
   if (d == dist1) {
-    color = col1;
+    color = col1; 
   }    
   else if (d == dist2) {
     color = col2;

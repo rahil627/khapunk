@@ -345,8 +345,8 @@ class Engine
 	
 	private var shaderpass:ShaderPass;
 	
-	public function addPostprocessShader(name:String, p:Program, s:ShaderConstants,  sampleSource:Bool = true) : Void{
-		shaderpass.addProgram(p, s, sampleSource);
+	public function addPostprocessShader(name:String, p:Program, s:ShaderConstants,  sampleSource:Bool = true, blendin:BlendingSet) : Void{
+		shaderpass.addProgram(p, s, sampleSource, blendin);
 		postprocess.set(name, p);
 	}
 	
