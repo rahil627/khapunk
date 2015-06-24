@@ -27,7 +27,7 @@ class TiledImage extends PunkImage
 		
 		super(texture, clipRect);
 		
-		_offsetX = _offsetY = 0;
+	
 		_width = width;
 		_height = height;
 	
@@ -79,45 +79,26 @@ class TiledImage extends PunkImage
 		buffer.g2.set_color(Color.White);
 	}
 
-	/**
-	 * The x-offset of the texture.
-	 */
-	public var offsetX(get, set):Float;
-	private function get_offsetX():Float { return _offsetX; }
-	private function set_offsetX(value:Float):Float
-	{
-		if (_offsetX == value) return value;
-		_offsetX = value;
-		return _offsetX;
-	}
-
-	/**
-	 * The y-offset of the texture.
-	 */
-	public var offsetY(get, set):Float;
-	private function get_offsetY():Float { return _offsetY; }
-	private function set_offsetY(value:Float):Float
-	{
-		if (_offsetY == value) return value;
-		_offsetY = value;
-		return _offsetY;
-	}
-
-	/**
-	 * Sets the texture offset.
-	 * @param	x		The x-offset.
-	 * @param	y		The y-offset.
-	 */
-	public function setOffset(x:Float, y:Float)
-	{
-		if (_offsetX == x && _offsetY == y) return;
-		_offsetX = x;
-		_offsetY = y;
-	}
 
 	// Drawing information.
 	private var _width:Int;
 	private var _height:Int;
-	private var _offsetX:Float;
-	private var _offsetY:Float;
+	
+	public var repeatWidth(get, set ) : Int;
+	private function get_repeatWidth():Int { return _width; }
+	private function set_repeatWidth(value:Int):Int
+	{
+		if (_width == value) return value;
+		_width = value;
+		return _width;
+	}
+	
+	public var repeatHeight(get, set) : Int;
+	private function get_repeatHeight():Int { return _height; }
+	private function set_repeatHeight(value:Int):Int
+	{
+		if (_height == value) return value;
+		_height = value;
+		return _height;
+	}
 }
