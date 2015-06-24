@@ -6,7 +6,7 @@ Haxepunk credits go to :  [Matt Tuttle]
 
 ***Make sure you read the Wiki pages***
 
-> Khapunk is currently ~~under development!~~ Halted. But please fork and improve!  
+> Khapunk is currently under development!. But please fork and improve!  
   
 Should work on every kha backend as long they are up to date.  
 
@@ -34,7 +34,7 @@ TODO
     - [x] Backdrop
     - [x] Emitter
     - [x] Particle/Particletype
-    - [0] TiledImage
+    - [x] TiledImage
     - [0] TiledSpritemap
     - [x] Text
 
