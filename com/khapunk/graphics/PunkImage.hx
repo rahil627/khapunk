@@ -35,12 +35,12 @@ class PunkImage extends Graphic
 
 	// Flipped image information.
 	private var _class:String;
-	private var _flippedX:Bool;
-	private var _flippedY:Bool;
+	private var _flippedX:Bool = false;
+	private var _flippedY:Bool = false;
 	//private var _flip:BitmapData;
 	//private static var _flips:Map<String,BitmapData> = new Map<String,BitmapData>();
 
-	private var _scale:Float;
+	private var _scale:Float = 1;
 	
 
 	/**
@@ -58,24 +58,24 @@ class PunkImage extends Graphic
 	/**
 	 * X scale of the image.
 	 */
-	public var scaleX:Float;
+	public var scaleX:Float = 1.0;
 
 	/**
 	 * Y scale of the image.
 	 */
-	public var scaleY:Float;
+	public var scaleY:Float = 1.0;
 
 	/**
 	 * X origin of the image, determines transformation point.
 	 * Defaults to top-left corner.
 	 */
-	public var originX:Float;
+	public var originX:Float = 0.0;
 
 	/**
 	 * Y origin of the image, determines transformation point.
 	 * Defaults to top-left corner.
 	 */
-	public var originY:Float;
+	public var originY:Float = 0.0;
 
 	
 	
@@ -146,7 +146,7 @@ class PunkImage extends Graphic
 	{
 		_region = region;
 		_source = region.image;
-		_sourceRect = new Rectangle(0, 0, _region.w, _region.h);
+		_sourceRect = new Rectangle(region.x, region.y, _region.w, _region.h);
 	}
 	
 	private inline function setBitmapSource(image:Image)
