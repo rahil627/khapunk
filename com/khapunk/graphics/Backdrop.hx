@@ -62,7 +62,7 @@ class Backdrop extends Graphic
 	 */
 	public var scrollByCam:Bool;
 	
-	public function new(source:Dynamic, width:Int = 0, height:Int = 0, repeatX:Bool = true, repeatY:Bool = true)
+	public function new(source:Dynamic, repeatX:Bool = true, repeatY:Bool = true)
 	{
 		if (Std.is(source, AtlasRegion)){
 			setAtlasRegion(cast(source, AtlasRegion));
@@ -74,8 +74,8 @@ class Backdrop extends Graphic
 		_repeatX = repeatX;
 		_repeatY = repeatY;
 
-		_width = (width == 0 ? KP.width : width) * (repeatX ? 1 : 0) + _textWidth;
-		_height = (height == 0 ? KP.height : height) * (repeatY ? 1 : 0) + _textHeight ;
+		_width = KP.width * (repeatX ? 1 : 0) + _textWidth;
+		_height = KP.height * (repeatY ? 1 : 0) + _textHeight;
 		
 		scale = scaleX = scaleY = 1;
 		angle = 0;
