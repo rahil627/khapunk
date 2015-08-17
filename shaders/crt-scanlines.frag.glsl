@@ -1,3 +1,4 @@
+#version 100
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -10,7 +11,7 @@ uniform sampler2D tex;
 uniform float time;
 varying vec2 texCoord;
 
-void main()
+void kore()
 {
   vec3 color = texture2D(tex, texCoord).rgb;
 

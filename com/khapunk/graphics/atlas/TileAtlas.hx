@@ -71,7 +71,7 @@ class TileAtlas
 	 * @param	tileMarginHeight The vertical spacing between tiles
 	 * @return  Returns a TileAtlas object.
 	 */
-	public static inline function getAtlas(source:Dynamic, ?tileWidth:Int, ?tileHeight:Int, ?tileMarginWidth:Int, ?tileMarginHeight:Int): TileAtlas
+	public static function getAtlas(source:Dynamic, ?tileWidth:Int, ?tileHeight:Int, ?tileMarginWidth:Int, ?tileMarginHeight:Int): TileAtlas
 	{
 		var img:Image = null;
 		

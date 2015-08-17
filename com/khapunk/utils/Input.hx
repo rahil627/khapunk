@@ -427,7 +427,8 @@ class Input
 	private static function onTouchMove(id:Int, x:Int, y:Int) : Void
 	{
 		_touches.get(id).x = Scaler.transformX(x, y,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation);
-		_touches.get(id).y = Scaler.transformY(x, y,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation);
+		_touches.get(id).y = Scaler.transformY(x, y, Engine.backbuffer, ScreenCanvas.the, Sys.screenRotation);
+		
 	}
 	
 	/**

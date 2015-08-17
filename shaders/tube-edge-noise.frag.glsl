@@ -1,4 +1,4 @@
-/*#version 120
+#version 120
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -74,4 +74,3 @@ void kore() {
   gl_FragColor.rgb = text;
   gl_FragColor.a = 1.0;
 }
-*/

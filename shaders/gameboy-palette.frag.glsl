@@ -18,9 +18,9 @@ void kore()
   vec3 color = texture2D(tex, texCoord).rgb;
 
   float gamma = 1.5;
-  color.r = pow(color.r, gamma);
-  color.g = pow(color.g, gamma);
-  color.b = pow(color.b, gamma);
+  color.r = abs(pow(color.r, gamma));
+  color.g = abs(pow(color.g, gamma));
+  color.b = abs(pow(color.b, gamma));
 
   vec3 col1 = vec3(0.612, 0.725, 0.086);
   vec3 col2 = vec3(0.549, 0.667, 0.078);

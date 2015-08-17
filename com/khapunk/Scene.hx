@@ -348,8 +348,9 @@ class Scene
 		{
 			if (constructorsArgs != null)
 				e = Type.createInstance(classType, constructorsArgs);
-			else
-				e = Type.createInstance(classType, []);
+			else{
+				e = Type.createInstance(classType,[]);
+			}
 		}
 
 		return cast (addToScene ? add(e) : e);
