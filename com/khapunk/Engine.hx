@@ -361,5 +361,15 @@ class Engine
 		}
 	}
 	
-	
+	public function changeGameSize(newWidth:Int, newHeight:Int)
+	{
+		KP.width = newWidth;
+		KP.height = newHeight;
+		KP.bounds = new Rectangle(0, 0, KP.width, KP.height);
+		KP.init();
+		backbuffer = Image.createRenderTarget(KP.width, KP.height);
+		transitionBuffer = Image.createRenderTarget(KP.width, KP.height);
+		
+		scene.gameSizeChanged(newWidth, newHeight);
+	}
 }
