@@ -135,6 +135,12 @@ class Scene
 	}
 
 	/**
+	 * Override this; called when Game update the size. Use it to
+	 * reposition the scene entities
+	 */
+	public function gameSizeChanged(newWidth:Int, newHeight:Int) { }
+
+	/**
 	 * Toggles the visibility of a layer
 	 * @param layer the layer to show/hide
 	 * @param show whether to show the layer (default: true)

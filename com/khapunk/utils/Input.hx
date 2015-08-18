@@ -435,11 +435,12 @@ class Input
 	 * Iterate over the currently active touch points
 	 * @param	touchCallback
 	 */
-	public static function touchPoints(touchCallback:Touch->Void) : Void
+	public static function touchPoints(touchCallback:Touch->Bool) : Void
 	{
 		for (touch in _touches)
 		{
-			if(touch.pressed) touchCallback(touch);
+			if (!touchCallback(touch))
+				return;
 		}
 	}
 	//------------------------------------------------
@@ -558,6 +559,9 @@ class Input
 			mouseAllUp = false;
 		}
 		mousePressed = true;
+
+		_mouseX = x;
+		_mouseY = y;
 	}
 
 	private static function onMouseUp(button: Int, x: Int, y: Int)
