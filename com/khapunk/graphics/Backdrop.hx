@@ -105,6 +105,8 @@ class Backdrop extends Graphic
 	override public function render(buffer:Canvas, point:Vector2, camera:Vector2)
 	{
 		
+		material.Apply(buffer);
+		
 		this.point.x = point.x + x - (scrollByCam ? (camera.x * scrollX):0);
 		this.point.y = point.y + y - (scrollByCam ? (camera.y * scrollY):0);
 

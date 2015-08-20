@@ -50,13 +50,13 @@ class Emitter extends Graphic
 	private static var SIN(get,never):Float;
 	private static inline function get_SIN():Float { return Math.PI / 2; }
 	
-	public var activeBlend:Bool = false;
-	public var sourceBlend:BlendingOperation;
-	public var destinationBlend:BlendingOperation;
+
 	
 	private var particles:Vector<Particle>;
 	private var next:Int = 0;
 	public var maxParticles:Int;
+	
+	public var shaderDelta:Bool = false;
 	
 	
 	/**
@@ -225,6 +225,8 @@ class Emitter extends Graphic
 	override public function render(buffer:Canvas , point:Vector2, camera:Vector2)
 	{
 		
+		material.Apply(buffer);
+		
 		// quit if there are no particles
 		if (activeCount == 0)
 		{
@@ -232,9 +234,6 @@ class Emitter extends Graphic
 		}
 		else
 		{
-			
-			if (activeBlend)
-			buffer.g2.setBlendingMode(sourceBlend, destinationBlend);
 			
 			// get rendering position
 			this.point.x = point.x + x - camera.x * scrollX;
@@ -263,8 +262,16 @@ class Emitter extends Graphic
 				//setblend
 				//buffer.g2.setBlendingMode(type._sourceBlend, type._destinationBlend);
 				
-				// get position
+				
 				td = (type._ease == null) ? t : type._ease(t);
+				
+				
+				/*if (shaderDelta && material.constants != null) {
+					material.constants.setFloat("delta", td);
+					material.updateConsts(buffer);
+				}*/
+				
+				// get position
 				_p.x = this.point.x + _particle._x + _particle._moveX * (type._backwards ? 1 - td : td);
 				_p.y = this.point.y + _particle._y + _particle._moveY * (type._backwards ? 1 - td : td);
 				_particle._moveY += _particle._gravity * td;
@@ -287,6 +294,7 @@ class Emitter extends Graphic
 				buffer.g2.set_opacity(_color.A);
 				
 				buffer.g2.pushRotation(rotation, _p.x, _p.y);
+				
 				buffer.g2.drawScaledSubImage(forceSingleImage?imgSource:ar.image, 
 				ar.x, 
 				ar.y, 
@@ -303,8 +311,7 @@ class Emitter extends Graphic
 				buffer.g2.set_opacity(1);
 			}
 			
-			if (activeBlend)
-			buffer.g2.setBlendingMode(BlendingOperation.DestinationAlpha, InverseSourceAlpha);
+		
 		} 
 	}
 	

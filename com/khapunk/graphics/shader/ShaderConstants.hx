@@ -1,4 +1,5 @@
 package com.khapunk.graphics.shader;
+import com.khapunk.graphics.Material;
 import kha.Image;
 import kha.math.Vector2;
 import kha.math.Vector3;
@@ -9,6 +10,7 @@ import kha.math.Vector3;
  * @author Sidar Talei
  */
 @:allow(com.khapunk.graphics.shader.ShaderPass)
+@:allow(com.khapunk.graphics.Material)
 class ShaderConstants
 {
 

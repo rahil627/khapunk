@@ -16,7 +16,8 @@ uniform sampler2D tex;
 void kore()
 {
   vec3 color = texture2D(tex, texCoord).rgb;
-
+  float a = texture2D(tex, texCoord).a;
+  
   float gamma = 1.5;
   color.r = abs(pow(color.r, gamma));
   color.g = abs(pow(color.g, gamma));
@@ -49,5 +50,5 @@ void kore()
     color = col4;
   } 
 
-  gl_FragColor = vec4(color, 1.0).rgba;
+  gl_FragColor = vec4(color, a).rgba;
 }

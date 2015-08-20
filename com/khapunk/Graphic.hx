@@ -1,4 +1,5 @@
 package com.khapunk;
+import com.khapunk.graphics.Material;
 import com.khapunk.graphics.shader.ShaderPass;
 import kha.Canvas;
 import kha.math.Vector2;
@@ -18,7 +19,7 @@ class Graphic
 
 	private var _visible:Bool;
 	
-	public var shaderPass:ShaderPass;
+	public var material:Material;
 	
 	/**
 	 * If the graphic should update.
@@ -67,6 +68,7 @@ class Graphic
 	 */
 	public function new()
 	{
+		material = new Material();
 		active = true;
 		visible = true;
 		x = y = 0;
