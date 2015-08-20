@@ -435,12 +435,11 @@ class Input
 	 * Iterate over the currently active touch points
 	 * @param	touchCallback
 	 */
-	public static function touchPoints(touchCallback:Touch->Bool) : Void
+	public static function touchPoints(touchCallback:Touch->Void) : Void
 	{
 		for (touch in _touches)
 		{
-			if (!touchCallback(touch))
-				return;
+			touchCallback(touch);
 		}
 	}
 	//------------------------------------------------
