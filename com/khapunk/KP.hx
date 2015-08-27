@@ -6,10 +6,13 @@ import com.khapunk.graphics.Camera;
 import com.khapunk.graphics.shader.ShaderConstants;
 import com.khapunk.graphics.shader.ShaderPass.BlendingSet;
 import com.khapunk.utils.Ease.EaseFunction;
+import haxe.ds.Vector;
+import kha.graphics4.hxsl.Types.Vec;
 import kha.graphics4.Program;
 import kha.Image;
 import kha.math.Matrix4;
 import kha.math.Vector2;
+import kha.math.Vector3;
 import kha.Rectangle;
 import kha.Scheduler;
 
@@ -205,6 +208,33 @@ class KP
 	static function set_rate(value:Float): Float {
 		deltaScale = value;
 		return  deltaScale;
+	}
+	
+	public static inline function reflectVec(heading:Vector2, surfaceNormal:Vector2, drag:Float = 1, bounce:Float = 1) : Vector2
+	{
+		var norm:Vector2  = new Vector2(surfaceNormal.x, surfaceNormal.y);
+		norm.normalize();
+		var dot:Float = 2*heading.dot(norm);
+		
+		var reflect = heading.sub(norm.mult(dot));
+		reflect.x *= drag;
+		reflect.y *= bounce;
+		return reflect;	
+	}	
+	
+	public static inline function rejectVec(heading:Vector2, surface:Vector2) : Vector2 {
+		
+		return  heading.sub(projectionVec(heading,surface));
+	}
+	
+	public static inline function projectionVec(heading:Vector2, surface:Vector2) : Vector2 {
+		
+		var norm:Vector2  = new Vector2(surface.x, surface.y);
+		norm.normalize();
+		var dot:Float = heading.dot(norm);
+		//Projection
+		norm = norm.mult(dot);
+		return  norm;
 	}
 	
 	

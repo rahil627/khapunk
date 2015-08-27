@@ -225,7 +225,7 @@ class Emitter extends Graphic
 	override public function render(buffer:Canvas , point:Vector2, camera:Vector2)
 	{
 		
-		material.Apply(buffer);
+		material.apply(buffer);
 		
 		// quit if there are no particles
 		if (activeCount == 0)

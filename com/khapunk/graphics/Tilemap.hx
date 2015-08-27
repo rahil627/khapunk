@@ -451,7 +451,7 @@ class Tilemap extends Graphic
 	override public function render(buffer:Canvas, point:Vector2, camera:Vector2)
 	{
 		
-		material.Apply(buffer);
+		material.apply(buffer);
 		
 		// determine drawing location
 		this.point.x = point.x + x - camera.x * scrollX;

@@ -1,4 +1,5 @@
 package com.khapunk;
+import com.khapunk.debug.DebugDraw;
 import com.khapunk.fx.ITransitionEffect;
 import com.khapunk.graphics.shader.ShaderConstants;
 import com.khapunk.graphics.shader.ShaderPass;
@@ -279,6 +280,11 @@ class Engine
 			callbackComplete();
 			
 		}
+		#if debug
+			DebugDraw.renderLine(backbuffer);
+			
+		#end
+		
 		
 	}
 	

@@ -42,9 +42,6 @@ enum BlendMode
     /**
      * Masks the overlapping area by applying the source alpha to the destination image.
      *
-     * __WARNING__: In HTML5 canvas, this blend mode is unbounded. It will clear the entire
-     * destination image, not just the bounds within the source image.
-     *
      * <img src="https://aduros.com/flambe/images/BlendMode-Mask.png">
      */
     Mask;
