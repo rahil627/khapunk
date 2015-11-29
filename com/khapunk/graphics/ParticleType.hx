@@ -180,6 +180,22 @@ class ParticleType
 		//createBuffer();
 		return this;
 	}
+	
+		/**
+	 * 
+	 * @param	shouldLoop		Whether it should loop or not. 
+	 * 							If set to false the animation is distributed over lifetime.
+	 * @param	speed		How fast it should animate.
+	 * @param	speedRange		Random speed to add to speed.
+	 * @return	This ParticleType object.
+	 */
+	public function setAnimLoop(shouldLoop:Bool, speed:Float, speedRange:Float):ParticleType
+	{
+		_loopAnim = shouldLoop;
+		_loopSpeed = speed;
+		_loopSpeedRange = speedRange;
+		return this;
+	}
 
 	/** @private Creates the buffer if it doesn't exist. */
 	/*private function createBuffer()
@@ -234,6 +250,9 @@ class ParticleType
 	private var _sourceBlend:BlendingOperation;
 	private var _destinationBlend:BlendingOperation;
 	
+	private var _loopAnim:Bool = false;
+	private var _loopSpeed:Float;
+	private var _loopSpeedRange:Float;
 	// Buffer information.
 	//private var _buffer:BitmapData;
 	//private var _bufferRect:Rectangle;

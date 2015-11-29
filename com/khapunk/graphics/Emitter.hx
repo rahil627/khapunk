@@ -57,7 +57,8 @@ class Emitter extends Graphic
 	public var maxParticles:Int;
 	
 	public var shaderDelta:Bool = false;
-	
+	public var loopAnim:Bool = true;
+	public var loopSpeed:Float = 1.0;
 	
 	/**
 	 * Constructor. Sets the source image to use for newly added particle types.
@@ -249,6 +250,9 @@ class Emitter extends Graphic
 			var rotation:Float;
 			var hw:Float;
 			var hh:Float;
+			
+			var loopDelta:Int;
+			
 			// loop through the particles
 			for(i in 0...activeCount)
 			{
@@ -276,7 +280,14 @@ class Emitter extends Graphic
 				_p.y = this.point.y + _particle._y + _particle._moveY * (type._backwards ? 1 - td : td);
 				_particle._moveY += _particle._gravity * td;
 				
-				frameIndex = type._frames[Std.int(td * (type._frames.length-1))];
+				if (type._loopAnim) {
+					loopDelta = Std.int(_particle._time / (1 / type._loopSpeed));
+					frameIndex = type._frames[loopDelta % (type._frames.length - 1)];
+				}
+				else {
+					frameIndex = type._frames[Std.int(td * (type._frames.length-1))];
+				}
+				
 				ar =  _frames[frameIndex];
 				
 				_color.R = (type._red + type._redRange * td); // Red
@@ -422,6 +433,21 @@ class Emitter extends Graphic
 	
 	
 	/**
+	 * 
+	 * @param	shouldLoop		Whether it should loop or not. 
+	 * 							If set to false the animation is distributed over lifetime.
+	 * @param	speed		How fast it should animate.
+	 * @param	speedRange		Random speed to add to speed.
+	 * @return	This ParticleType object.
+	 */
+	public function setAnimLoop(name:String, shouldLoop:Bool, ?speed:Float = 1, ?speedRange:Float = 0):ParticleType
+	{
+		var pt:ParticleType = _types.get(name);
+		if (pt == null) return null;
+		return pt.setAnimLoop(shouldLoop, speed, speedRange);
+	}
+	
+	/**
 	 * Sets the color range of the particle type.
 	 * @param	name		The particle type.
 	 * @param	start		The starting color.
@@ -445,6 +471,7 @@ class Emitter extends Graphic
 	 */
 	public function emit(name:String, ?x:Float = 0, ?y:Float = 0):Particle
 	{
+		//TODO FIX CONTINUES EMIT
 		if (activeCount + 1 > maxParticles) return null;
 		
 		var p:Particle, type:ParticleType = _types.get(name);
