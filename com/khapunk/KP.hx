@@ -8,12 +8,12 @@ import com.khapunk.graphics.shader.ShaderPass.BlendingSet;
 import com.khapunk.utils.Ease.EaseFunction;
 import haxe.ds.Vector;
 import kha.graphics4.hxsl.Types.Vec;
-import kha.graphics4.Program;
+import kha.graphics4.PipelineState;
 import kha.Image;
 import kha.math.Matrix4;
 import kha.math.Vector2;
 import kha.math.Vector3;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
 import kha.Scheduler;
 
 /**
@@ -40,7 +40,7 @@ class KP
 	}
 	
 	
-	public static inline function addPostProcessShader(name:String, p:Program, s:ShaderConstants,  sampleSource:Bool = true, blendin:BlendingSet = null)  : Void {
+	public static inline function addPostProcessShader(name:String, p:PipelineState, s:ShaderConstants,  sampleSource:Bool = true, blendin:BlendingSet = null)  : Void {
 		engine.addPostprocessShader(name, p, s, sampleSource, blendin);
 	}
 	

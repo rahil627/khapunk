@@ -8,7 +8,7 @@ import kha.Canvas;
 import kha.Color;
 import kha.Image;
 import kha.math.Vector2;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
 
 /**
  * Special Image object that can display blocks of tiles.
@@ -47,7 +47,7 @@ class TiledImage extends PunkImage
 			sy =  scale * scaleY,
 			x = 0.0, y = 0.0;
 
-		buffer.g2.set_color(color);
+		buffer.g2.color = (color);
 			
 		while (y < _height)
 		{
@@ -76,7 +76,7 @@ class TiledImage extends PunkImage
 		}
 		
 		
-		buffer.g2.set_color(Color.White);
+		buffer.g2.color = (Color.White);
 	}
 
 

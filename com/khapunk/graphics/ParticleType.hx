@@ -3,7 +3,7 @@ package com.khapunk.graphics;
 import com.khapunk.KP;
 import com.khapunk.utils.Ease;
 import kha.graphics4.BlendingOperation;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
 
 /**
  * Template used to define a particle type used by the Emitter class. Instead

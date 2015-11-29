@@ -1,10 +1,11 @@
 package com.khapunk.fx.programs;
 import kha.graphics4.FragmentShader;
-import kha.graphics4.Program;
+import kha.graphics4.PipelineState;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
-import kha.Loader;
+
+import kha.Shaders;
 
 /**
  * ...
@@ -22,18 +23,18 @@ enum Colorshaders {
  
 class ColorPrograms
 {
-	public static var tritanopia:Program;
-	public static var deuteranopia:Program;
-	public static var protanopia:Program;
-	public static var invert:Program;
-	public static var grayscale:Program;
-	public static var gameboy:Program;
+	public static var tritanopia:PipelineState;
+	public static var deuteranopia:PipelineState;
+	public static var protanopia:PipelineState;
+	public static var invert:PipelineState;
+	public static var grayscale:PipelineState;
+	public static var gameboy:PipelineState;
 	
 	
 	public static function init(colorshader:Colorshaders) : Void {
 		
 		
-		var vert = new VertexShader(Loader.the.getShader("non-color-vertex.vert"));
+		var vert = Shaders.non_color_vertex_vert;
 		var structure:VertexStructure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);
 		structure.add("texPosition", VertexData.Float2);
@@ -43,35 +44,41 @@ class ColorPrograms
 		switch(colorshader){
 		
 		case Colorshaders.Tritanopia:
-			tritanopia = new Program();
-			tritanopia.setFragmentShader(new FragmentShader(Loader.the.getShader("tritanopia.frag")));
-			tritanopia.setVertexShader(vert);
-			tritanopia.link(structure);
+			tritanopia = new PipelineState();
+			tritanopia.fragmentShader = Shaders.tritanopia_frag;
+			tritanopia.vertexShader = vert;
+			tritanopia.inputLayout = [structure];
+			tritanopia.compile();
 		case Colorshaders.Deuternaopia:
-			deuteranopia = new Program();
-			deuteranopia.setFragmentShader(new FragmentShader(Loader.the.getShader("deuteranopia.frag")));
-			deuteranopia.setVertexShader(vert);
-			deuteranopia.link(structure);
+			deuteranopia =  new PipelineState();
+			deuteranopia.fragmentShader = Shaders.deuteranopia_frag;
+			deuteranopia.vertexShader = vert;
+			deuteranopia.inputLayout = [structure];
+			deuteranopia.compile();
 		case Colorshaders.Protanopia:
-			protanopia = new Program();
-			protanopia.setFragmentShader(new FragmentShader(Loader.the.getShader("protanopia.frag")));
-			protanopia.setVertexShader(vert);
-			protanopia.link(structure);
+			protanopia =  new PipelineState();
+			protanopia.fragmentShader = Shaders.protanopia_frag;
+			protanopia.vertexShader = vert;
+			protanopia.inputLayout = [structure];
+			protanopia.compile();
 		case Colorshaders.Invert:
-			invert = new Program();
-			invert.setFragmentShader(new FragmentShader(Loader.the.getShader("invert.frag")));
-			invert.setVertexShader(vert);
-			invert.link(structure);
+			invert =  new PipelineState();
+			invert.fragmentShader = Shaders.invert_frag;
+			invert.vertexShader = vert;
+			invert.inputLayout = [structure];
+			invert.compile();
 		case Colorshaders.Grayscale:
-			grayscale = new Program();
-			grayscale.setFragmentShader(new FragmentShader(Loader.the.getShader("grayscale.frag")));
-			grayscale.setVertexShader(vert);
-			grayscale.link(structure);	
+			grayscale = new PipelineState();
+			grayscale.fragmentShader = Shaders.grayscale_frag;
+			grayscale.vertexShader = vert;
+			grayscale.inputLayout = [structure];
+			grayscale.compile();
 		case Colorshaders.Gameboy:
-			gameboy = new Program();
-			gameboy.setFragmentShader(new FragmentShader(Loader.the.getShader("gameboy-palette.frag")));
-			gameboy.setVertexShader(vert);
-			gameboy.link(structure);
+			gameboy =  new PipelineState();
+			gameboy.fragmentShader =  Shaders.gameboy_palette_frag;
+			gameboy.vertexShader = vert;
+			gameboy.inputLayout = [structure];
+			gameboy.compile();
 			
 		}
 		

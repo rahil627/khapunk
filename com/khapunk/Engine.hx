@@ -6,11 +6,11 @@ import com.khapunk.graphics.shader.ShaderPass;
 import com.khapunk.graphics.tilemap.TileAnimationManager;
 import com.khapunk.utils.Input;
 import haxe.ds.HashMap;
-import kha.Game;
-import kha.graphics4.Program;
+import kha.graphics4.PipelineState;
 import kha.Image;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
 import kha.Scheduler;
+import kha.System;
 
 
 typedef TransitionCallback = Void -> Void;
@@ -72,7 +72,7 @@ class Engine
 	 */
 	public var tickRate:Int;
 	
-	private var postprocess:Map<String, Program>;
+	private var postprocess:Map<String, PipelineState>;
 	
 	/**
 	 * Constructor. Defines startup information about your game.
@@ -105,20 +105,20 @@ class Engine
 		//_systemTime = _delta = _frameListSum = 0;
 		//_frameLast = 0;
 	}
-	@:allow(kha.Game)
-		private function setup(?width:Int, ?height:Int) : Void {
+
+		public function setup(?width:Int, ?height:Int) : Void {
 			   
 		// global game properties
 	   
 		if (width != null)
 				KP.width = width;
 		else
-				KP.width = Game.the.width;
+				KP.width = System.pixelWidth;
 	   
 		if (height != null)
 				KP.height = height;
 		else
-				KP.height = Game.the.height;
+				KP.height = System.pixelHeight;
 	   
 		KP.bounds = new Rectangle(0, 0, KP.width, KP.height);
 		
@@ -133,7 +133,7 @@ class Engine
 
 		// game start
 		
-		postprocess = new Map<String,Program>();
+		postprocess = new Map<String,PipelineState>();
 		shaderpass = new ShaderPass();
 		
 		_scene = new Scene();
@@ -351,7 +351,7 @@ class Engine
 	
 	private var shaderpass:ShaderPass;
 	
-	public function addPostprocessShader(name:String, p:Program, s:ShaderConstants,  sampleSource:Bool = true, blendin:BlendingSet) : Void{
+	public function addPostprocessShader(name:String, p:PipelineState, s:ShaderConstants,  sampleSource:Bool = true, blendin:BlendingSet) : Void{
 		shaderpass.addProgram(p, s, sampleSource, blendin);
 		postprocess.set(name, p);
 	}
@@ -359,7 +359,7 @@ class Engine
 	public function removePostProcessShader(name:String) : Void
 	{
 		if(postprocess.exists(name)){
-			var p:Program  = postprocess.get(name);
+			var p:PipelineState  = postprocess.get(name);
 			shaderpass.removeProgram(p);
 		}
 		else {

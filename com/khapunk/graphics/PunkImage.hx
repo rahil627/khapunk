@@ -7,9 +7,9 @@ import kha.Color;
 import kha.Framebuffer;
 import kha.graphics2.Graphics;
 import kha.Image;
-import kha.Loader;
+import kha.Assets;
 import kha.math.Vector2;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
 
 /**
  * ...
@@ -116,7 +116,7 @@ class PunkImage extends Graphic
 			}
 			else if (Std.is(source, String)){
 				
-				setBitmapSource(Loader.the.getImage(source));
+				setBitmapSource(Reflect.field(Assets.images,source));
 			}
 
 			if (_source == null && _region == null)
@@ -191,7 +191,7 @@ class PunkImage extends Graphic
 		this.point.x +  (sx * (_flippedX ? -1 : 1)) * _region.w*0.5 , 
 		this.point.y +  (sy * (_flippedY ? -1 : 1)) * _region.h*0.5);
 		
-		buffer.g2.set_color(Color.fromValue(_color));
+		buffer.g2.color = (Color.fromValue(_color));
 		buffer.g2.pushOpacity(_alpha);
 		
 		buffer.g2.drawScaledSubImage(
@@ -209,7 +209,7 @@ class PunkImage extends Graphic
 		buffer.g2.popTransformation();
 		
 		buffer.g2.popOpacity();
-		buffer.g2.set_color(Color.White);
+		buffer.g2.color = (Color.White);
 		
 	}
 	

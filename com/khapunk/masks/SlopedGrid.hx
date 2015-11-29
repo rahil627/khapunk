@@ -2,7 +2,7 @@ package com.khapunk.masks;
 import kha.Canvas;
 import kha.Framebuffer;
 import kha.math.Vector2;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
 
 enum TileType
 {

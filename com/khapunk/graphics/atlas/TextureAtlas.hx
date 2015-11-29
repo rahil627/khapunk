@@ -4,7 +4,7 @@ import com.khapunk.graphics.atlas.AtlasRegion;
 import haxe.Json;
 import kha.Blob;
 import kha.Image;
-import kha.Loader;
+import kha.Assets;
 
 /**
  * ...
@@ -43,14 +43,14 @@ class TextureAtlas {
 		regionCache = new Map < String, Array<AtlasRegion> >();
 		//---------------------------------
 		//Parse json
-		var packer:Dynamic = Json.parse(Loader.the.getBlob(packerfile).toString());
+		var packer:Dynamic = Json.parse( cast Reflect.field(Assets.blobs,packerfile).toString());
 		var frames:Array<Dynamic> = packer.frames;
 		meta = packer.meta;
 		//---------------------------------
 		//Get image
 		var imagename: String = meta.image;
 		imagename = imagename.split(".")[0];
-		image = Loader.the.getImage(imagename);
+		image = Reflect.field(Assets.images,imagename);
 		//---------------------------------
 		//Get all regions
 		for (i in 0...frames.length){

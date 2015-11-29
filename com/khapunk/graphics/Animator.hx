@@ -1,5 +1,5 @@
 package com.khapunk.graphics;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
 
 /**
  * @author Sidar Talei

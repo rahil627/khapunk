@@ -3,19 +3,19 @@ import kha.Image;
 import kha.graphics4.ConstantLocation;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.Graphics;
-import kha.graphics4.Program;
+import kha.graphics4.PipelineState;
 import kha.graphics4.TextureUnit;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
-import kha.Loader;
 import kha.math.Vector2;
+import kha.Shaders;
 
 /**
  * ...
  * @author Sidar Talei
  */
-class Ripple extends Program
+class Ripple extends PipelineState
 {
 
 	var resolution:ConstantLocation;
@@ -29,16 +29,18 @@ class Ripple extends Program
 	public function new() 
 	{
 		super();
-		setVertexShader(new VertexShader(Loader.the.getShader("non-color-vertex.vert")));
-		setFragmentShader(new FragmentShader(Loader.the.getShader("ripple.frag")));
+		vertexShader = Shaders.non_color_vertex_vert;
+		fragmentShader = Shaders.ripple_frag;
 		
 		var structure:VertexStructure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);
 		structure.add("texPosition", VertexData.Float2);
 		structure.add("vertexColor", VertexData.Float4);
 		
-		link(structure);
-
+		inputLayout = [structure];
+		
+		compile();
+		
 		resolution = getConstantLocation("resolution");
 		radius = getConstantLocation("radius");
 		time = getConstantLocation("time");

@@ -11,7 +11,7 @@ import kha.Framebuffer;
 import kha.graphics2.Graphics;
 import kha.Image;
 import kha.math.Vector2;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
 
 typedef Array2D = Array<Array<Int>>
 

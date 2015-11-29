@@ -2,7 +2,7 @@ package com.khapunk.graphics.shader;
 import kha.Canvas;
 import kha.Color;
 import kha.graphics4.BlendingOperation;
-import kha.graphics4.Program;
+import kha.graphics4.PipelineState;
 import kha.graphics4.TextureFormat;
 import kha.Image;
 
@@ -13,7 +13,7 @@ import kha.Image;
 class ShaderPass
 {
 
-	var programs:Array<Program>;
+	var programs:Array<PipelineState>;
 	var shaderConstants:Array<ShaderConstants>;
 	var sampleSource:Array<Bool>;
 	var blendings:Array<BlendingSet>;
@@ -56,7 +56,7 @@ class ShaderPass
 	 * @param	blend Whether the source should be rendered first with processed buffer on top with the blending setting.
 	 * @param	sampleSource<Bool> Whether the current iteration should sample from the original source input.
 	 */
-	public function setPrograms(programs:Array<Program>, shaderConstants:Array<ShaderConstants>, sampleSource:Array<Bool>, blend:Bool): Void {
+	public function setPrograms(programs:Array<PipelineState>, shaderConstants:Array<ShaderConstants>, sampleSource:Array<Bool>, blend:Bool): Void {
 		this.programs = programs;
 		this.shaderConstants = shaderConstants;
 		this.sampleSource = sampleSource;
@@ -72,7 +72,7 @@ class ShaderPass
 		return _blend;
 	}
 	
-	public function addProgram(p:Program, sc:ShaderConstants, ss:Bool, blending:BlendingSet = null) {
+	public function addProgram(p:PipelineState, sc:ShaderConstants, ss:Bool, blending:BlendingSet = null) {
 			if (this.programs == null) this.programs = new Array();
 			if (this.shaderConstants == null) this.shaderConstants = new Array<ShaderConstants>();
 			if (this.sampleSource == null) this.sampleSource = new Array<Bool>();
@@ -84,7 +84,7 @@ class ShaderPass
 			this.blendings.push(blending);
 	}
 	
-	public function removeProgram(p:Program) {
+	public function removeProgram(p:PipelineState) {
 		var index:Int  = programs.indexOf(p);
 		
 		programs.splice(index, 1);
@@ -100,7 +100,7 @@ class ShaderPass
 		{
 			//should only happen if sampling from source?
 			if(sampleSource[i]){
-				buffer.g2.program = programs[i];
+				buffer.g2.pipeline = programs[i];
 				setConstants(shaderConstants[i], programs[i], buffer);
 			
 				if (blendings[i] != null) buffer.g2.setBlendingMode(blendings[i].OperationA, blendings[i].OperationB);
@@ -112,14 +112,14 @@ class ShaderPass
 				//Do blending here?
 				buffer.g2.end();
 				bufferB.g2.begin(true, Color.fromFloats(0, 0, 0, 0));
-				bufferB.g2.program = programs[i];
+				bufferB.g2.pipeline = programs[i];
 				setConstants(shaderConstants[i], programs[i],bufferB);
 				bufferB.g2.drawSubImage(buffer, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
-				bufferB.g2.program = null;
+				bufferB.g2.pipeline = null;
 				bufferB.g2.end();
 				
 				buffer.g2.begin();
-				buffer.g2.program = null; 
+				buffer.g2.pipeline = null; 
 				buffer.g2.drawSubImage(bufferB, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
 			}
 			
@@ -136,7 +136,7 @@ class ShaderPass
 		target.g2.end();
 	}
 	
-	function setConstants(const:ShaderConstants, prog:Program, buff:Canvas)  : Void
+	function setConstants(const:ShaderConstants, prog:PipelineState, buff:Canvas)  : Void
 	{
 		const.hasChanged = false;
 		if (const.hasFloatArr()) {

@@ -3,7 +3,7 @@ import com.khapunk.graphics.shader.ShaderConstants;
 import kha.Canvas;
 import kha.graphics2.Graphics;
 import kha.graphics4.BlendingOperation;
-import kha.graphics4.Program;
+import kha.graphics4.PipelineState;
 
 /**
  * ...
@@ -16,17 +16,17 @@ class Material
 	 * @param	p
 	 * @return
 	 */
-	public static function CreateMaterial(p:Program) : Material {
+	public static function CreateMaterial(p:PipelineState) : Material {
 		var m:Material = new Material();
 		m.setShader(p, new ShaderConstants());
 		return m;
 	}
 	
 	static var lastBlendMode:BlendMode = Normal;
-	static var lastProgram:Program = null;
+	static var lastProgram:PipelineState = null;
 	public var blendMode:BlendMode = BlendMode.Normal;
 	
-	var shader:Program;
+	var shader:PipelineState;
 	var constants:ShaderConstants;
 	
 	//TODO FIX Render target
@@ -37,7 +37,7 @@ class Material
 		
 	}
 	
-	public function setShader(p:Program, constants:ShaderConstants) : Void
+	public function setShader(p:PipelineState, constants:ShaderConstants) : Void
 	{
 		this.constants = constants;
 		shader = p;
@@ -46,7 +46,7 @@ class Material
 	public function apply(c:Canvas) {
 		
 		if(lastProgram != shader){
-			c.g2.program = shader;
+			c.g2.pipeline = shader;
 			lastProgram = shader;
 		}
 		checkBlendMode(c.g2);
@@ -80,7 +80,7 @@ class Material
 		}
 	}*/
 	
-	function setConstants(const:ShaderConstants, prog:Program, buff:Canvas)  : Void
+	function setConstants(const:ShaderConstants, prog:PipelineState, buff:Canvas)  : Void
 	{
 		if(const.hasChanged){
 			const.hasChanged = false;

@@ -8,7 +8,7 @@ import kha.Framebuffer;
 import kha.graphics2.Graphics;
 import kha.Image;
 import kha.math.Vector2;
-import kha.Sys;
+
 
 /**
  * ...
@@ -145,7 +145,7 @@ class Backdrop extends Graphic
 		//stepX = ratioX == Math.floor(ratioX) ? 0:stepX;
 		//stepY = ratioY == Math.floor(ratioY) ? 0:stepY;
 		
-		buffer.g2.set_color(color);
+		buffer.g2.color = color;
 		
 		while (y < _height + stepY)
 		{
@@ -178,7 +178,7 @@ class Backdrop extends Graphic
 		}
 		
 		
-		buffer.g2.set_color(Color.White);
+		buffer.g2.color = (Color.White);
 	}
 
 	

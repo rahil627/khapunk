@@ -2,8 +2,8 @@ package com.khapunk.graphics;
 import com.khapunk.graphics.Animation;
 import com.khapunk.graphics.Animator.CallbackFunction;
 import com.khapunk.graphics.atlas.TileAtlas;
-import kha.Game;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
+import kha.System;
 
 /**
  * ...
@@ -73,7 +73,7 @@ class Spritemap extends Animator<Int,Spritemap>
 			throw "Cannot have multiple animations with the same name";
 
 		if(frameRate == 0)
-			frameRate = Game.FPS;
+			frameRate = System.refreshRate;
 
 		for (i in 0...frames.length)
 		{

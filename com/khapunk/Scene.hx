@@ -6,11 +6,11 @@ import com.khapunk.utils.Input;
 import kha.Canvas;
 import kha.Color;
 import kha.graphics4.BlendingOperation;
-import kha.graphics4.Program;
+import kha.graphics4.PipelineState;
 import kha.Image;
 import kha.Framebuffer;
 import kha.math.Vector2;
-import kha.Mouse;
+import kha.input.Mouse;
 import kha.graphics2.Graphics;
 import kha.Scaler;
 
@@ -48,7 +48,7 @@ class Scene
 	private static var layerBuffer:Image;
 	private static var resultbuffer:Image;
 	//private static var lastbuffer:Image;
-	private var lastShader:Program;
+	private var lastShader:PipelineState;
 	
 	public var active:Bool = true;
 	
@@ -214,7 +214,7 @@ class Scene
 				if (s.blend) //reset blending mode to default
 				buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 				
-				buffer.g2.program = null;
+				buffer.g2.pipeline = null;
 			}
 			else {
 				for (e in _layers.get(layer))

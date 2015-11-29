@@ -3,19 +3,19 @@ import kha.Image;
 import kha.graphics4.ConstantLocation;
 import kha.graphics4.FragmentShader;
 import kha.graphics4.Graphics;
-import kha.graphics4.Program;
+import kha.graphics4.PipelineState;
 import kha.graphics4.TextureUnit;
 import kha.graphics4.VertexData;
 import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
-import kha.Loader;
 import kha.math.Vector2;
+import kha.Shaders;
 
 /**
  * ...
  * @author Sidar Talei
  */
-class TubeEdgeNoise extends Program
+class TubeEdgeNoise extends PipelineState
 {
 
 	var resolution:ConstantLocation;
@@ -28,15 +28,17 @@ class TubeEdgeNoise extends Program
 	public function new() 
 	{
 		super();
-		setVertexShader(new VertexShader(Loader.the.getShader("non-color-vertex.vert")));
-		setFragmentShader(new FragmentShader(Loader.the.getShader("tube-edge-noise.frag")));
+		vertexShader = Shaders.non_color_vertex_vert;
+		fragmentShader = Shaders.tube_edge_noise_frag;
 		
 		var structure:VertexStructure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);
 		structure.add("texPosition", VertexData.Float2);
 		structure.add("vertexColor", VertexData.Float4);
 		
-		link(structure);
+		inputLayout = [structure];
+		
+		compile();
 
 		resolution = getConstantLocation("resolution");
 		time = getConstantLocation("time");

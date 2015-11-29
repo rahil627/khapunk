@@ -2,7 +2,6 @@ package com.khapunk.utils;
 import com.khapunk.utils.Gamepad.GamepadState;
 import com.khapunk.utils.Gesture;
 import haxe.ds.Vector;
-import kha.Game;
 import kha.input.Gamepad;
 import kha.input.Keyboard;
 import kha.input.Mouse;
@@ -10,9 +9,10 @@ import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.input.Surface;
 import kha.Key;
+import kha.math.Vector2;
 import kha.Scaler;
 import kha.ScreenCanvas;
-import kha.Sys;
+import kha.System;
 
 /**
  * ...
@@ -126,6 +126,9 @@ class Input
 	 */
 	public static var mouseWheel:Bool;
 	
+	public static var MouseDeltaX:Int;
+	public static var MouseDeltaY:Int;
+	
 	/**
 	 * If the mouse wheel was moved this frame, this was the delta.
 	 */
@@ -147,7 +150,7 @@ class Input
 	private static function get_mouseX():Int
 	{
 		//return Std.int(_mouseX / (Sys.pixelWidth / Game.the.width));//KP.screen.mouseX;
-		return Scaler.transformX(_mouseX, _mouseY,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation);
+		return Scaler.transformX(_mouseX, _mouseY,Engine.backbuffer,ScreenCanvas.the,System.screenRotation);
 	}
 
 	/**
@@ -157,7 +160,7 @@ class Input
 	private static function get_mouseY():Int
 	{
 		//return Std.int(_mouseY / (Sys.pixelHeight/Game.the.height));//KP.screen.mouseX;
-		return Scaler.transformY(_mouseX, _mouseY,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation);
+		return Scaler.transformY(_mouseX, _mouseY,Engine.backbuffer,ScreenCanvas.the,System.screenRotation);
 	}
 	
 	
@@ -410,8 +413,8 @@ class Input
 	private static function onTouch(id:Int, x:Int, y:Int) : Void {
 		
 		var tp:Touch = new Touch(
-		Scaler.transformX(x, y,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation), 
-		Scaler.transformY(x, y,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation), 
+		Scaler.transformX(x, y,Engine.backbuffer,ScreenCanvas.the,System.screenRotation), 
+		Scaler.transformY(x, y,Engine.backbuffer,ScreenCanvas.the,System.screenRotation), 
 		id);
 		
 		_touches.set(id, tp);
@@ -426,8 +429,8 @@ class Input
 	
 	private static function onTouchMove(id:Int, x:Int, y:Int) : Void
 	{
-		_touches.get(id).x = Scaler.transformX(x, y,Engine.backbuffer,ScreenCanvas.the,Sys.screenRotation);
-		_touches.get(id).y = Scaler.transformY(x, y, Engine.backbuffer, ScreenCanvas.the, Sys.screenRotation);
+		_touches.get(id).x = Scaler.transformX(x, y,Engine.backbuffer,ScreenCanvas.the,System.screenRotation);
+		_touches.get(id).y = Scaler.transformY(x, y, Engine.backbuffer, ScreenCanvas.the, System.screenRotation);
 		
 	}
 	
@@ -514,6 +517,7 @@ class Input
 				return PunkKey.RIGHT;
 			case Key.SHIFT:
 				return PunkKey.SHIFT;
+			case Key.BACK:
 			case Key.ESC:
 				return PunkKey.ESCAPE;
 			case Key.ENTER:
@@ -530,11 +534,14 @@ class Input
 		return -1;
 	}
 	
-	private static function onMouseMove(x: Int, y: Int)
+	private static function onMouseMove(x: Int, y: Int,xd: Int, yd: Int)
 	{
 		mouseMoved = true;
 		_mouseX = x;
 		_mouseY = y;
+		
+		MouseDeltaX = xd;
+		MouseDeltaY = yd;
 	}
 	
 	private static function onMouseDown(button: Int, x: Int, y: Int) : Void

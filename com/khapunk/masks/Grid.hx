@@ -3,7 +3,7 @@ import kha.Canvas;
 import kha.Color;
 import kha.Framebuffer;
 import kha.math.Vector2;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
 
 /**
  * ...

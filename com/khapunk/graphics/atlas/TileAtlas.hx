@@ -1,8 +1,8 @@
 package com.khapunk.graphics.atlas;
 import com.khapunk.graphics.atlas.AtlasRegion;
 import kha.Image;
-import kha.Loader;
-import kha.Rectangle;
+import kha.Assets;
+import com.khapunk.graphics.Rectangle;
 
 /**
  * ...
@@ -44,7 +44,7 @@ class TileAtlas
 		}
 		else if (Std.is(source, String)) {
 			var s:String = cast(source, String);
-			_image = Loader.the.getImage(s);
+			_image = Reflect.field(Assets.images,s);
 			_width = _image.width;
 			_height = _image.height;
 		}
@@ -76,7 +76,7 @@ class TileAtlas
 		var img:Image = null;
 		
 		if (Std.is(source, String)) {
-			img = Loader.the.getImage(cast(source, String));
+			img = Reflect.field(Assets.images,(cast(source, String)));
 		}
 		else if (Std.is(source, Image)) {
 			img = cast(source, Image);

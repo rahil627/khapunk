@@ -34,9 +34,6 @@ class PointTrail extends Graphic
 	var timer:Float = 0.0;
 	
 	public var parent:Dynamic;
-	public var additiveBlend:Bool = false;
-	static var matrix:Matrix4 = Matrix4.identity();
-	static var projection:Matrix4 = Matrix4.orthogonalProjection(0, 640, 0, 480, 1, 50);
 	
 	static var program:Program;
 	static var struct:VertexStructure;
@@ -86,13 +83,13 @@ class PointTrail extends Graphic
 	var prevC:Int = 0;
 	override public function render(buffer:Canvas, point:Vector2, camera:Vector2) 
 	{
+		material.apply(buffer);
 		// determine drawing location
 		this.point.x = point.x;
 		this.point.y = point.y;
 		
 		calcVertices();
 		
-		if(additiveBlend)buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.BlendOne);
 		for (i in 0...alpha.length) {
 			
 			
@@ -100,8 +97,6 @@ class PointTrail extends Graphic
 				 prev = parent._alpha;
 				parent._alpha = alpha[i]; 
 				prevC = parent._color;
-				if(additiveBlend)	parent._color = Color.fromValue(Std.int(Math.random() * 0xFFFFFF)); 
-				
 			 }else {
 				 prevC = parent._color;
 				 buffer.g2.pushOpacity(alpha[i]);
@@ -118,7 +113,6 @@ class PointTrail extends Graphic
 				  buffer.g2.set_color(Color.fromValue(prevC));
 			 }
 		}
-		if(additiveBlend)buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 	}
 	
 }

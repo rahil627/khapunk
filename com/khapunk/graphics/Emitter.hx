@@ -11,7 +11,7 @@ import kha.graphics2.Graphics;
 import kha.graphics4.BlendingOperation;
 import kha.Image;
 import kha.math.Vector2;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
 
 /**
  * ...
@@ -290,7 +290,7 @@ class Emitter extends Graphic
 				hw = (ar.w * scale) / 2;
 				hh = (ar.h * scale) / 2;
 				
-				buffer.g2.set_color(_color);
+				buffer.g2.color = (_color);
 				buffer.g2.set_opacity(_color.A);
 				
 				buffer.g2.pushRotation(rotation, _p.x, _p.y);
@@ -307,7 +307,7 @@ class Emitter extends Graphic
 				
 				buffer.g2.popTransformation();
 				
-				buffer.g2.set_color(Color.White);
+				buffer.g2.color = (Color.White);
 				buffer.g2.set_opacity(1);
 			}
 			

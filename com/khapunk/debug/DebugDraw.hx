@@ -26,7 +26,7 @@ class DebugDraw
 	}
 	
 	public static function renderLine(g:Canvas) : Void {
-		g.g2.program = null;
+		g.g2.pipeline = null;
 		g.g2.begin(false);
 		var l:Line;
 		for (i in 0...queue.length) 

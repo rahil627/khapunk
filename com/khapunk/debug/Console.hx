@@ -4,7 +4,7 @@ package com.khapunk.debug;
 import com.khapunk.utils.Input;
 import com.khapunk.utils.PunkKey;
 import kha.Canvas;
-import kha.Rectangle;
+import com.khapunk.graphics.Rectangle;
 
 import haxe.Log;
 import haxe.PosInfos;
