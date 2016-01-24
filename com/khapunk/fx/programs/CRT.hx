@@ -1,14 +1,10 @@
 package com.khapunk.fx.programs ;
 import kha.graphics4.ConstantLocation;
-import kha.graphics4.FragmentShader;
 import kha.graphics4.Graphics;
 import kha.graphics4.PipelineState;
-import kha.graphics4.TextureUnit;
 import kha.graphics4.VertexData;
-import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
-import kha.Image;
-import kha.math.Vector2;
+import kha.math.FastVector2;
 import kha.Shaders;
 
 /**
@@ -19,7 +15,7 @@ class CRT extends PipelineState
 {
 
 	var resolution:ConstantLocation;
-	var resvec:Vector2;
+	var resvec:FastVector2;
 	var graphic:Graphics;
 	
 	public function new() 
@@ -42,7 +38,7 @@ class CRT extends PipelineState
 		
 		resolution = getConstantLocation("resolution");
 		
-		resvec = new Vector2();
+		resvec = new FastVector2();
 		
 	}
 	

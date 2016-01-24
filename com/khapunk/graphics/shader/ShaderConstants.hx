@@ -1,8 +1,8 @@
 package com.khapunk.graphics.shader;
-import com.khapunk.graphics.Material;
+import haxe.ds.Vector;
+import kha.FastFloat;
 import kha.Image;
-import kha.math.Vector2;
-import kha.math.Vector3;
+import kha.math.FastVector2;
 
 
 /**
@@ -15,10 +15,10 @@ class ShaderConstants
 {
 
 	var floatConstants:Map<String,Float>;
-	var vec2Constants:Map<String,Vector2>;
+	var vec2Constants:Map<String,FastVector2>;
 	var intConstants:Map<String,Int>;
 	var textureConstant:Map<String,Image>;
-	var floatsArrConstants:Map<String,Array<Float>>;
+	var floatsArrConstants:Map<String,Vector<FastFloat>>;
 	
 	public var hasChanged(default, default) : Bool = false;
 	
@@ -27,8 +27,8 @@ class ShaderConstants
 		
 	}
 	
-	public function setFloatArr(name:String,value:Array<Float>) : Void {
-		if (floatsArrConstants == null) floatsArrConstants = new Map<String,Array<Float>>();
+	public function setFloatArr(name:String,value:Vector<FastFloat>) : Void {
+		if (floatsArrConstants == null) floatsArrConstants = new Map<String,Vector<FastFloat>>();
 		floatsArrConstants.set(name, value);
 		hasChanged = true;
 	}
@@ -41,13 +41,13 @@ class ShaderConstants
 	
 	
 	public function setFloat(name:String, value:Float) : Void {
-		if (floatConstants == null) floatConstants = new Map<String,Float>();
+		if (floatConstants == null) floatConstants = new Map<String,FastFloat>();
 		floatConstants.set(name, value);
 		hasChanged = true;
 	}
 	
-	public function setVec2(name:String,value:Vector2) : Void {
-		if (vec2Constants == null) vec2Constants = new Map<String,Vector2>();
+	public function setVec2(name:String,value:FastVector2) : Void {
+		if (vec2Constants == null) vec2Constants = new Map<String,FastVector2>();
 		vec2Constants.set(name, value);
 		hasChanged = true;
 	}

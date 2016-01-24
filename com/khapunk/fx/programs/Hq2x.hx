@@ -1,14 +1,12 @@
 package com.khapunk.fx.programs;
-import kha.Image;
 import kha.graphics4.ConstantLocation;
-import kha.graphics4.FragmentShader;
 import kha.graphics4.Graphics;
 import kha.graphics4.PipelineState;
 import kha.graphics4.TextureUnit;
 import kha.graphics4.VertexData;
-import kha.graphics4.VertexShader;
 import kha.graphics4.VertexStructure;
-import kha.math.Vector2;
+import kha.Image;
+import kha.math.FastVector2;
 import kha.Shaders;
 
 /**
@@ -22,7 +20,7 @@ class Hq2x extends PipelineState
 	var texture:TextureUnit;
 	
 	var graphic:Graphics;
-	var resvec:Vector2;
+	var resvec:FastVector2;
 	
 	public function new() 
 	{
@@ -42,7 +40,7 @@ class Hq2x extends PipelineState
 		resolution = getConstantLocation("resolution");
 		texture = getTextureUnit("tex");
 		
-		resvec = new Vector2();
+		resvec = new FastVector2();
 		
 	}
 	
