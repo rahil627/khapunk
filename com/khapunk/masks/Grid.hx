@@ -544,12 +544,12 @@ class Grid extends Hitbox
 				if (row[x])
 				{
 					
-					buffer.g2.set_color(Color.Purple);
+					buffer.g2.color = Color.Purple;
 					buffer.g2.pushOpacity(0.5);
 					buffer.g2.drawRect(cellX, cellY, stepX, stepY,2);
 					buffer.g2.popOpacity();
 					
-					buffer.g2.set_color(Color.fromFloats(1, 0, 0, 1));
+					buffer.g2.color = Color.fromFloats(1, 0, 0, 1);
 					
 					if (x < columns - 1 && !row[x + 1])
 					{
@@ -573,7 +573,7 @@ class Grid extends Hitbox
 			}
 			cellY += stepY;
 		}
-			buffer.g2.set_color(Color.White);
+			buffer.g2.color = Color.White;
 		
 	}
 	#end

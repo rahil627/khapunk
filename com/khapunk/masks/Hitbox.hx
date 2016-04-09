@@ -198,9 +198,9 @@ class Hitbox extends Mask
 		
 		if (parent != null)
 		{
-			buffer.g2.set_color(Color.fromValue(0xFF22BB1E));
+			buffer.g2.color = Color.fromValue(0xFF22BB1E);
 			buffer.g2.drawRect((parent.x - KP.camera.x + x), (parent.y - KP.camera.y + y), width, height);
-			buffer.g2.set_color(Color.White);
+			buffer.g2.color = Color.White;
 		}
 	}
 	#end

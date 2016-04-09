@@ -280,7 +280,7 @@ class Emitter extends Graphic
 				_p.y = this.point.y + _particle._y + _particle._moveY * (type._backwards ? 1 - td : td);
 				_particle._moveY += _particle._gravity * td;
 				
-				if (type._loopAnim) {
+				if (type._frames.length > 1 && type._loopAnim) {
 					loopDelta = Std.int(_particle._time / (1 / type._loopSpeed));
 					frameIndex = type._frames[loopDelta % (type._frames.length - 1)];
 				}
