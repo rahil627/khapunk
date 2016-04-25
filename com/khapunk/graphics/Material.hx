@@ -59,7 +59,7 @@ class Material
 	
 	public function checkBlendMode(g:Graphics) : Void {
 		
-			if (lastBlendMode != blendMode) {
+			/*if (lastBlendMode != blendMode) {
             switch (blendMode) {
                 case Normal:	 g.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.InverseSourceAlpha);
                 case Mask:  	 g.setBlendingMode(BlendingOperation.BlendZero,BlendingOperation.SourceAlpha);
@@ -67,7 +67,7 @@ class Material
                 case Add: 		 g.setBlendingMode(BlendingOperation.BlendOne, BlendingOperation.BlendOne);
             }
             lastBlendMode = blendMode;
-        }
+        }*/
 	}
 	
 	/**

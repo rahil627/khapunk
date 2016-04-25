@@ -211,8 +211,8 @@ class Scene
 				
 				//Restart main buffer
 				buffer.g2.begin(false);
-				if (s.blend) //reset blending mode to default
-				buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+				//if (s.blend) //reset blending mode to default
+				//buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 				
 				buffer.g2.pipeline = null;
 			}

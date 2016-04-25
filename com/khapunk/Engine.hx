@@ -113,12 +113,12 @@ class Engine
 		if (width != null)
 				KP.width = width;
 		else
-				KP.width = System.pixelWidth;
+				KP.width = System.windowWidth();
 	   
 		if (height != null)
 				KP.height = height;
 		else
-				KP.height = System.pixelHeight;
+				KP.height = System.windowHeight();
 	   
 		KP.bounds = new Rectangle(0, 0, KP.width, KP.height);
 		

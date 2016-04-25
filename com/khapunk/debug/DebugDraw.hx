@@ -25,9 +25,11 @@ class DebugDraw
 		queue.push(l);
 	}
 	
-	public static function renderLine(g:Canvas) : Void {
-		g.g2.pipeline = null;
-		g.g2.begin(false);
+	public static function renderLine(g:Canvas, newBegin:Bool = true) : Void {
+		if(newBegin){
+			g.g2.pipeline = null;
+			g.g2.begin(false);
+		}
 		var l:Line;
 		for (i in 0...queue.length) 
 		{
@@ -36,8 +38,10 @@ class DebugDraw
 			g.g2.drawLine(l.start.x - KP.scene.camera.x, l.start.y - KP.scene.camera.y, l.end.x - KP.scene.camera.x, l.end.y - KP.scene.camera.y, 2);
 			l.durationDelta -= KP.elapsed; if (l.durationDelta <= 0) l.done = true;
 		}
-		g.g2.color = Color.White;
-		g.g2.end();
+			g.g2.color = Color.White;
+		if(newBegin){
+			g.g2.end();
+		}
 		
 		
 		var i:Int = queue.length-1;

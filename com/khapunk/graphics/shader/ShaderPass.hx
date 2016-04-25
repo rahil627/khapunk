@@ -17,7 +17,6 @@ class ShaderPass
 	var shaderConstants:Array<ShaderConstants>;
 	var sampleSource:Array<Bool>;
 	var blendings:Array<BlendingSet>;
-	var _blend:Bool = false;
 	
 	public var sourceBlend:BlendingOperation;
 	public var destinationBlend:BlendingOperation;
@@ -26,8 +25,8 @@ class ShaderPass
 	static var bufferB:Image;
 	
 	public function new() {
-		sourceBlend = BlendingOperation.SourceAlpha;
-		destinationBlend = BlendingOperation.BlendOne;
+		//sourceBlend = BlendingOperation.SourceAlpha;
+		//destinationBlend = BlendingOperation.BlendOne;
 		
 		if (buffer == null) {
 			buffer = Image.createRenderTarget(KP.width, KP.height,TextureFormat.RGBA32);
@@ -56,22 +55,13 @@ class ShaderPass
 	 * @param	blend Whether the source should be rendered first with processed buffer on top with the blending setting.
 	 * @param	sampleSource<Bool> Whether the current iteration should sample from the original source input.
 	 */
-	public function setPrograms(programs:Array<PipelineState>, shaderConstants:Array<ShaderConstants>, sampleSource:Array<Bool>, blend:Bool): Void {
+	public function setPrograms(programs:Array<PipelineState>, shaderConstants:Array<ShaderConstants>, sampleSource:Array<Bool>): Void {
 		this.programs = programs;
 		this.shaderConstants = shaderConstants;
 		this.sampleSource = sampleSource;
-		_blend = blend;
 	}
 	
-	public var blend(get, set): Bool;
-	function get_blend() : Bool {
-		return _blend;
-	}
-	function set_blend(value:Bool) : Bool {
-		_blend = value;
-		return _blend;
-	}
-	
+
 	public function addProgram(p:PipelineState, sc:ShaderConstants, ss:Bool, blending:BlendingSet = null) {
 			if (this.programs == null) this.programs = new Array();
 			if (this.shaderConstants == null) this.shaderConstants = new Array<ShaderConstants>();
@@ -103,9 +93,9 @@ class ShaderPass
 				buffer.g2.pipeline = programs[i];
 				setConstants(shaderConstants[i], programs[i], buffer);
 			
-				if (blendings[i] != null) buffer.g2.setBlendingMode(blendings[i].OperationA, blendings[i].OperationB);
+				//if (blendings[i] != null) buffer.g2.set(blendings[i].OperationA, blendings[i].OperationB);
 				buffer.g2.drawSubImage(source, 0, 0, sx, sy, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
-				if (blendings[i] != null) buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+				//if (blendings[i] != null) buffer.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 			}
 			else {
 				
@@ -129,9 +119,9 @@ class ShaderPass
 		
 		target.g2.begin(false);
 
-		if (blend)target.g2.setBlendingMode(sourceBlend, destinationBlend);
+		//if (blend)target.g2.setBlendingMode(sourceBlend, destinationBlend);
 		target.g2.drawSubImage(buffer, x, y, 0, 0, (sw == 0 ? source.width:sw), (sh == 0 ? source.height:sh));
-		if (blend)target.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
+		//if (blend)target.g2.setBlendingMode(BlendingOperation.SourceAlpha, BlendingOperation.InverseSourceAlpha);
 		
 		target.g2.end();
 	}
