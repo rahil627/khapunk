@@ -285,7 +285,7 @@ class Emitter extends Graphic
 					frameIndex = type._frames[loopDelta % (type._frames.length - 1)];
 				}
 				else {
-					frameIndex = type._frames[Std.int(td * (type._frames.length-1))];
+					frameIndex = type._frames[Std.int(td * (type._frames.length))];
 				}
 				
 				ar =  _frames[frameIndex];
@@ -392,12 +392,12 @@ class Emitter extends Graphic
 		return pt.setAlpha(start, finish, ease);
 	}
 
-	public function setBlend(name:String, source:BlendingOperation, destination:BlendingOperation) : ParticleType
-	{
-		var pt:ParticleType = _types.get(name);
-		if (pt == null) return null;
-		return pt.setBlend(source,destination);
-	}
+	// public function setBlend(name:String, source:BlendingOperation, destination:BlendingOperation) : ParticleType
+	// {
+	// 	var pt:ParticleType = _types.get(name);
+	// 	if (pt == null) return null;
+	// 	return pt.setBlend(source,destination);
+	// }
 	
 	
 	/**

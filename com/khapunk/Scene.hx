@@ -195,7 +195,7 @@ class Scene
 				//lastbuffer.g2.end();
 				
 				//render layer to layerbuffer
-				layerBuffer.g2.begin(true, Color.fromFloats(0,0,0,0));
+				layerBuffer.g2.begin(true, 0);
 				for (e in _layers.get(layer))
 				{
 					if (e.visible) e.render(layerBuffer);

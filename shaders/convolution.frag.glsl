@@ -1,11 +1,11 @@
-
+#version 450
 
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-varying vec2 texCoord;
-varying vec4 color;
+in vec2 texCoord;
+in vec4 color;
 
 uniform sampler2D tex;
 uniform vec2 resolution;
@@ -13,6 +13,7 @@ uniform float kernel[9];
 uniform float division;
 uniform float bias;
  
+ out vec4 ColorOutput;
 void kore()
 {
 	vec4 sum = vec4(0.0);
@@ -35,9 +36,9 @@ void kore()
 	offset[8] = vec2(step_w, step_h);
 	
 	 for(int i=0;  i < 9; i++ ){
-		vec4 tmp = texture2D(tex, texCoord.st + offset[i]);
+		vec4 tmp = texture(tex, texCoord.st + offset[i]);
 		sum += tmp * (kernel[i]/division + bias);
 	 }
-	 vec4 c = texture2D(tex, texCoord);
-	gl_FragColor = vec4(sum.rgb,c.a);
+	 vec4 c = texture(tex, texCoord);
+	ColorOutput = vec4(sum.rgb,c.a);
 }

@@ -1,16 +1,19 @@
-#version 100
+#version 450
 
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-varying vec2 texCoord;
+in vec2 texCoord;
 
 uniform sampler2D tex;
 
 uniform vec2 resolution;
 uniform float stitching_size;
 uniform int invert;
+
+ out vec4 ColorOutput;
+
 
 vec4 PostFX(sampler2D tex, vec2 uv)
 {
@@ -31,12 +34,12 @@ vec4 PostFX(sampler2D tex, vec2 uv)
     if (invert == 1)
       c = vec4(0.2, 0.15, 0.05, 1.0);
     else
-      c = texture2D(tex, tlPos * vec2(1.0/resolution.x, 1.0/resolution.y)) * 1.4;
+      c = texture(tex, tlPos * vec2(1.0/resolution.x, 1.0/resolution.y)) * 1.4;
   }
   else
   {
     if (invert == 1)
-      c = texture2D(tex, tlPos * vec2(1.0/resolution.x, 1.0/resolution.y)) * 1.4;
+      c = texture(tex, tlPos * vec2(1.0/resolution.x, 1.0/resolution.y)) * 1.4;
     else
       c = vec4(0.0, 0.0, 0.0, 1.0);
   }
@@ -47,6 +50,6 @@ void kore ()
 {
   vec2 uv = texCoord.st;
    
-    gl_FragColor = PostFX(tex, uv);
+    ColorOutput = PostFX(tex, uv);
 
 }

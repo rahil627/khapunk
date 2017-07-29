@@ -8,6 +8,7 @@ import kha.Framebuffer;
 import kha.graphics2.Graphics;
 import kha.Image;
 import kha.math.Vector2;
+import com.khapunk.masks.Hitbox;
 
 /**
  * ...
@@ -203,11 +204,12 @@ class Entity
 		buffer.g2.color  = Color.White;
 		
 		buffer.g2.color = Color.Green;
-		buffer.g2.drawRect((x - originX - KP.camera.x * graphicScrollX)-3, (y - originY - KP.camera.y * graphicScrollY)-3, 6, 6, 1.5 );
+		buffer.g2.drawRect((x  - KP.camera.x * graphicScrollX)-3, (y - KP.camera.y * graphicScrollY)-3, 6, 6, 1.5 );
 		buffer.g2.color = Color.White;
 		
 		
 		if(mask!=null)mask.debugDraw(buffer);
+		// if(HITBOX!=null)HITBOX.debugDraw(buffer);
 	}
 	#end
 	

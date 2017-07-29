@@ -166,7 +166,7 @@ class PunkImage extends Graphic
 
 		_alpha = 1;
 		_flippedX = false;
-		_color = 0x00FFFFFF;
+		_color = 0xFFFFFFFF;
 		_red = _green = _blue = 1;
 		//_matrix = KP.matrix;
 	}
@@ -210,7 +210,6 @@ class PunkImage extends Graphic
 		
 		buffer.g2.popOpacity();
 		buffer.g2.color = (Color.White);
-		
 	}
 	
 	/**
