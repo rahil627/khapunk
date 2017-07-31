@@ -1,13 +1,14 @@
-#version 100
+#version 450
 
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-varying vec2 texCoord;
+in vec2 texCoord;
 
 uniform sampler2D tex;
 
+out vec4 ColorOutput;
 
 const mat4 mProtanopia = mat4( 0.20 ,  0.99 , -0.19 ,  0.0 ,
                                0.16 ,  0.79 ,  0.04 ,  0.0 ,
@@ -16,5 +17,5 @@ const mat4 mProtanopia = mat4( 0.20 ,  0.99 , -0.19 ,  0.0 ,
 
 void kore()
 {
-    gl_FragColor = mProtanopia * texture2D(tex, texCoord);
+    ColorOutput = mProtanopia * texture(tex, texCoord);
 }

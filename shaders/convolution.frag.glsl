@@ -14,7 +14,7 @@ uniform float division;
 uniform float bias;
  
  out vec4 ColorOutput;
-void kore()
+void main()
 {
 	vec4 sum = vec4(0.0);
 	

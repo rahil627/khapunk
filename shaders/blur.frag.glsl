@@ -14,7 +14,7 @@ uniform float diry;
 
 out vec4 ColorOutput;
 
-void kore()
+void main()
 {
     
     vec4 sum = vec4(0.0);

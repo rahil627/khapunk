@@ -1,17 +1,17 @@
-
+#version 450
 
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-attribute vec3 vertexPosition;
-attribute vec2 texPosition;
-attribute vec4 vertexColor;
+in vec3 vertexPosition;
+in vec2 texPosition;
+in vec4 vertexColor;
 
 uniform mat4 projectionMatrix;
 uniform float flipy;
 
-varying vec2 texCoord;
+out vec2 texCoord;
 
 void kore() {
 	vec4 res = projectionMatrix * vec4(vertexPosition, 1.0);

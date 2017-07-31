@@ -46,7 +46,7 @@ vec4 PostFX(sampler2D tex, vec2 uv)
   return c;
 }
 
-void kore ()
+void main ()
 {
   vec2 uv = texCoord.st;
    

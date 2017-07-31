@@ -1,3 +1,5 @@
+#version 450
+
 #ifdef GL_ES
 precision mediump float;
 #endif
@@ -16,8 +18,9 @@ precision mediump float;
 // It is an example what I personally would want as a display option for pixel art games.
 // Please take and use, change, or whatever.
 //
+out vec4 ColorOutput;
 
-varying vec2 texCoord;
+in vec2 texCoord;
 uniform sampler2D tex;
 uniform vec2 resolution;
 
@@ -86,7 +89,7 @@ vec3 ToSrgb(vec3 c){return vec3(ToSrgb1(c.r),ToSrgb1(c.g),ToSrgb1(c.b));}
 vec3 Fetch(vec2 pos,vec2 off){
   pos=floor(pos*res+off)/res;
   if(max(abs(pos.x-0.5),abs(pos.y-0.5))>0.5)return vec3(0.0,0.0,0.0);
-  return ToLinear(texture2D(tex,pos,-16.0).rgb);}
+  return ToLinear(texture(tex,pos,-16.0).rgb);}
 
 // Distance in emulated pixels to nearest texel.
 vec2 Dist(vec2 pos){pos=pos*res;return -((pos-floor(pos))-vec2(0.5));}
@@ -245,18 +248,18 @@ vec3 Mask(vec2 pos){
 float Bar(float pos,float bar){pos-=bar;return pos*pos<4.0?0.0:1.0;}
 
 // Entry.
-void kore(void){
+void main(void){
   res = resolution/6.0;
   vec2 pos=Warp(texCoord/resolution);
-  gl_FragColor.rgb=Tri(pos)*Mask(texCoord);
+  ColorOutput.rgb=Tri(pos)*Mask(texCoord);
   #if 0
     // Normalized exposure.
-  	gl_FragColor.rgb=mix(gl_FragColor.rgb,Bloom(pos),bloomAmount);    
+  	ColorOutput.rgb=mix(gl_FragColor.rgb,Bloom(pos),bloomAmount);    
   #else
     // Additive bloom.
-  	gl_FragColor.rgb+=Bloom(pos)*bloomAmount;    
+  	ColorOutput.rgb+=Bloom(pos)*bloomAmount;    
   #endif    
-  gl_FragColor.a=1.0;  
-  gl_FragColor.rgb=ToSrgb(gl_FragColor.rgb);
+  ColorOutput.a=1.0;  
+  ColorOutput.rgb=ToSrgb(ColorOutput.rgb);
  }
 

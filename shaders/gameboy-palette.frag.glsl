@@ -1,12 +1,13 @@
-#version 100
+#version 450
 
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-varying vec2 texCoord;
+in vec2 texCoord;
 uniform sampler2D tex;
 
+out vec4 ColorOutput;
 
 /*
     Game Boy Palette Mapping Fragment Shader.
@@ -15,8 +16,8 @@ uniform sampler2D tex;
 
 void kore()
 {
-  vec3 color = texture2D(tex, texCoord).rgb;
-  float a = texture2D(tex, texCoord).a;
+  vec3 color = texture(tex, texCoord).rgb;
+  float a = texture(tex, texCoord).a;
   
   float gamma = 1.5;
   color.r = abs(pow(color.r, gamma));
@@ -50,5 +51,5 @@ void kore()
     color = col4;
   } 
 
-  gl_FragColor = vec4(color, a).rgba;
+  ColorOutput = vec4(color, a).rgba;
 }

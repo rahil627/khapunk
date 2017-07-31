@@ -1,10 +1,10 @@
-#version 120
+#version 450
 
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-varying vec2 texCoord;
+in vec2 texCoord;
 
 uniform sampler2D tex;
 uniform vec2 resolution;
@@ -15,6 +15,7 @@ const float max_w = 0.25;    // max filter weigth
 const float min_w =-0.05;    // min filter weigth
 const float lum_add = 0.25;  // effects smoothing
 
+out vec4 ColorOutput;
  
 void kore()                                            
 {
@@ -36,15 +37,15 @@ void kore()
    TexCoord[4].xy = TexCoord[0].xy + dg2;
    TexCoord[4].zw = TexCoord[0].xy - dx;
 
-   vec3 c00 = texture2D(tex, TexCoord[1].xy).xyz; 
-   vec3 c10 = texture2D(tex, TexCoord[1].zw).xyz; 
-   vec3 c20 = texture2D(tex, TexCoord[2].xy).xyz; 
-   vec3 c01 = texture2D(tex, TexCoord[4].zw).xyz; 
-   vec3 c11 = texture2D(tex, TexCoord[0].xy).xyz; 
-   vec3 c21 = texture2D(tex, TexCoord[2].zw).xyz; 
-   vec3 c02 = texture2D(tex, TexCoord[4].xy).xyz; 
-   vec3 c12 = texture2D(tex, TexCoord[3].zw).xyz; 
-   vec3 c22 = texture2D(tex, TexCoord[3].xy).xyz; 
+   vec3 c00 = texture(tex, TexCoord[1].xy).xyz; 
+   vec3 c10 = texture(tex, TexCoord[1].zw).xyz; 
+   vec3 c20 = texture(tex, TexCoord[2].xy).xyz; 
+   vec3 c01 = texture(tex, TexCoord[4].zw).xyz; 
+   vec3 c11 = texture(tex, TexCoord[0].xy).xyz; 
+   vec3 c21 = texture(tex, TexCoord[2].zw).xyz; 
+   vec3 c02 = texture(tex, TexCoord[4].xy).xyz; 
+   vec3 c12 = texture(tex, TexCoord[3].zw).xyz; 
+   vec3 c22 = texture(tex, TexCoord[3].xy).xyz; 
    vec3 dt = vec3(1.0, 1.0, 1.0);
 
    float md1 = dot(abs(c00 - c22), dt);
@@ -69,5 +70,5 @@ void kore()
    w3 = clamp(lc1 * dot(abs(c11 - c12), dt) + mx, min_w, max_w);
    w4 = clamp(lc2 * dot(abs(c11 - c01), dt) + mx, min_w, max_w);
    
-   gl_FragColor = vec4(w1 * c10 + w2 * c21 + w3 * c12 + w4 * c01 + (1.0 - w1 - w2 - w3 - w4) * c11, 1.0);
+   ColorOutput = vec4(w1 * c10 + w2 * c21 + w3 * c12 + w4 * c01 + (1.0 - w1 - w2 - w3 - w4) * c11, 1.0);
 }

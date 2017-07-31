@@ -8,7 +8,7 @@ import kha.input.Mouse;
 import kha.input.Sensor;
 import kha.input.SensorType;
 import kha.input.Surface;
-import kha.Key;
+import kha.input.KeyCode;
 import kha.math.Vector2;
 import kha.Scaler;
 import kha.ScreenCanvas;
@@ -446,22 +446,20 @@ class Input
 		}
 	}
 	//------------------------------------------------
-	private static function onKeyDown(key:Key, char:String) : Void
+	private static function onKeyDown(key:Int) : Void
 	{
 		//var code:Int = keyCode(e);
-		var code:Int = getCode(key);
 		
-		if(code == -1)
-		code = char.toUpperCase().charCodeAt(0);
 		
-		if (code == -1) // No key
+		if (key == -1) // No key
 			return;
-		lastKey = code;
+		lastKey = key;
 		
-		if (key == Key.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
+		if (key == KeyCode.Backspace) keyString = keyString.substr(0, keyString.length - 1);
 		else //if ((code > 47 && code < 58) || (code > 64 && code < 91) || code == 32)
 		{
 			
+			var char:String = String.fromCharCode(key);
 			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
 			
 			//if (key == Key.SHIFT)
@@ -472,67 +470,30 @@ class Input
 			 
 		}
 		
-		if (!_key[code])
+		if (!_key[key])
 		{
-			_key[code] = true;
+			_key[key] = true;
 			_keyNum++;
-			_press[_pressNum++] = code;
+			_press[_pressNum++] = key;
 		}
 	}
 	
-	private static function onKeyUp(key:Key, char:String) : Void
+	private static function onKeyUp(key:Int) : Void
 	{
 		//var code:Int = keyCode(e);
-		var code:Int = getCode(key);
 		
-		if(code == -1)
-		code = char.toUpperCase().charCodeAt(0);
-		
-		if (code == -1) // No key
+		if (key == -1) // No key
 			return;
 
-		if (_key[code])
+		if (_key[key])
 		{
-			_key[code] = false;
+			_key[key] = false;
 			_keyNum--;
-			_release[_releaseNum++] = code;
+			_release[_releaseNum++] = key;
 		}
 	}
 	
-	private static function getCode(k:Key) : Int
-	{
-		switch(k) {
 	
-			case Key.BACKSPACE:
-				return PunkKey.BACKSPACE;
-			case Key.DEL:
-				return PunkKey.DELETE;
-			case Key.DOWN:
-				return PunkKey.DOWN;
-			case Key.UP:
-				return PunkKey.UP;
-			case Key.LEFT:
-				return PunkKey.LEFT;
-			case Key.RIGHT:
-				return PunkKey.RIGHT;
-			case Key.SHIFT:
-				return PunkKey.SHIFT;
-			case Key.BACK:
-			case Key.ESC:
-				return PunkKey.ESCAPE;
-			case Key.ENTER:
-				return PunkKey.ENTER;
-			case Key.TAB:
-				return PunkKey.TAB;
-			case Key.CTRL:
-				return PunkKey.CONTROL;
-			case Key.ALT:
-			case Key.CHAR:
-				return -1;
-		}
-		
-		return -1;
-	}
 	
 	private static function onMouseMove(x: Int, y: Int,xd: Int, yd: Int)
 	{

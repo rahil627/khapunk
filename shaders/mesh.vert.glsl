@@ -1,16 +1,17 @@
+#version 450
 
-attribute vec3 vertexPosition;
-attribute vec2 texPosition;
-attribute vec3 normalPosition;
-attribute vec4 vertexColor;
+in vec3 vertexPosition;
+in vec2 texPosition;
+in vec3 normalPosition;
+in vec4 vertexColor;
 
 uniform mat4 mvpMatrix;
 uniform bool texturing;
 uniform bool lighting;
 
-varying vec2 texCoord;
-varying vec3 norm;
-varying vec4 color;
+out vec2 texCoord;
+out vec3 norm;
+out vec4 color;
 
 void kore() {
 	gl_Position =  mvpMatrix * vec4(vertexPosition, 1.0);
