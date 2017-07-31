@@ -27,7 +27,7 @@ class TubeEdgeNoise extends PipelineState
 	{
 		super();
 		vertexShader = Shaders.non_color_vertex_vert;
-		fragmentShader = Shaders.tube_edge_noise_frag;
+		//fragmentShader = Shaders.tube_edge_noise_frag;
 		
 		var structure:VertexStructure = new VertexStructure();
 		structure.add("vertexPosition", VertexData.Float3);
